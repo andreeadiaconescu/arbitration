@@ -1,7 +1,12 @@
 %% main script to semi-automatically prepare data for spatial preprocessing
-% (i.e. reorienting to AC-PC) and physio-regressors creation
+%   1) Define paths
+%   2) Copy (and rename) image nifti files, create folders
+%   3) Copy (and rename) physiological log files, create folders
+%   4) FSL skull stripping
+%   5) TODO: (i.e. reorienting to AC-PC) 
+%   5) TODO: and physio-regressors creation
 
-iSubj = 131; % DMPAD_XXXX
+iSubj = 3; % WAGAD_XXXX
 
 
 iSessFunctionalArray = [1 2]; % true functional sessions: run1, run2, rest
