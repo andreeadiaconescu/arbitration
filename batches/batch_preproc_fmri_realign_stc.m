@@ -1,5 +1,5 @@
 %-----------------------------------------------------------------------
-% Job saved on 04-Jan-2016 15:03:06 by cfg_util (rev $Rev: 6134 $)
+% Job saved on 04-Jan-2016 18:28:59 by cfg_util (rev $Rev: 6134 $)
 % spm SPM - SPM12 (6225)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
@@ -17,13 +17,13 @@ matlabbatch{3}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = {{'/Users/ka
 matlabbatch{4}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Named Directory Selector: Subject Directory(1)', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dirs', '{}',{1}));
 matlabbatch{4}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'preproc_realign_stc';
 matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_realign_stc''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
-matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'fmri';
+matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'funct';
 matlabbatch{6}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_realign_stc''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{6}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'struct';
 matlabbatch{7}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_realign_stc''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{7}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'report_preproc_quality';
 matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.files(1) = cfg_dep('Named File Selector: Functional Images(1) - Files', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
-matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''fmri''', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
+matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''funct''', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{9}.cfg_basicio.file_dir.file_ops.file_move.files(1) = cfg_dep('Named File Selector: Structural Image(1) - Files', substruct('.','val', '{}',{3}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
 matlabbatch{9}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''struct''', substruct('.','val', '{}',{6}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{10}.spm.util.exp_frames.files(1) = cfg_dep('Move/Delete Files: Moved/Copied Files', substruct('.','val', '{}',{8}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files'));
@@ -60,8 +60,8 @@ matlabbatch{12}.spm.temporal.st.so = [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 
 matlabbatch{12}.spm.temporal.st.refslice = 17;
 matlabbatch{12}.spm.temporal.st.prefix = 'a';
 matlabbatch{13}.spm.util.imcalc.input(1) = cfg_dep('Slice Timing: Slice Timing Corr. Images (Sess 1)', substruct('.','val', '{}',{12}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('()',{1}, '.','files'));
-matlabbatch{13}.spm.util.imcalc.output = 'meanarfunct';
-matlabbatch{13}.spm.util.imcalc.outdir = {''};
+matlabbatch{13}.spm.util.imcalc.output = 'meanaufunct';
+matlabbatch{13}.spm.util.imcalc.outdir(1) = cfg_dep('Make Directory: Make Directory ''funct''', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{13}.spm.util.imcalc.expression = 'mean(X)';
 matlabbatch{13}.spm.util.imcalc.var = struct('name', {}, 'value', {});
 matlabbatch{13}.spm.util.imcalc.options.dmtx = 1;
@@ -117,7 +117,7 @@ matlabbatch{16}.spm.util.imcalc.options.mask = 0;
 matlabbatch{16}.spm.util.imcalc.options.interp = -7;
 matlabbatch{16}.spm.util.imcalc.options.dtype = 4;
 matlabbatch{17}.spm.spatial.coreg.estimate.ref(1) = cfg_dep('Image Calculator: Imcalc Computed Image: Brain', substruct('.','val', '{}',{16}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files'));
-matlabbatch{17}.spm.spatial.coreg.estimate.source(1) = cfg_dep('Image Calculator: Imcalc Computed Image: meanarfunct', substruct('.','val', '{}',{13}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files'));
+matlabbatch{17}.spm.spatial.coreg.estimate.source(1) = cfg_dep('Image Calculator: Imcalc Computed Image: meanaufunct', substruct('.','val', '{}',{13}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files'));
 matlabbatch{17}.spm.spatial.coreg.estimate.other(1) = cfg_dep('Slice Timing: Slice Timing Corr. Images (Sess 1)', substruct('.','val', '{}',{12}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('()',{1}, '.','files'));
 matlabbatch{17}.spm.spatial.coreg.estimate.eoptions.cost_fun = 'nmi';
 matlabbatch{17}.spm.spatial.coreg.estimate.eoptions.sep = [4 2];
