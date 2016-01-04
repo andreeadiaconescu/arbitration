@@ -23,6 +23,8 @@ end
 % paths = get_paths();
 fnFunctRaw = paths.fnFunctRaw;
 fnFunctRenamed = paths.fnFunctRenamed;
+
+pathTemp = pwd;
 cd(paths.raw)
 % copyfile fm_09102013_1001320_5_1_wipt1w3dtfeanatsenseV42.nii struct.nii
 % fnFunctRaw{1}='/terra/workspace/adiaconescu/studies/social_learning_pharma/data/DMPAD_0088/data/raw/dm_21032014_0851080_12_1_wipfmri2x2_run1senseV42.nii';
@@ -49,3 +51,5 @@ movefile(fullfile(paths.funct, 'funct_run1.nii'), paths.sess1);
 movefile(fullfile(paths.funct, 'funct_run2.nii'), paths.sess2);
 
 movefile(fullfile(paths.raw, 'struct*.nii'), paths.struct);
+
+cd(pathTemp);
