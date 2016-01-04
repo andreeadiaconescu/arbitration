@@ -1,5 +1,5 @@
 %-----------------------------------------------------------------------
-% Job saved on 06-Jun-2015 23:30:06 by cfg_util (rev $Rev: 6134 $)
+% Job saved on 04-Jan-2016 18:38:50 by cfg_util (rev $Rev: 6134 $)
 % spm SPM - SPM12 (6225)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
@@ -17,13 +17,13 @@ matlabbatch{3}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = {{'/Users/ka
 matlabbatch{4}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Named Directory Selector: Subject Directory(1)', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dirs', '{}',{1}));
 matlabbatch{4}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'preproc_stc_realign';
 matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_stc_realign''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
-matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'fmri';
+matlabbatch{5}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'funct';
 matlabbatch{6}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_stc_realign''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{6}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'struct';
 matlabbatch{7}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent(1) = cfg_dep('Make Directory: Make Directory ''preproc_stc_realign''', substruct('.','val', '{}',{4}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{7}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'report_preproc_quality';
 matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.files(1) = cfg_dep('Named File Selector: Functional Images(1) - Files', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
-matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''fmri''', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
+matlabbatch{8}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''funct''', substruct('.','val', '{}',{5}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{9}.cfg_basicio.file_dir.file_ops.file_move.files(1) = cfg_dep('Named File Selector: Structural Image(1) - Files', substruct('.','val', '{}',{3}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
 matlabbatch{9}.cfg_basicio.file_dir.file_ops.file_move.action.copyto(1) = cfg_dep('Make Directory: Make Directory ''struct''', substruct('.','val', '{}',{6}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
 matlabbatch{10}.spm.util.exp_frames.files(1) = cfg_dep('Move/Delete Files: Moved/Copied Files', substruct('.','val', '{}',{8}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files'));
