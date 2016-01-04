@@ -5,7 +5,7 @@ if nargin < 1
 end
 
 for iSubj = iSubjectArray
-    paths = get_paths_data(iSubj);
+    paths = get_paths_wagad(iSubj);
     
     doFitModel = true;
     

@@ -1,7 +1,7 @@
 function [idSubjectArray, dirSubjectArray] = ...
     get_subject_ids(pathStudy, prefixSubject)
 if nargin < 1
-    paths = get_paths_data(3);
+    paths = get_paths_wagad(3);
     pathStudy = paths.root;
 end
 

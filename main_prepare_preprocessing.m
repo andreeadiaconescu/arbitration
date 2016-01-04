@@ -29,7 +29,7 @@ for idSubj = idSubjectArray(4:end)
     try
         iSessFunctionalArray = [1 2]; % true functional sessions: run1, run2, rest
         
-        paths = get_paths_data(idSubj);
+        paths = get_paths_wagad(idSubj);
         
         
         %% Rename and move raw data to corresponding directories (optional, maybe

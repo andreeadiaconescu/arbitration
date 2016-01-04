@@ -1,5 +1,6 @@
-function paths = get_paths_data(iSubj)
-
+function paths = get_paths_wagad(iSubj)
+% Provides all paths for subject-specific data of WAGAD study
+%
 fs = filesep;
 
 if nargin < 1
