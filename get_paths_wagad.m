@@ -9,25 +9,36 @@ end
 
 rp_model= {'softmax_multiple_readouts_reward_social'};
 
-idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
+
+if ismac % Lars laptop
+    paths.study = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
+    paths.data =  paths.study;
+    paths.code.project =  paths.study;
+    idSubj = sprintf('test_%04d',iSubj);
+else % brutus cluster
+    paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
+    paths.data = fullfile(paths.study, 'data');
+    paths.code.project = fullfile(paths.study, 'code', 'project');
+    idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
+end
 
 paths.idSubj = idSubj;
-% paths.summary = '/terra/workspace/adiaconescu/studies/social_learning_pharma/code/snr/stability_subjects_phantom';
 
-paths.idSubjBehav = idSubj(5:end);
-paths.code.project = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/project';
+paths.idSubjBehav = regexprep(idSubj, 'TNU_', '');
 paths.code.physio = fullfile(paths.code.project, 'PhysIO');
 paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
-paths.root = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/data';
-paths.subj = fullfile(paths.root, idSubj);
-paths.data = paths.subj; 
-paths.raw = fullfile(paths.data, 'scandata');
-paths.phys = fullfile(paths.data, 'physlog');
-paths.behav = fullfile(paths.data, 'behav');
-paths.funct = fullfile(paths.data, 'funct');
+
+paths.code.batches = fullfile(paths.code.project, 'batches');
+paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
+
+paths.subj = fullfile(paths.data, idSubj);
+paths.raw = fullfile(paths.subj, 'scandata');
+paths.phys = fullfile(paths.subj, 'physlog');
+paths.behav = fullfile(paths.subj, 'behav');
+paths.funct = fullfile(paths.subj, 'funct');
 paths.sess1 = fullfile(paths.funct, '1');
 paths.sess2 = fullfile(paths.funct, '2');
-paths.struct = fullfile(paths.data, 'struct');
+paths.struct = fullfile(paths.subj, 'struct');
 
 paths.dirSess = {
     paths.sess1
@@ -50,7 +61,7 @@ paths.fnFunctRenamed = {
     'funct_run1.nii'
     'funct_run2.nii'
     'struct.nii'
-};
+    };
 
 paths.realign.fnParameters = regexprep(strcat(paths.dirSess, fs ,'rp_', ...
     paths.fnFunctRenamed), 'nii$', 'txt');
@@ -62,9 +73,21 @@ paths.fnFunctRaw = {
     '*_1_*t1w3danat*'
     };
 
-paths.fnFunctRaw = cellfun(@(x) regexprep(ls(fullfile(paths.raw, ...
-    sprintf('*%s*.nii',x))),'\n',''), paths.fnFunctRaw, ...
-    'UniformOutput', false);
+try
+    paths.fnFunctRaw = cellfun(@(x) regexprep(ls(fullfile(paths.raw, ...
+        sprintf('*%s*.nii',x))),'\n',''), paths.fnFunctRaw, ...
+        'UniformOutput', false);
+catch % only data after main_prepare_preprocessing exists
+    paths.fnFunctRaw = paths.fnFunctRenamed;
+    paths.raw = paths.funct;
+end
 
 paths.nSess = length(paths.fnFunctRaw);
-% mkdir(paths.backup);
+
+
+
+%% derived paths for SPM batches
+paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
+    fs, paths.fnFunctRenamed(1:2));
+paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
+    paths.fnFunctRenamed{3});
