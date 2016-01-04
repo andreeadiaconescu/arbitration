@@ -1,0 +1,15 @@
+matlabbatch{1}.cfg_basicio.file_dir.file_ops.cfg_named_file.name = 'Functional Images (1 File Set Per Session)';
+matlabbatch{1}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = {{'/Users/drea/Dropbox/SPMZurich15/PracticalsPreprocessing/Preprocessing_Advanced/001_Upload_SPM15_PracticalsPreprocessing/example_physio_short/fmri/fmri.nii'}};
+matlabbatch{2}.cfg_basicio.file_dir.file_ops.cfg_named_file.name = 'Structural Image';
+matlabbatch{2}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = {{'/Users/drea/Dropbox/SPMZurich15/PracticalsPreprocessing/Preprocessing_Advanced/001_Upload_SPM15_PracticalsPreprocessing/example_physio_short/struct/struct.nii'}};
+matlabbatch{3}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.parent = {'/Users/drea/Dropbox/SPMZurich15/PracticalsPreprocessing/Preprocessing_Advanced/001_Upload_SPM15_PracticalsPreprocessing/example_physio_short'};
+matlabbatch{3}.cfg_basicio.file_dir.dir_ops.cfg_mkdir.name = 'report_snr';
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.jobs = {'/Users/drea/Dropbox/SPMZurich15/PracticalsPreprocessing/Preprocessing_Advanced/001_Upload_SPM15_PracticalsPreprocessing/example_physio_short/raw/batch/batch_report_snr_reslice.m'};
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.inputs{1}{1}.indir(1) = cfg_dep('Make Directory: Make Directory ''report_snr''', substruct('.','val', '{}',{3}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.inputs{1}{2}.instr = 'raw';
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.inputs{1}{3}.innifti(1) = cfg_dep('Named File Selector: Functional Images (1 File Set Per Session)(1) - Files', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.inputs{1}{4}.innifti(1) = cfg_dep('Named File Selector: Structural Image(1) - Files', substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','files', '{}',{1}));
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.inputs{1}{5}.instr = 'report_snr.ps';
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.save.savejobs.outstub = 'batch_report_snr';
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.save.savejobs.outdir(1) = cfg_dep('Make Directory: Make Directory ''report_snr''', substruct('.','val', '{}',{3}, '.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','dir'));
+matlabbatch{4}.cfg_basicio.run_ops.runjobs.missing = 'skip';
