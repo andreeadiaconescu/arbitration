@@ -31,6 +31,7 @@ paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.batches = fullfile(paths.code.project, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 
+
 paths.subj = fullfile(paths.data, idSubj);
 paths.raw = fullfile(paths.subj, 'scandata');
 paths.phys = fullfile(paths.subj, 'physlog');
@@ -91,3 +92,38 @@ paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
     fs, paths.fnFunctRenamed(1:2));
 paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
     paths.fnFunctRenamed{3});
+
+paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
+
+% replace funct by new folders of preproc output
+paths.preproc.output.funct = regexprep(paths.funct, paths.subj, ...
+    paths.preproc.output.root);
+paths.preproc.output.struct = regexprep(paths.struct, paths.subj, ...
+    paths.preproc.output.root);
+
+% all in same folder
+paths.preproc.output.sess1 = paths.preproc.output.funct ;
+paths.preproc.output.sess2 = paths.preproc.output.funct ;
+paths.preproc.output.dirSess = {
+    paths.preproc.output.sess1
+    paths.preproc.output.sess2
+    paths.preproc.output.struct
+    };
+
+paths.preproc.output.fnFunctArray = strcat('swau', ...
+    paths.fnFunctRenamed);
+paths.preproc.output.fnFunctArray{3} = 'wBrain.nii';
+
+% prepend paths
+paths.preproc.output.fnFunctArray = ...
+    strcat( paths.preproc.output.dirSess, ...
+    fs, paths.preproc.output.fnFunctArray);
+
+paths.preproc.output.fnStruct = paths.preproc.output.fnFunctArray{3};
+
+paths.preproc.output.report = fullfile(paths.preproc.output.root, ...
+    'report_preproc_quality');
+
+% for saving overall (multi-subj) study results
+paths.summary = fullfile(paths.study, 'summaryReports');
+[tmp, tmp2] = mkdir(paths.summary);
