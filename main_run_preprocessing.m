@@ -60,25 +60,46 @@ for iSubj = iSubjectArray
     % load subject specific paths
     paths = get_paths_wagad(iSubj);
     
-    % load matlabbach, change relevant subject-specific paths
-    run(fnBatchPreprocess);
+    % load matlabbach, update system-specific absolute paths in batch
+    pathsBatchOld = {
+        '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/batches'
+        '/Users/kasperla/Documents/code/matlab/spm12'
+       };
+   
+   pathsBatchNew = {
+       paths.code.batches
+       paths.code.spm
+       };
+    
+    matlabbatch = update_matlabbatch_paths(...
+        fnBatchPreprocess, pathsBatchOld, pathsBatchNew);
     
     
-    % subject dir
+    %% change relevant subject-specific paths in batch & save
+    
+    % update subject dir
     matlabbatch{1}.cfg_basicio.file_dir.dir_ops.cfg_named_dir.dirs = ...
         {{paths.subj}};
     
-    % functional files
-    
-    
+    % update functional files
     matlabbatch{2}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = ...
         {paths.preproc.input.fnFunctArray}';
-    % structural file
+    
+    % update structural file
     matlabbatch{3}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = ...
         {{paths.preproc.input.fnStruct}};
     
-    % save subject-specific batch in subject-folder
-    save(fullfile(paths.preproc.output.batch, paths.code.batch.fnPreprocess), ...
+    if useCluster
+        % use report-quality batch without interactive output
+         matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1} = ...
+         regexprep(matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1}, ...
+             'batch_report_quality\.m', 'batch_report_quality_no_figures\.m');
+    end
+    
+    % save subject-specific batch in subject-folder, but as mat-file for
+    % simplicity
+    save(fullfile(paths.preproc.output.batch, ...
+        regexprep(paths.code.batch.fnPreprocess, '\.m', '\.mat')), ...
         'matlabbatch');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

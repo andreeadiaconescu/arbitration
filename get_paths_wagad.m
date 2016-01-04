@@ -14,11 +14,13 @@ if ismac % Lars laptop
     paths.study = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
     paths.data =  paths.study;
     paths.code.project =  paths.study;
+    paths.code.spm = '/Users/kasperla/Documents/code/matlab/spm12';
     idSubj = sprintf('test_%04d',iSubj);
 else % brutus cluster
     paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
     paths.data = fullfile(paths.study, 'data');
     paths.code.project = fullfile(paths.study, 'code', 'project');
+    paths.code.spm = fullfile(paths.study, 'code', 'spm12');
     idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
 end
 
