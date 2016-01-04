@@ -29,10 +29,13 @@
 paths = get_paths_wagad(); % dummy subject to get general paths
 
 if ismac
-    iSubjectArray = get_subject_ids(paths.study, 'test_')';
+    iSubjectArray = get_subject_ids(paths.data, 'test_')';
 else
-    iSubjectArray = get_subject_ids(paths.study)';
+    iSubjectArray = get_subject_ids(paths.data)';
 end
+
+% manual setting...
+iSubjectArray = 3;
 
 fnBatchPreprocess = fullfile(paths.code.batches, paths.code.batch.fnPreprocess);
 
@@ -75,7 +78,8 @@ for iSubj = iSubjectArray
         {{paths.preproc.input.fnStruct}};
     
     % save subject-specific batch in subject-folder
-    
+    save(fullfile(paths.preproc.output.batch, paths.code.batch.fnPreprocess), ...
+        'matlabbatch');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Run matlabbatch...either interactively or on cluster

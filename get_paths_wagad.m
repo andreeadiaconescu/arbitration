@@ -114,6 +114,11 @@ paths.preproc.output.fnFunctArray = strcat('swau', ...
     paths.fnFunctRenamed);
 paths.preproc.output.fnFunctArray{3} = 'wBrain.nii';
 
+% where subject-specific batches are saved
+paths.preproc.output.batch = fullfile(paths.subj, 'batches');
+
+[tmp, tmp2] = mkdir(paths.preproc.output.batch);
+
 % prepend paths
 paths.preproc.output.fnFunctArray = ...
     strcat( paths.preproc.output.dirSess, ...

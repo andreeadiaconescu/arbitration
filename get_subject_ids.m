@@ -1,15 +1,15 @@
 function [idSubjectArray, dirSubjectArray] = ...
-    get_subject_ids(pathStudy, prefixSubject)
+    get_subject_ids(pathData, prefixSubject)
 if nargin < 1
     paths = get_paths_wagad(3);
-    pathStudy = paths.study;
+    pathData = paths.data;
 end
 
 if nargin < 2
     prefixSubject = 'TNU_WAGAD_';
 end
 
-dirSubjectArray = dir(fullfile(pathStudy, [prefixSubject '*']));
+dirSubjectArray = dir(fullfile(pathData, [prefixSubject '*']));
 dirSubjectArray = {dirSubjectArray.name}';
 
 % find folders which exactly match specification by ending with 4 digits
