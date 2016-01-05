@@ -35,11 +35,12 @@ else
 end
 
 % manual setting...
-iSubjectArray = 3;
+iSubjectArray = setdiff(iSubjectArray, 3);
 
-fnBatchPreprocess = fullfile(paths.code.batches, paths.code.batch.fnPreprocess);
+fnBatchPreprocess = fullfile(paths.code.batches, ...
+    paths.code.batch.fnPreprocess);
 
-useCluster = false;
+useCluster = true;
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -64,12 +65,12 @@ for iSubj = iSubjectArray
     pathsBatchOld = {
         '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/batches'
         '/Users/kasperla/Documents/code/matlab/spm12'
-       };
-   
-   pathsBatchNew = {
-       paths.code.batches
-       paths.code.spm
-       };
+        };
+    
+    pathsBatchNew = {
+        paths.code.batches
+        paths.code.spm
+        };
     
     matlabbatch = update_matlabbatch_paths(...
         fnBatchPreprocess, pathsBatchOld, pathsBatchNew);
@@ -91,24 +92,67 @@ for iSubj = iSubjectArray
     
     if useCluster
         % use report-quality batch without interactive output
-         matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1} = ...
-         regexprep(matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1}, ...
-             'batch_report_quality\.m', 'batch_report_quality_no_figures\.m');
+        matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1} = ...
+            regexprep(matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1}, ...
+            'batch_report_quality\.m', 'batch_report_quality_no_figures\.m');
     end
     
     % save subject-specific batch in subject-folder, but as mat-file for
-    % simplicity
-    save(fullfile(paths.preproc.output.batch, ...
-        regexprep(paths.code.batch.fnPreprocess, '\.m', '\.mat')), ...
-        'matlabbatch');
+    % simplicity, and with a time stamp
+    fnBatchSave = paths.code.batch.fnPreprocess;
+    fnBatchSave(end-1:end) = []; % remove .m
+    
+    % add time stamp & path
+    stringDate = datestr(now(), 'yyyy_mm_dd_HHMMSS');
+    fnBatchSave = sprintf('%s_%s.mat', fnBatchSave, ...
+        stringDate);
+    fnBatchSave = fullfile(paths.preproc.output.batch, ...
+        fnBatchSave);
+    
+    save(fnBatchSave, 'matlabbatch');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Run matlabbatch...either interactively or on cluster
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if useCluster
+        % assemble script-m-file to be executed via new matlab instance
+        % created on brutus node
+        nameScriptBrutus = sprintf('run_%s_%s_%s', ...
+            paths.code.batch.fnPreprocess(1:end-2), paths.idSubjBehav, ...
+            stringDate);
+        fileScriptBrutus = fullfile(paths.cluster.scripts, ...
+            [nameScriptBrutus '.m']);
+        
+        % Script file has to run
+        fid = fopen(fileScriptBrutus, 'w+');
+        fprintf(fid, [ ...
+            'addpath %s;\n' ...
+            'spm_get_defaults(''modality'', ''FMRI'');\n' ...
+            'spm_get_defaults(''cmdline'', 1);\n' ...
+            'spm_jobman(''initcfg'');\n' ...
+            'spm_jobman(''run'', ''%s'');\n' ...
+            ], ...
+            paths.code.spm, fnBatchSave);
+        fclose(fid);
+        
+        % Submit execution of job to brutus]
+        jobQueue = 'vip';
+        switch jobQueue
+            case 'vip' % asks for more memory
+                cmdSubmit = sprintf(['cd %s; bsub -q vip.36h -R "rusage[mem=8192]" -o lsf.%s_o%%J matlab -nodisplay -nojvm -singleCompThread ' ...
+                    '-r %s; cd %s'], paths.cluster.scripts, ...
+                    nameScriptBrutus, nameScriptBrutus, pwd);
+            case 'pub'
+                cmdSubmit = sprintf(['cd %s;bsub -q pub.1h -o lsf.%s_o%%J matlab -nodisplay -nojvm -singleCompThread ' ...
+                    '-r %s; cd %s'], paths.cluster.scripts, ...
+                    nameScriptBrutus, nameScriptBrutus, pwd);
+        end
+        disp(cmdSubmit);
+        unix(cmdSubmit);
+        
     else
-        spm_jobman('interactive', matlabbatch);
+        spm_jobman('run', matlabbatch);
     end
     
 end

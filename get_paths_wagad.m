@@ -33,6 +33,8 @@ paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.batches = fullfile(paths.code.project, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 
+paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
+[~, ~] = mkdir(paths.cluster.scripts);
 
 paths.subj = fullfile(paths.data, idSubj);
 paths.raw = fullfile(paths.subj, 'scandata');
