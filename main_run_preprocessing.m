@@ -34,8 +34,8 @@ else
     iSubjectArray = get_subject_ids(paths.data)';
 end
 
-% manual setting...
-iSubjectArray = setdiff(iSubjectArray, 3);
+% manual setting...if you want to exclude any subjects
+iSubjectArray = setdiff(iSubjectArray, []);
 
 fnBatchPreprocess = fullfile(paths.code.batches, ...
     paths.code.batch.fnPreprocess);
@@ -92,8 +92,8 @@ for iSubj = iSubjectArray
     
     if useCluster
         % use report-quality batch without interactive output
-        matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1} = ...
-            regexprep(matlabbatch{23}.cfg_basicio.run_ops.runjobs.jobs{1}, ...
+        matlabbatch{end}.cfg_basicio.run_ops.runjobs.jobs{1} = ...
+            regexprep(matlabbatch{end}.cfg_basicio.run_ops.runjobs.jobs{1}, ...
             'batch_report_quality\.m', 'batch_report_quality_no_figures\.m');
     end
     
