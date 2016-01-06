@@ -34,7 +34,13 @@ function multiple_regressors = get_multiple_regressors_physio(iSubjectArray)
 
 if nargin < 1
     iSubjectArray = get_subject_ids()';
+
+    
+    % since we have done this one...
+    iSubjectArray = setdiff(iSubjectArray, 3);
 end
+
+multiple_regressors = {};
 
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
@@ -91,6 +97,9 @@ for iSubj = iSubjectArray
         save(fnBatchSave, 'matlabbatch');
         
         spm_jobman('run', matlabbatch);
+        
+        close all; % since figures have been saved
+
     end
 
         
@@ -114,4 +123,11 @@ for iSubj = iSubjectArray
     save(paths.fnMultipleRegressors, ...
         'multipleRegressorsConcat', '-ASCII')
     
+    multiple_regressors{end+1,1} = multipleRegressorsConcat;
+
+end
+
+% make simple matrix, if only one subject
+if numel(multiple_regressors) == 1
+    multiple_regressors = multiple_regressors{1};
 end
