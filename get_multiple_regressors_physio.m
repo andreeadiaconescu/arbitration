@@ -37,12 +37,14 @@ if nargin < 1
 
     
     % since we have done this one...
-    iSubjectArray = setdiff(iSubjectArray, 3);
+    iSubjectArray = setdiff(iSubjectArray, [3 4 5]);
 end
 
 multiple_regressors = {};
 
 for iSubj = iSubjectArray
+    
+    try
     paths = get_paths_wagad(iSubj);
     
     
@@ -110,20 +112,41 @@ for iSubj = iSubjectArray
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % concat mult reg
+    
+    % extra columns through outlier stick regressors have to be treated
+    % separately and kept separate columns in combined regressor matrix
+    nColsShared = 24; % TODO use tapas_physio_count_physio_regressors
     for iRun = 1:2
-        multipleRegressorsSess{iRun,1} = load(fullfile(paths.preproc.output.physio,...
+        multipleRegressorsRun{iRun,1} = load(fullfile(paths.preproc.output.physio,...
             sprintf('multiple_regressors_run%d.txt', iRun)));
+        nColsExtra(iRun) = size(multipleRegressorsRun{iRun},2) -...
+            nColsShared; 
     end
-    multipleRegressorsConcat = cell2mat(multipleRegressorsSess);
+    
+    % extra stick regressors are session-wise
+    nColumnsConcat = 24 + sum(nColsExtra) + 1;
+    
+    multipleRegressorsConcat = zeros(sum(nVols), nColumnsConcat);
+    multipleRegressorsConcat(1:nVols(1), 1:(nColsShared + ...
+        nColsExtra(1))) = multipleRegressorsRun{1};
+    multipleRegressorsConcat(nVols(1) + (1:nVols(2)), ...
+        1:nColsShared) = multipleRegressorsRun{2}(:,1:nColsShared);
+    if nColsExtra(2) > 0
+        multipleRegressorsConcat(nVols(1) + (1:nVols(2)), ...
+            nColsShared+nColsExtra(1) + (1:nColsExtra(2))) = ...
+            multipleRegressorsRun{2}(:, nColsShared + (1:nColsExtra(2)));
+    end
     
     % add column of ones for 1st session
-    multipleRegressorsConcat(:,end+1) = 0;
     multipleRegressorsConcat(1:nVols(1),end) = 1;
     
     save(paths.fnMultipleRegressors, ...
         'multipleRegressorsConcat', '-ASCII')
     
     multiple_regressors{end+1,1} = multipleRegressorsConcat;
+    
+    catch idError
+    end
 
 end
 
