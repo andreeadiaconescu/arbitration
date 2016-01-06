@@ -33,6 +33,7 @@ paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.batches = fullfile(paths.code.project, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 % paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
+paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
@@ -63,6 +64,9 @@ for iRsp = 1:numel(rp_model);
         paths.idSubjBehav, rp_model{iRsp}));
 end
 
+paths.fnPhyslogRenamed = strcat(paths.dirSess(1:2), fs, 'phys.log');
+ 
+
 paths.fnFunctRenamed = {
     'funct_run1.nii'
     'funct_run2.nii'
@@ -79,6 +83,7 @@ paths.fnFunctRaw = {
     '*_1_*t1w3danat*'
     };
 
+% try to determine raw nii-file anmes, if existing
 try
     paths.fnFunctRaw = cellfun(@(x) regexprep(ls(fullfile(paths.raw, ...
         sprintf('*%s*.nii',x))),'\n',''), paths.fnFunctRaw, ...
@@ -92,6 +97,7 @@ paths.nSess = length(paths.fnFunctRaw);
 
 
 
+
 %% derived paths for SPM batches
 paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
     fs, paths.fnFunctRenamed(1:2));
@@ -99,8 +105,12 @@ paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
     paths.fnFunctRenamed{3});
 
 paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
+
+% PhysIO Output
 paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
 [~,~] = mkdir(paths.preproc.output.physio);
+paths.fnMultipleRegressors = fullfile(paths.preproc.output.physio, 'multiple_regressors_concat_run12.txt');
+
 
 % replace funct by new folders of preproc output
 paths.preproc.output.funct = regexprep(paths.funct, paths.subj, ...
@@ -126,7 +136,26 @@ paths.preproc.output.batch = fullfile(paths.subj, 'batches');
 
 [tmp, tmp2] = mkdir(paths.preproc.output.batch);
 
-% prepend paths
+
+% realignment parameter filenames
+paths.preproc.output.fnRealignConcat = ...
+        regexprep(sprintf('rp_%s', paths.fnFunctRenamed{1}), '\.nii', '\.txt');
+
+paths.preproc.output.fnRealignSession = {
+    ['rp_', paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
+    ['rp_', paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
+};    
+
+
+
+%% prepend paths for file names
+
+paths.preproc.output.fnRealignConcat = fullfile(paths.preproc.output.sess1, ...
+    paths.preproc.output.fnRealignConcat);
+
+paths.preproc.output.fnRealignSession = strcat(paths.preproc.output.dirSess(1:2), ...
+   fs, paths.preproc.output.fnRealignSession);
+
 paths.preproc.output.fnFunctArray = ...
     strcat( paths.preproc.output.dirSess, ...
     fs, paths.preproc.output.fnFunctArray);

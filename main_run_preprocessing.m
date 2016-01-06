@@ -110,16 +110,7 @@ for iSubj = iSubjectArray
     
     % save subject-specific batch in subject-folder, but as mat-file for
     % simplicity, and with a time stamp
-    fnBatchSave = paths.code.batch.fnPreprocess;
-    fnBatchSave(end-1:end) = []; % remove .m
-    
-    % add time stamp & path
-    stringDate = datestr(now(), 'yyyy_mm_dd_HHMMSS');
-    fnBatchSave = sprintf('%s_%s.mat', fnBatchSave, ...
-        stringDate);
-    fnBatchSave = fullfile(paths.preproc.output.batch, ...
-        fnBatchSave);
-    
+    fnBatchSave = get_batch_filename_subject_timestamp(paths, 'fnPreprocess');
     save(fnBatchSave, 'matlabbatch');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

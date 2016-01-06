@@ -39,21 +39,65 @@ end
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
     
-    %% Split realignment parameter file into 2 
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Split realignment parameter file into 2 for PhysIO
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     nVols(1) = load(fullfile(paths.sess1, 'nvols.txt'));
     nVols(2) = load(fullfile(paths.sess2, 'nvols.txt'));
-    fileRealignConcat = ls(fullfile(paths.preproc.output.sess1, 'rp_*funct_run1.txt'));
-    fileRealignConcat(end) = []; % remove new line character
     realignParamsConcat = ...
-        load(fileRealignConcat);
+        load(paths.preproc.output.fnRealignConcat);
     realignParamsSess1 = realignParamsConcat(1:nVols(1), :);
     realignParamsSess2 = realignParamsConcat(nVols(1)+(1:nVols(2)), :);
     
-    save(fullfile(paths.preproc.output.sess1, 'rp_run1_split.txt'), ...
+    save(paths.preproc.output.fnRealignSession{1}, ...
         'realignParamsSess1', '-ASCII')
-    save(fullfile(paths.preproc.output.sess2, 'rp_run2_split.txt'), ...
+    save(paths.preproc.output.fnRealignSession{2}, ...
         'realignParamsSess2', '-ASCII')
     
-    %% load PhysIO batch, adapt parameters and run
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% For each Run load PhysIO batch, adapt parameters and run
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    for iRun = 1:2
+        clear matlabbatch
+        run(fullfile(paths.code.batches, paths.code.batch.fnPhysIO));
+        
+        % path to save multiple regressors, physio object and output figures
+        matlabbatch{1}.spm.tools.physio.save_dir = ...
+            {paths.preproc.output.physio};
+        matlabbatch{1}.spm.tools.physio.log_files.cardiac = ...
+            paths.fnPhyslogRenamed(iRun);
+        matlabbatch{1}.spm.tools.physio.log_files.respiration = ...
+            matlabbatch{1}.spm.tools.physio.log_files.cardiac;
+        matlabbatch{1}.spm.tools.physio.scan_timing.sqpar.Nscans = nVols(iRun);
+        
+        % adapt run-specific file names
+        matlabbatch{1}.spm.tools.physio.model.output_multiple_regressors =...
+            sprintf('multiple_regressors_run%d.txt', iRun);
+        matlabbatch{1}.spm.tools.physio.model.output_physio = ...
+            sprintf('physio_run%d.mat', iRun);
+        matlabbatch{1}.spm.tools.physio.verbose.fig_output_file = ...
+            sprintf('physio_run%d.fig', iRun);
+        matlabbatch{1}.spm.tools.physio.model.movement.yes.file_realignment_parameters = ...
+            paths.preproc.output.fnRealignSession(iRun);
+        
+        %save batch to subject-specific folder
+        fnBatchSave = get_batch_filename_subject_timestamp(paths, 'fnPhysIO');
+        % append current run to file name
+        fnBatchSave = regexprep(fnBatchSave, '\.mat', ['_run' int2str(iRun) '\.mat']);
+        save(fnBatchSave, 'matlabbatch');
+        
+        spm_jobman('interactive', matlabbatch);
+    end
+
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Concatenate multiple regressor files and save to behav-folder, 
+    %   where multiple_conditions reside
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     
 end
