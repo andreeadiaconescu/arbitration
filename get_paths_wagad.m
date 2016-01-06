@@ -31,8 +31,8 @@ paths.code.physio = fullfile(paths.code.project, 'PhysIO');
 paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 
 paths.code.batches = fullfile(paths.code.project, 'batches');
-% paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
-paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
+paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
+% paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);

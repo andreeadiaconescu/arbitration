@@ -35,16 +35,18 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-iSubjectArray = setdiff(iSubjectArray, []);
+iSubjectArray = setdiff(iSubjectArray, [14]);
 
 % checked via run through via in WAGAD/data-folder run:
 % find . -name swau*run1* |sort
 
 % redo swua => stc_realign
-iSubjectArray = [14 17 18 20 22 23 24];
+% iSubjectArray = [17 18 20 22 23 24];
 
 % redo swau => realign_stc
-iSubjectArray = [8, 9, 11, 14:23];
+% for all but 14 (file not found!) same 2 errors:
+
+% iSubjectArray = [8, 9, 11, 14:23];
 
 fnBatchPreprocess = fullfile(paths.code.batches, ...
     paths.code.batch.fnPreprocess);
