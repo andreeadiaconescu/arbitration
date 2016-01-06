@@ -1,5 +1,7 @@
 function get_multiple_conditions(iSubjectArray)
-
+% computes HGF for given subjects and creates parametric modulators for
+% concatenated design matrix, plus base regressors for event onsets
+%
 if nargin < 1
     iSubjectArray = 3;
 end
