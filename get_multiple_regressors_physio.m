@@ -33,7 +33,7 @@ function multiple_regressors = get_multiple_regressors_physio(iSubjectArray)
 % $Id: new_function2.m 354 2013-12-02 22:21:41Z kasperla $
 
 if nargin < 1
-    iSubjectArray = 3;
+    iSubjectArray = get_subject_ids()';
 end
 
 for iSubj = iSubjectArray
