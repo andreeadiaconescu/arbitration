@@ -88,7 +88,7 @@ function [VOLLOCS, LOCS, verbose] = ...
 % (either version 3 or, at your option, any later version). For further details, see the file
 % COPYING or <http://www.gnu.org/licenses/>.
 %
-% $Id: tapas_physio_create_scan_timing_from_gradients_philips.m 756 2015-07-08 16:17:15Z kasperla $
+% $Id: tapas_physio_create_scan_timing_from_gradients_philips.m 863 2016-01-06 14:25:35Z kasperla $
 
 sqpar   = scan_timing.sqpar;
 sync    = scan_timing.sync;
@@ -169,7 +169,7 @@ gradient_choice         = reshape(gradient_choice, [] ,1);
 % For new Ingenia log-files, recorded gradient strength may change after a
 % certain time and introduce steps that are bad for recording
 
-minStepDistanceSamples = 1.5*ceil(sqpar.TR/dt);
+minStepDistanceSamples = ceil(1.5*sqpar.TR/dt);
 
 % Normalize gradients, if thresholds are smaller than 1, i.e. relative
 doNormalize = max([sync.slice, sync.vol, sync.zero]) < 1;

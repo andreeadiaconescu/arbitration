@@ -99,6 +99,8 @@ paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
     paths.fnFunctRenamed{3});
 
 paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
+paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
+[~,~] = mkdir(paths.preproc.output.physio);
 
 % replace funct by new folders of preproc output
 paths.preproc.output.funct = regexprep(paths.funct, paths.subj, ...
