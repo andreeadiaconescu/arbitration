@@ -90,14 +90,28 @@ for iSubj = iSubjectArray
         fnBatchSave = regexprep(fnBatchSave, '\.mat', ['_run' int2str(iRun) '\.mat']);
         save(fnBatchSave, 'matlabbatch');
         
-        spm_jobman('interactive', matlabbatch);
+        spm_jobman('run', matlabbatch);
     end
 
         
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Concatenate multiple regressor files and save to behav-folder, 
-    %   where multiple_conditions reside
+    %   where multiple_conditions reside, add regressors of Ones for 1st
+    %   session
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    
+    % concat mult reg
+    for iRun = 1:2
+        multipleRegressorsSess{iRun,1} = load(fullfile(paths.preproc.output.physio,...
+            sprintf('multiple_regressors_run%d.txt', iRun)));
+    end
+    multipleRegressorsConcat = cell2mat(multipleRegressorsSess);
+    
+    % add column of ones for 1st session
+    multipleRegressorsConcat(:,end+1) = 0;
+    multipleRegressorsConcat(1:nVols(1),end) = 1;
+    
+    save(paths.fnMultipleRegressors, ...
+        'multipleRegressorsConcat', '-ASCII')
     
 end
