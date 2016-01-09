@@ -1,15 +1,11 @@
-% Script main_run_stats_glm_single_subject
-% Performs Sets up and estimates 1st level design matrix for selected subjects
+% Script main_run_stats_report_contrasts_single_subject
+% Computes and visualizes contrasts of interests and nuisance regressors
+% F-contrasts to assess efficacy of physiological noise correction
 %
-%  main_run_stats_glm_single_subject
+%  main_run_stats_report_contrasts_single_subject
 %
-% adapts subject-specific input data for template batch, including
-%   - scan info timing (number of slices/volumes, TR)
-%   - directory for GLM output
-%   - input functional files
-%   - input multiple regressors and conditions
 %
-%   See also
+%   See also tapas_physio_report_contrasts
 %
 % Author:   Andreea Diaconescu & Lars Kasper
 % Created:  2016-01-09
@@ -41,12 +37,11 @@ end
 % manual setting...if you want to exclude any subjects
 iSubjectArray = 3;%setdiff(iSubjectArray, [14]);
 
-fnBatchStatsGlm = fullfile(paths.code.batches, ...
-    paths.code.batch.fnStatsGlm);
+fnBatchStatsContrasts = fullfile(paths.code.batches, ...
+    paths.code.batch.fnStatsContrasts);
 
 useCluster = false;
 
-iRunArray = 1:2; % Sessions that enter GLM
 iDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
@@ -72,36 +67,14 @@ for iSubj = iSubjectArray
     %% Load template batch, change relevant subject-specific paths in batch & save
     
     clear matlabbatch;
-    run(paths.code.batch.fnStatsGlm);
+    run(paths.code.batch.fnStatsContrasts);
     
-    % update glm dir
-    matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.designs(iDesign);
-    
-    % update scan info
-    matlabbatch{1}.spm.stats.fmri_spec.timing.RT = paths.scanInfo.TR(1);
-    matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = paths.scanInfo.nSlices(1);
-    matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = ceil(paths.scanInfo.nSlices(1)/2);
-    
-    
-    % update functional files
-    fnFunctGlmInputArray = [];
-    for iRun = iRunArray
-        fnFunctGlmInputArray = [fnFunctGlmInputArray; ...
-            get_vol_filenames(paths.preproc.output.fnFunctArray{iRun}) ...
-            ];
-    end;
-    
-    matlabbatch{1}.spm.stats.fmri_spec.sess.scans = fnFunctGlmInputArray;
-    
-    % update multiple conditions and regressors
-    matlabbatch{1}.spm.stats.fmri_spec.sess.multi = ...
-        {paths.fnMultipleConditions};
-    matlabbatch{1}.spm.stats.fmri_spec.sess.multi_reg = {...
-        paths.fnMultipleRegressors};
+    % update SPM.mat dir
+    matlabbatch{1}.spm.stats.con.spmmat = paths.stats.fnSpmArray(iDesign);
     
     % save subject-specific batch in subject-folder, but as mat-file for
     % simplicity, and with a time stamp
-    fnBatchSave = get_batch_filename_subject_timestamp(paths, 'fnStatsGlm');
+    fnBatchSave = get_batch_filename_subject_timestamp(paths, 'fnStatsContrasts');
     save(fnBatchSave, 'matlabbatch');
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,7 +85,7 @@ for iSubj = iSubjectArray
         % assemble script-m-file to be executed via new matlab instance
         % created on brutus node
         nameScriptBrutus = sprintf('run_%s_%s_%s', ...
-            paths.code.batch.fnStatsGlm(1:end-2), paths.idSubjBehav, ...
+            paths.code.batch.fnStatsContrasts(1:end-2), paths.idSubjBehav, ...
             stringDate);
         fileScriptBrutus = fullfile(paths.cluster.scripts, ...
             [nameScriptBrutus '.m']);
@@ -145,7 +118,7 @@ for iSubj = iSubjectArray
         unix(cmdSubmit);
         
     else
-        spm_jobman('run', matlabbatch);
+        spm_jobman('interactive', matlabbatch);
     end
     
 end

@@ -44,6 +44,7 @@ paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 % paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
 paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
 paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
+paths.code.batch.fnStatsContrasts = 'batch_stats_single_subject_report_contrasts.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
@@ -199,6 +200,8 @@ paths.stats.glm.designs = strcat(paths.stats.glm.root, fs, ...
 for iDesign = 1:numel(paths.stats.glm.designs);
     [~,~] = mkdir(paths.stats.glm.designs{iDesign});
 end
+
+paths.stats.fnSpmArray = strcat(paths.stats.glm.designs, fs, 'SPM.mat');
 
 %%  Scan Info
 
