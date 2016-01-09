@@ -57,14 +57,13 @@ end
 for iSubj = iSubjectArray
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% Load paths, setup matlabbatch for subject
+    %% Load paths, setup report-contrasts matlabbatch for subject
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % load subject specific paths
     paths = get_paths_wagad(iSubj);
     
-    
-    %% Load template batch, change relevant subject-specific paths in batch & save
+    % Load template batch, change relevant subject-specific paths in batch & save
     
     clear matlabbatch;
     run(paths.code.batch.fnStatsContrasts);
@@ -82,43 +81,47 @@ for iSubj = iSubjectArray
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if useCluster
-        % assemble script-m-file to be executed via new matlab instance
-        % created on brutus node
-        nameScriptBrutus = sprintf('run_%s_%s_%s', ...
-            paths.code.batch.fnStatsContrasts(1:end-2), paths.idSubjBehav, ...
-            stringDate);
-        fileScriptBrutus = fullfile(paths.cluster.scripts, ...
-            [nameScriptBrutus '.m']);
-        
-        % Script file has to run
-        fid = fopen(fileScriptBrutus, 'w+');
-        fprintf(fid, [ ...
-            'addpath %s;\n' ...
-            'spm_get_defaults(''modality'', ''FMRI'');\n' ...
-            'spm_get_defaults(''cmdline'', 1);\n' ...
-            'spm_jobman(''initcfg'');\n' ...
-            'spm_jobman(''run'', ''%s'');\n' ...
-            ], ...
-            paths.code.spm, fnBatchSave);
-        fclose(fid);
-        
-        % Submit execution of job to brutus]
-        jobQueue = 'vip';
-        switch jobQueue
-            case 'vip' % asks for more memory
-                cmdSubmit = sprintf(['cd %s; bsub -q vip.36h -R "rusage[mem=8192]" -o lsf.%s_o%%J matlab -nodisplay -nojvm -singleCompThread ' ...
-                    '-r %s; cd %s'], paths.cluster.scripts, ...
-                    nameScriptBrutus, nameScriptBrutus, pwd);
-            case 'pub'
-                cmdSubmit = sprintf(['cd %s;bsub -q pub.1h -o lsf.%s_o%%J matlab -nodisplay -nojvm -singleCompThread ' ...
-                    '-r %s; cd %s'], paths.cluster.scripts, ...
-                    nameScriptBrutus, nameScriptBrutus, pwd);
-        end
-        disp(cmdSubmit);
-        unix(cmdSubmit);
-        
+        [nameScriptBrutus, fileScriptBrutus] = ...
+            submit_job_cluster_matlabbatch(paths, fnBatchSave);      
     else
-        spm_jobman('interactive', matlabbatch);
+        spm_jobman('run', matlabbatch);
     end
+    
+    %% move created spm_*.ps to right location
+    pathGlm = paths.stats.glm.designs{iDesign};
+    fnReportDefault = dir(fullfile(pathGlm, 'spm_*ps'));
+    fnReportDefault = fullfile(pathGlm, fnReportDefault(end).name);
+    
+    fnReport = regexprep(paths.stats.contrasts.fnReportArray{iDesign}, '\.ps', ...
+        [datestr(now, '_yyyy_mm_dd_HHMMSS') '\.ps']);
+    movefile(fnReportDefault, fnReport);
+ 
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% run PhysIO-toolbox report contrasts function, 
+    %   using information from created physio-structure for relevant
+    %   contrasts
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % FWE-corrected
+    args = tapas_physio_report_contrasts(...
+        'reportContrastThreshold', 0.05, ...
+        'reportContrastCorrection', 'FWE', ...
+        'fileReport', fnReport, ...
+        'fileSpm', paths.stats.fnSpmArray{iDesign}, ...
+        'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
+        'fileStructural', paths.preproc.output.fnStruct);
+    
+    
+    % again with liberal threshold: 0.001 uncorrected
+    args = tapas_physio_report_contrasts(...
+        'fileReport', fnReport, ...
+        'fileSpm', paths.stats.fnSpmArray{iDesign}, ...
+        'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
+        'fileStructural', paths.preproc.output.fnStruct);
+
+ 
+
+    
     
 end

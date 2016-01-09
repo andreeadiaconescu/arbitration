@@ -130,7 +130,10 @@ paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
 paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
 [~,~] = mkdir(paths.preproc.output.physio);
 paths.fnMultipleRegressors = fullfile(paths.preproc.output.physio, 'multiple_regressors_concat_run12.txt');
-
+paths.preproc.output.fnPhysioArray = strcat(...
+    paths.preproc.output.physio, fs, ...
+    {'physio_run1.mat'; ...
+    'physio_run2.mat'});
 
 %% Output paths Preprocessing
 
@@ -202,6 +205,7 @@ for iDesign = 1:numel(paths.stats.glm.designs);
 end
 
 paths.stats.fnSpmArray = strcat(paths.stats.glm.designs, fs, 'SPM.mat');
+paths.stats.contrasts.fnReportArray = strcat(paths.stats.glm.designs, '.ps');
 
 %%  Scan Info
 
