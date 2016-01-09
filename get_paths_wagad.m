@@ -34,6 +34,7 @@ paths.code.batches = fullfile(paths.code.project, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 % paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
 paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
+paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
