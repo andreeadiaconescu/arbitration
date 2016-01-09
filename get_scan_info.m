@@ -91,7 +91,7 @@ for iRun = 1:nRuns
         load(fnSli);
         load(fnVols);
         load(fnVoxels);
-        load(fnTR);
+        load(fnTr);
     end
     
     TA = TR*(1-1/nSlices);

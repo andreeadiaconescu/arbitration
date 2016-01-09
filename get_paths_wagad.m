@@ -169,3 +169,10 @@ paths.preproc.output.report = fullfile(paths.preproc.output.root, ...
 % for saving overall (multi-subj) study results
 paths.summary = fullfile(paths.study, 'summaryReports');
 [tmp, tmp2] = mkdir(paths.summary);
+
+% save scan info in sub-structure
+fnFunctionalArray = ...
+    strcat(paths.dirSess, filesep, paths.fnFunctRenamed);
+inputTR = 2.65781;
+
+paths.scanInfo = get_scan_info(fnFunctionalArray, inputTR);
