@@ -32,12 +32,18 @@ for iSubj = iSubjectArray
         end
         load(fileBehav);
         
-        trigger=SOC.param(2).scanstart;
+        trigger = SOC.param(2).scanstart;
         
         fileTrigger = fullfile(paths.behav, sprintf('scanner_trigger_%d.txt', iRun));
         save(fileTrigger,'trigger','-ascii','-tabs');
         
-        outputmatrixSession{iRun} = apply_trigger(fileTrigger, SOC.Session(2).exp_data);
+        % later runs are offset by duration of previous runs for
+        % concatentation
+        offsetRunSeconds = 0 + ...
+            sum(paths.scanInfo.TR(1:iRun-1).*paths.scanInfo.nVols(1:iRun-1));
+        
+        outputmatrixSession{iRun} = apply_trigger(fileTrigger, ...
+            SOC.Session(2).exp_data, offsetRunSeconds);
         choice = outputmatrixSession{iRun}(:,4);
         wager = outputmatrixSession{iRun}(:,7);
         y = [y; choice wager];
@@ -131,7 +137,18 @@ for iSubj = iSubjectArray
         onsets{2} = outputmatrix(:,2);
         onsets{3} = outputmatrix(:,3);
         names={'Advice','Wager','Outcome'};
-        durations={[outputmatrix(:,5)-outputmatrix(:,2)],[8],[0]};
+        
+        durationsAdvice = [outputmatrix(:,5)-outputmatrix(:,2)];
+        durationsWager = 0;
+        
+        hasInvalidDurations = any(isnan(durationsAdvice));
+        
+        if hasInvalidDurations
+            durations{1} = 0;
+        end
+        
+        durations{2} = durationsWager;
+        durations{3} = 0;
         
         
         save(paths.fnMultipleConditions, 'onsets', 'names', 'durations', 'names', 'pmod', '-mat');

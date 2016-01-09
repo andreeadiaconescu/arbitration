@@ -9,6 +9,7 @@ end
 
 rp_model= {'softmax_multiple_readouts_reward_social'};
 
+%% Paths study
 
 if ismac % Lars laptop
     paths.study = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
@@ -24,9 +25,17 @@ else % brutus cluster
     idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
 end
 
-paths.idSubj = idSubj;
+% for summary results over all subjects
+paths.summary = fullfile(paths.study, 'summaryReports');
+[~, ~] = mkdir(paths.summary);
 
+
+paths.idSubj = idSubj;
 paths.idSubjBehav = regexprep(idSubj, 'TNU_', '');
+
+
+%% Paths code
+
 paths.code.physio = fullfile(paths.code.project, 'PhysIO');
 paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 
@@ -38,6 +47,9 @@ paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
+
+
+%% Paths data
 
 paths.subj = fullfile(paths.data, idSubj);
 paths.raw = fullfile(paths.subj, 'scandata');
@@ -54,6 +66,9 @@ paths.dirSess = {
     paths.struct
     };
 
+
+%% Paths logs
+
 paths.dirLogs = regexprep(paths.dirSess, 'data/funct', 'phys');
 paths.dirLogsOther = fullfile(paths.phys, 'logs');
 
@@ -67,6 +82,8 @@ end
 
 paths.fnPhyslogRenamed = strcat(paths.dirSess(1:2), fs, 'phys.log');
  
+
+%% Paths renamed raw data
 
 paths.fnFunctRenamed = {
     'funct_run1.nii'
@@ -99,7 +116,8 @@ paths.nSess = length(paths.fnFunctRaw);
 
 
 
-%% derived paths for SPM batches
+%% Derived file paths for SPM batches
+
 paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
     fs, paths.fnFunctRenamed(1:2));
 paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
@@ -107,11 +125,13 @@ paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
 
 paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
 
-% PhysIO Output
+%% PhysIO Output
 paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
 [~,~] = mkdir(paths.preproc.output.physio);
 paths.fnMultipleRegressors = fullfile(paths.preproc.output.physio, 'multiple_regressors_concat_run12.txt');
 
+
+%% Output paths Preprocessing
 
 % replace funct by new folders of preproc output
 paths.preproc.output.funct = regexprep(paths.funct, paths.subj, ...
@@ -149,7 +169,7 @@ paths.preproc.output.fnRealignSession = {
 
 
 
-%% prepend paths for file names
+%% Preproc output: prepend paths for file names
 
 paths.preproc.output.fnRealignConcat = fullfile(paths.preproc.output.sess1, ...
     paths.preproc.output.fnRealignConcat);
@@ -166,13 +186,24 @@ paths.preproc.output.fnStruct = paths.preproc.output.fnFunctArray{3};
 paths.preproc.output.report = fullfile(paths.preproc.output.root, ...
     'report_preproc_quality');
 
-% for saving overall (multi-subj) study results
-paths.summary = fullfile(paths.study, 'summaryReports');
-[tmp, tmp2] = mkdir(paths.summary);
+
+
+%% Paths GLM
+paths.stats.glm.root = fullfile(paths.subj, 'glm');
+[~,~] = mkdir(paths.stats.glm.root);
+paths.stats.glm.designs = strcat(paths.stats.glm.root, fs, ...
+    {
+    'first_design'
+    });
+
+for iDesign = 1:numel(paths.stats.glm.designs);
+    [~,~] = mkdir(paths.stats.glm.designs{iDesign});
+end
+
+%%  Scan Info
 
 % save scan info in sub-structure
 fnFunctionalArray = ...
     strcat(paths.dirSess, filesep, paths.fnFunctRenamed);
 inputTR = 2.65781;
-
 paths.scanInfo = get_scan_info(fnFunctionalArray, inputTR);

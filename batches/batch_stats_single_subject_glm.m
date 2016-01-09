@@ -1,5 +1,5 @@
 %-----------------------------------------------------------------------
-% Job saved on 09-Jan-2016 16:11:10 by cfg_util (rev $Rev: 6134 $)
+% Job saved on 09-Jan-2016 19:01:30 by cfg_util (rev $Rev: 6134 $)
 % spm SPM - SPM12 (6225)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
@@ -1333,7 +1333,7 @@ matlabbatch{1}.spm.stats.fmri_spec.sess.scans = {
                                                  };
 %%
 matlabbatch{1}.spm.stats.fmri_spec.sess.cond = struct('name', {}, 'onset', {}, 'duration', {}, 'tmod', {}, 'pmod', {}, 'orth', {});
-matlabbatch{1}.spm.stats.fmri_spec.sess.multi = {'/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/test_0003/behav/WAGAD_0003_multiple_conditions.mat'};
+matlabbatch{1}.spm.stats.fmri_spec.sess.multi = {'/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/test_0003/behav/test_0003_multiple_conditions.mat'};
 matlabbatch{1}.spm.stats.fmri_spec.sess.regress = struct('name', {}, 'val', {});
 matlabbatch{1}.spm.stats.fmri_spec.sess.multi_reg = {'/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/test_0003/preproc_realign_stc/physio/multiple_regressors_concat_run12.txt'};
 matlabbatch{1}.spm.stats.fmri_spec.sess.hpf = 128;
@@ -1344,3 +1344,6 @@ matlabbatch{1}.spm.stats.fmri_spec.global = 'None';
 matlabbatch{1}.spm.stats.fmri_spec.mthresh = 0.8;
 matlabbatch{1}.spm.stats.fmri_spec.mask = {''};
 matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
+matlabbatch{2}.spm.stats.fmri_est.spmmat(1) = cfg_dep('fMRI model specification: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
+matlabbatch{2}.spm.stats.fmri_est.write_residuals = 0;
+matlabbatch{2}.spm.stats.fmri_est.method.Classical = 1;

@@ -1,8 +1,8 @@
-% Script main_run_glm_stats_single_subject
+% Script main_run_stats_glm_single_subject
 % Performs preprocessing of fMRI data for multiple subjects, using
 % pre-existing single-subject batch
 %
-%  main_run_glm_stats_single_subject
+%  main_run_stats_glm_single_subject
 %
 %
 %   See also
@@ -42,6 +42,9 @@ fnBatchStatsGlm = fullfile(paths.code.batches, ...
 
 useCluster = false;
 
+iRunArray = 1:2; % Sessions that enter GLM
+iDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
 if ~exist('cfg_files', 'file')
@@ -61,35 +64,36 @@ for iSubj = iSubjectArray
     % load subject specific paths
     paths = get_paths_wagad(iSubj);
     
-    % load matlabbach, update system-specific absolute paths in batch
-    pathsBatchOld = {
-        '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD/batches'
-        '/Users/kasperla/Documents/code/matlab/spm12'
-        };
     
-    pathsBatchNew = {
-        paths.code.batches
-        paths.code.spm
-        };
+    %% Load template batch, change relevant subject-specific paths in batch & save
     
-    matlabbatch = update_matlabbatch_paths(...
-        fnBatchStatsGlm, pathsBatchOld, pathsBatchNew);
+    clear matlabbatch;
+    run(paths.code.batch.fnStatsGlm);
     
+    % update glm dir
+    matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.designs(iDesign);
     
-    %% change relevant subject-specific paths in batch & save
+    % update scan info
+    matlabbatch{1}.spm.stats.fmri_spec.timing.RT = paths.scanInfo.TR(1);
+    matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = paths.scanInfo.nSlices(1);
+    matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t0 = ceil(paths.scanInfo.nSlices(1)/2);
     
-    % update subject dir
-    matlabbatch{1}.cfg_basicio.file_dir.dir_ops.cfg_named_dir.dirs = ...
-        {{paths.subj}};
     
     % update functional files
-    matlabbatch{2}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = ...
-        {paths.preproc.input.fnFunctArray}';
+    fnFunctGlmInputArray = [];
+    for iRun = iRunArray
+        fnFunctGlmInputArray = [fnFunctGlmInputArray; ...
+            get_vol_filenames(paths.preproc.output.fnFunctArray{iRun}) ...
+            ];
+    end;
     
-    % update structural file
-    matlabbatch{3}.cfg_basicio.file_dir.file_ops.cfg_named_file.files = ...
-        {{paths.preproc.input.fnStruct}};
+    matlabbatch{1}.spm.stats.fmri_spec.sess.scans = fnFunctGlmInputArray;
     
+    % update multiple conditions and regressors
+    matlabbatch{1}.spm.stats.fmri_spec.sess.multi = ...
+        {paths.fnMultipleConditions};
+    matlabbatch{1}.spm.stats.fmri_spec.sess.multi_reg = {...
+        paths.fnMultipleRegressors};
     
     % save subject-specific batch in subject-folder, but as mat-file for
     % simplicity, and with a time stamp
@@ -137,7 +141,7 @@ for iSubj = iSubjectArray
         unix(cmdSubmit);
         
     else
-        spm_jobman('run', matlabbatch);
+        spm_jobman('interactive', matlabbatch);
     end
     
 end
