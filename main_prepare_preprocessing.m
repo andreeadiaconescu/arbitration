@@ -14,7 +14,7 @@
 iSubjectArray = reshape(iSubjectArray, 1, []);
 
 % manual subject selection
-iSubjectArray = 3;
+iSubjectArray = setdiff(iSubjectArray, [3 14]);
 
 prepStepArray = [3]; % [1 2 3] % to start with
 
@@ -29,7 +29,7 @@ useCluster = true; % submits HGF computation to cluster
 %% Loop over subjects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for iSubj = iSubjectArray(4:end)
+for iSubj = iSubjectArray
     fprintf('Preparing subject %d\n', iSubj);
     try
         iRunArray = [1 2]; % true functional sessions: run1, run2, rest
@@ -84,8 +84,8 @@ for iSubj = iSubjectArray(4:end)
         
         if doComputeHgf
             if useCluster
-                isVerbose = 0;
-                submit_job_cluster_functioncall(paths, 'get_multiple_conditions', {iSubj, isVerbose});
+                doPlotFigures = 0;
+                submit_job_cluster_functioncall(paths, 'get_multiple_conditions', {iSubj, doPlotFigures});
             else
                 
                 get_multiple_conditions(iSubj);

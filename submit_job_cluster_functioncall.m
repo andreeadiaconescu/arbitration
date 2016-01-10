@@ -64,6 +64,7 @@ end
 
 % TODO: the following can be done via more general input parameters
 pathsToAddArray = {
+    paths.code.project
     paths.code.spm
     paths.code.model
     };
