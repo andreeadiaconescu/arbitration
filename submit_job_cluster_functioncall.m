@@ -1,32 +1,37 @@
 function [nameScriptCluster, fileScriptCluster] =  ...
-    submit_job_cluster_functioncall(paths, fnBatchSave, jobQueue)
-% Creates matlab script file that executes matlabbatch, and submits to cluster
+    submit_job_cluster_functioncall(paths, functionName, inputArgumentArray, jobQueue)
+% Creates matlab script file that adds paths, calls function, and submits to cluster
 %
-% [nameScriptCluster, fileScriptCluster] =  ...
-%     submit_job_cluster_matlabbatch(paths, fnBatchSave, jobQueue)
+%   [nameScriptCluster, fileScriptCluster] =  ...
+%       submit_job_cluster_functioncall(functionHandle, inputArgumentArray, pathsToAdd,jobQueue)
 %
 % The script executes the matlabbatch in a new Matlab instance
 %
 % IN
-%   paths           Path structure with spm-directory, location of batch files
-%                   and cluster script storage directory
-%                   See also get_paths_wagad
-%   fnBatchSave     full path to batch file (.m/.mat) with
-%                   matlabbatch-variable
-%   jobQueue        'vip' or 'public' - lsf job queue to which job is
-%                   submitted; default: vip
+%
+%   paths               Path structure with spm-directory, location of batch files
+%                       and cluster script storage directory
+%                       See also get_paths_wagad
+%   functionName      string or handle @functionName that should be executed
+%   inputArgumentArray  cell(nArguments,1) of input arguments for function
+%                       Handle; leave {}, if none needed
+%   pathsToAdd          cell(nPaths,1) of paths that should be added on
+%                       cluster
+%   jobQueue            'vip' or 'public' - lsf job queue to which job is
+%                       submitted; default: vip
 %
 % OUT
-%   nameScriptCluster file name of generated script executing matlabbatch
+%   nameScriptCluster   file name of generated script executing matlabbatch
+%                       (includes time stamp)
 %   fileScriptCluster full path to generated script, with file suffix .m
 %
 % EXAMPLE
-%   submit_job_cluster_matlabbatch
+%   submit_job_cluster_functioncall(paths, 'get_multiple_conditions', {3})
 %
 %   See also
 %
 % Author:   Lars Kasper
-% Created:  2016-01-09
+% Created:  2016-01-10
 % Copyright (C) 2016 Institute for Biomedical Engineering
 %                    University of Zurich and ETH Zurich
 %
@@ -41,33 +46,74 @@ function [nameScriptCluster, fileScriptCluster] =  ...
 
 % assemble script-m-file to be executed via new matlab instance
 % created on brutus node
+if nargin < 1
+    paths = get_paths_wagad(3);
+end
+
+if nargin < 2
+    functionName = 'get_multiple_conditions';
+end
+
 if nargin < 3
+    inputArgumentArray = {3};
+end
+
+if nargin < 4
     jobQueue = 'vip';
 end
 
+% TODO: the following can be done via more general input parameters
+pathsToAddArray = {
+    paths.code.spm
+    paths.code.model
+    };
 
-[p, fnShort] = fileparts(fnBatchSave);
-fnShort = regexprep(fnShort, '\.m.*', '');
+if ~ischar(functionName)
+    functionName = func2str(functionName);
+end
 
-nameScriptCluster = sprintf('run_%s_%s', ...
-     paths.idSubjBehav, fnShort);
+nameScriptCluster = sprintf('run_%s_%s_%s', ...
+     paths.idSubjBehav, functionName, datestr(now, 'yyyy_mm_dd_HHMMSS'));
  
 fileScriptCluster = fullfile(paths.cluster.scripts, ...
     [nameScriptCluster '.m']);
 
-% Script file has to run
+% Create Script file that has to run function
 fid = fopen(fileScriptCluster, 'w+');
-fprintf(fid, [ ...
-    'addpath %s;\n' ...
-    'spm_get_defaults(''modality'', ''FMRI'');\n' ...
-    'spm_get_defaults(''cmdline'', 1);\n' ...
-    'spm_jobman(''initcfg'');\n' ...
-    'spm_jobman(''run'', ''%s'');\n' ...
-    ], ...
-    paths.code.spm, fnBatchSave);
+
+% print the paths to add into script
+nPaths = numel(pathsToAddArray);
+for p = 1:nPaths
+   fprintf(fid, 'addpath %s;\n', pathsToAddArray{p});
+end
+
+%% Assemble argument string
+nArguments = numel(inputArgumentArray);
+stringInputParameters = '';
+for iArgument = 1:nArguments
+   currentArg = inputArgumentArray{iArgument};
+   
+   if isnumeric(currentArg)
+        stringInputParameters = [stringInputParameters ...
+            sprintf('%s', num2str(currentArg))];
+   else % print strings with ''
+        stringInputParameters = [ stringInputParameters ...
+            sprintf('''%s''', num2str(currentArg))];     
+   end
+      
+   % add comma, if not last argument
+   if iArgument < nArguments
+       stringInputParameters = [stringInputParameters ', '];
+   end
+   
+end
+
+% print function name and arguments
+fprintf(fid, '%s(%s);\n', functionName, stringInputParameters);
+
 fclose(fid);
 
-% Submit execution of job to brutus]
+%% Submit execution of job to brutus]
 switch jobQueue
     case 'vip' % asks for more memory
         cmdSubmit = sprintf(['cd %s; bsub -q vip.36h -R "rusage[mem=8192]" -o lsf.%s_o%%J matlab -nodisplay -nojvm -singleCompThread ' ...
