@@ -213,4 +213,7 @@ paths.stats.contrasts.fnReportArray = strcat(paths.stats.glm.designs, '.ps');
 fnFunctionalArray = ...
     strcat(paths.dirSess, filesep, paths.fnFunctRenamed);
 inputTR = 2.65781;
-paths.scanInfo = get_scan_info(fnFunctionalArray, inputTR);
+
+if exist(fnFunctionalArray{1}, 'file')
+    paths.scanInfo = get_scan_info(fnFunctionalArray, inputTR);
+end
