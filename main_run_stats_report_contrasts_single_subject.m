@@ -66,7 +66,7 @@ for iSubj = iSubjectArray
     % Load template batch, change relevant subject-specific paths in batch & save
     
     clear matlabbatch;
-    run(paths.code.batch.fnStatsContrasts);
+    run(fnBatchStatsContrasts);
     
     % update SPM.mat dir
     matlabbatch{1}.spm.stats.con.spmmat = paths.stats.fnSpmArray(iDesign);
@@ -82,7 +82,7 @@ for iSubj = iSubjectArray
     
     if useCluster
         [nameScriptBrutus, fileScriptBrutus] = ...
-            submit_job_cluster_matlabbatch(paths, fnBatchSave);      
+            submit_job_cluster_matlabbatch(paths, fnBatchSave);
     else
         spm_jobman('run', matlabbatch);
     end
@@ -95,10 +95,10 @@ for iSubj = iSubjectArray
     fnReport = regexprep(paths.stats.contrasts.fnReportArray{iDesign}, '\.ps', ...
         [datestr(now, '_yyyy_mm_dd_HHMMSS') '\.ps']);
     movefile(fnReportDefault, fnReport);
- 
+    
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% run PhysIO-toolbox report contrasts function, 
+    %% run PhysIO-toolbox report contrasts function,
     %   using information from created physio-structure for relevant
     %   contrasts
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -119,9 +119,5 @@ for iSubj = iSubjectArray
         'fileSpm', paths.stats.fnSpmArray{iDesign}, ...
         'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
         'fileStructural', paths.preproc.output.fnStruct);
-
- 
-
-    
     
 end
