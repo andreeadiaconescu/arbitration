@@ -35,7 +35,12 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-iSubjectArray = 3;%setdiff(iSubjectArray, [14]);
+% 3 finished successfully
+% 6 and 14 don't work because of missing physio or split session
+% 12 is still running
+% 18 has weird svd error => follow up!
+%
+iSubjectArray = setdiff(iSubjectArray, [3 6 12 14 18]);
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
@@ -64,7 +69,7 @@ for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
     
     % Load template batch, change relevant subject-specific paths in batch & save
-    
+    try
     clear matlabbatch;
     run(fnBatchStatsContrasts);
     
@@ -119,5 +124,7 @@ for iSubj = iSubjectArray
         'fileSpm', paths.stats.fnSpmArray{iDesign}, ...
         'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
         'fileStructural', paths.preproc.output.fnStruct);
-    
+    catch err
+    end
+
 end
