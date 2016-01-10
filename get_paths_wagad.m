@@ -42,6 +42,9 @@ paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.batches = fullfile(paths.code.project, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 % paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
+
+paths.preproc.nameStrategy = paths.code.batch.fnPreprocess(1:end-2);
+
 paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
 paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
 paths.code.batch.fnStatsContrasts = 'batch_stats_single_subject_report_contrasts.m';
@@ -195,7 +198,8 @@ paths.preproc.output.report = fullfile(paths.preproc.output.root, ...
 %% Paths GLM
 paths.stats.glm.root = fullfile(paths.subj, 'glm');
 [~,~] = mkdir(paths.stats.glm.root);
-paths.stats.glm.designs = strcat(paths.stats.glm.root, fs, ...
+paths.stats.glm.designs = strcat(paths.stats.glm.root, ...
+ fs, paths.preproc.nameStrategy, fs, ...
     {
     'first_design'
     });

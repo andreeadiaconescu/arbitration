@@ -39,12 +39,12 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-iSubjectArray = 3;%setdiff(iSubjectArray, [14]);
+iSubjectArray = setdiff(iSubjectArray, [3 14]);
 
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);
 
-useCluster = false;
+useCluster = true;
 
 iRunArray = 1:2; % Sessions that enter GLM
 iDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
@@ -54,6 +54,9 @@ spm_get_defaults('modality', 'FMRI');
 if ~exist('cfg_files', 'file')
     spm_jobman('initcfg')
 end
+% 1 GB instead of 64 MB for chunks of estimation...much faster
+spm_get_defaults('stats.maxmem', 2^30);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Loop over subjects
@@ -72,7 +75,7 @@ for iSubj = iSubjectArray
     %% Load template batch, change relevant subject-specific paths in batch & save
     
     clear matlabbatch;
-    run(paths.code.batch.fnStatsGlm);
+    run(fnBatchStatsGlm);
     
     % update glm dir
     matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.designs(iDesign);
