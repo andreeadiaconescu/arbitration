@@ -13,14 +13,17 @@
 
 iSubjectArray = reshape(iSubjectArray, 1, []);
 
-prepStepArray = [1 2 3];
+% manual subject selection
+iSubjectArray = 3;
+
+prepStepArray = [3]; % [1 2 3] % to start with
 
 doRenameRaw     = ismember(1, prepStepArray);
 doRenamePhys    = ismember(2, prepStepArray);
 doComputeHgf    = ismember(3, prepStepArray);
 doFslSkullStrip = ismember(4, prepStepArray);
 
-
+useCluster = true; % submits HGF computation to cluster
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Loop over subjects
@@ -68,8 +71,8 @@ for iSubj = iSubjectArray(4:end)
             end
             
             % move other files in appropriate directory; NOTE: I copy here for safety
-            %mkdir(paths.dirLogsOther);
-            %copyfile(fullfile(paths.phys, '*.log'), paths.dirLogsOther);
+            % mkdir(paths.dirLogsOther);
+            % copyfile(fullfile(paths.phys, '*.log'), paths.dirLogsOther);
         end
         
         
@@ -80,12 +83,19 @@ for iSubj = iSubjectArray(4:end)
         addpath(paths.code.model);
         
         if doComputeHgf
-            get_multiple_conditions(iSubj);
+            if useCluster
+                isVerbose = 0;
+                submit_job_cluster_functioncall(paths, 'get_multiple_conditions', {iSubj, isVerbose});
+            else
+                
+                get_multiple_conditions(iSubj);
+            end
         end
         
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %% Reorientation of all functional and structural files via spm_display/spm_check_registration
+        %% Reorientation of all functional and structural files via 
+        %   spm_display/spm_check_registration
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % TODO!

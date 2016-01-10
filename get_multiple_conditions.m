@@ -1,9 +1,13 @@
-function get_multiple_conditions(iSubjectArray)
+function get_multiple_conditions(iSubjectArray, doPlotFigures)
 % computes HGF for given subjects and creates parametric modulators for
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
     iSubjectArray = 3;
+end
+
+if nargin < 2
+    doPlotFigures = 1;
 end
 
 for iSubj = iSubjectArray
@@ -101,38 +105,44 @@ for iSubj = iSubjectArray
         pmod(1,3).poly={[1], [1]};
         
         %% Plot
-        figure;
-        % Subplots
-        subplot(4,1,1);
-        plot(pmod(1,1).param{1}, 'm', 'LineWidth', 4);
-        hold on;
-        plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
         
-        subplot(4,1,2);
-        plot(pmod(1,2).param{1} , 'r', 'LineWidth', 4);
-        hold on;
-        plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
+        if doPlotFigures
+            
+            figure;
+            % Subplots
+            subplot(4,1,1);
+            plot(pmod(1,1).param{1}, 'm', 'LineWidth', 4);
+            hold on;
+            plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
+            
+            subplot(4,1,2);
+            plot(pmod(1,2).param{1} , 'r', 'LineWidth', 4);
+            hold on;
+            plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
+            
+            subplot(4,1,3);
+            plot(pmod(1,3).param{1}, 'c', 'LineWidth', 4);
+            hold on;
+            plot(ones(170,1).*2.5,'k','LineWidth', 1,'LineStyle','-.');
+            
+            subplot(4,1,4);
+            plot(pmod(1,3).param{2}, 'b', 'LineWidth', 4);
+            hold on;
+            plot(ones(170,1).*0.5,'k','LineWidth', 1,'LineStyle','-.');
+            
+            xlabel('Trial number');
+            
+            
+            
+            
+            subplot(4,1,1);
+            title([sprintf('cscore = %d', SOC.cscore), ' with \zeta=', ...
+                num2str(log(est.p_obs.ze1)), ...
+                ' for subject ', paths.idSubjBehav], ...
+                'FontWeight', 'bold');
+        end
         
-        subplot(4,1,3);
-        plot(pmod(1,3).param{1}, 'c', 'LineWidth', 4);
-        hold on;
-        plot(ones(170,1).*2.5,'k','LineWidth', 1,'LineStyle','-.');
         
-        subplot(4,1,4);
-        plot(pmod(1,3).param{2}, 'b', 'LineWidth', 4);
-        hold on;
-        plot(ones(170,1).*0.5,'k','LineWidth', 1,'LineStyle','-.');
-        
-        xlabel('Trial number');
-        
-        
-        
-        
-        subplot(4,1,1);
-        title([sprintf('cscore = %d', SOC.cscore), ' with \zeta=', ...
-            num2str(log(est.p_obs.ze1)), ...
-            ' for subject ', paths.idSubjBehav], ...
-            'FontWeight', 'bold');
         onsets{1} = outputmatrix(:,1);
         onsets{2} = outputmatrix(:,2);
         onsets{3} = outputmatrix(:,3);
