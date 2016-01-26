@@ -58,7 +58,7 @@ switch scanner_mode
     case 0
         screenmode      = 0;                % 0 = window / 1 = full screen %%%% CHANGE
     case {1,2}
-        screenmode      = 0;                % 0 = window / 1 = full screen %%%% CHANGE
+        screenmode      = 1;                % 0 = window / 1 = full screen %%%% CHANGE
     case 3
         screenmode      = 1;
         config_keyboard;
@@ -438,7 +438,6 @@ switch exp_task
                     case 2
                         wait2(SOC.Times.Instruction);
                         drawpict(6); % wait for scanner trigger
-                        waitkeydown(inf,20);
                         [k,t]=waitkeydown(inf,20);
                         SOC.param(exp_task).scanstart = t(1);
                         logstring(['response ' num2str(k(1)) ', at ' num2str(t(1)) ', scan start']);

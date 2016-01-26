@@ -23,14 +23,14 @@ pathname=fileparts(mfilename('fullpath')); %%% CHANGE
 %% Parameters that can be changed
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if nargin == 0                          % 'nargin' returns the number of parameters specified by the user
-    subject = 'WAGAD_test';            % if there were no parameters, just use a default subject name
+    subject = 'WAGAD_0038';            % if there were no parameters, just use a default subject name
     scanner_mode = 1 ;                  % For the wagering paradigm, leave default scanner_mode=0
-    run = 1;                            % For wagering paradigm, run 1 (Male Default Adviser), run 3  (Male Backup Adviser), run 5 (Female Default
+    run = 6;                            % For wagering paradigm, run 1 (Male Default Adviser), run 3  (Male Backup Adviser), run 5 (Female Default
     % Adviser), run 7 (Female Backup Adviser)
     
     
     exp_task = 2;                       % Change for practice: practice = 1; task = 2
-    mode_key = 1;                       % This refers to the response button mode mode_key=1 (blue is on the left); mode_key=2 (green is on the left)
+    mode_key = 2;                       % This refers to the response button mode mode_key=1 (blue is on the left); mode_key=2 (green is on the left)
 elseif exist( subject ,'file')~=0;      % otherwise (if there was a subject specified)...
     % check whether a file with that name exists already
     disp('file for this subject exists already! aborting...')
@@ -58,7 +58,7 @@ switch scanner_mode
     case 0
         screenmode      = 0;                % 0 = window / 1 = full screen %%%% CHANGE
     case {1,2}
-        screenmode      = 0;                % 0 = window / 1 = full screen %%%% CHANGE
+        screenmode      = 1;                % 0 = window / 1 = full screen %%%% CHANGE
     case 3
         screenmode      = 1;
         config_keyboard;
