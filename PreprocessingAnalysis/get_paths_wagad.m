@@ -66,8 +66,13 @@ paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.preprocessing = fullfile(paths.code.project, 'PreprocessingAnalysis');
 
 paths.code.batches = fullfile(paths.code.preprocessing, 'batches');
-paths.code.batch.fnPreprocess = ['batch_' nameStrategy '.m'];
 
+switch nameStrategy
+    case 'preproc_realign_stc'
+        paths.code.batch.fnPreprocess = ['batch_preproc_fmri_realign_stc.m'];
+    case 'preproc_stc_realign'
+        paths.code.batch.fnPreprocess = ['batch_preproc_fmri_stc_realign.m'];
+end
 paths.preproc.nameStrategy = nameStrategy;
 
 paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
