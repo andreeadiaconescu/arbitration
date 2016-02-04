@@ -43,7 +43,8 @@ fnBatchStatsGlm = fullfile(paths.code.batches, ...
 useCluster = true;
 
 iRunArray = 1:2; % Sessions that enter GLM
-iDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idPreproc = 1;
+idDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -65,7 +66,7 @@ for iSubj = iSubjectArray
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % load subject specific paths
-    paths = get_paths_wagad(iSubj);
+    paths = get_paths_wagad(iSubj, idPreproc, idDesign);
     
     
     %% Load template batch, change relevant subject-specific paths in batch & save
@@ -74,7 +75,7 @@ for iSubj = iSubjectArray
     run(fnBatchStatsGlm);
     
     % update glm dir
-    matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.designs(iDesign);
+    matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.design;
     
     % update scan info
     matlabbatch{1}.spm.stats.fmri_spec.timing.RT = paths.scanInfo.TR(1);

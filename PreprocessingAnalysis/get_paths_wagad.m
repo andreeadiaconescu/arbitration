@@ -1,4 +1,4 @@
-function paths = get_paths_wagad(iSubj, nameStrategy)
+function paths = get_paths_wagad(iSubj, idPreprocStrategy, idGlmDesign)
 % Provides all paths for subject-specific data of WAGAD study
 %
 fs = filesep;
@@ -8,14 +8,24 @@ if nargin < 1
 end
 
 if nargin < 2
-    nameStrategy = 'preproc_realign_stc'; 
-   nameStrategy = 'preproc_stc_realign';
+    idPreprocStrategy = 1;
 end
 
-rp_model= {'softmax_multiple_readouts_reward_social','hgf_ioio_precision_weight_new_config'};
+if nargin < 3
+    idGlmDesign = 1;
+end
+
+
+namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
+nameGlmDesigns = {'first_design'};
+nameResponseModels= {'softmax_multiple_readouts_reward_social','hgf_ioio_precision_weight_new_config'};
 
 %% Paths study
 
+preproc.nameStrategies = namePreprocStrategies;
+preproc.nameStrategy = namePreprocStrategies{idPreprocStrategy};
+glm.nameDesigns = nameGlmDesigns;
+glm.nameDesign = nameGlmDesigns{idGlmDesign}; 
 
 if ismac
     [~,username] = unix('whoami');
@@ -44,8 +54,8 @@ if ismac
 else % brutus cluster
     paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
     paths.data = fullfile(paths.study, 'data');
-    paths.code.project = fullfile(paths.study, 'code', 'project');
-    paths.code.spm = fullfile(paths.study, 'code', 'spm12');
+    code.project = fullfile(paths.study, 'code', 'project');
+    code.spm = fullfile(paths.study, 'code', 'spm12');
 end
 
 idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
@@ -61,23 +71,22 @@ paths.idSubjBehav = regexprep(idSubj, 'TNU_', '');
 
 %% Paths code
 
-paths.code.physio = fullfile(paths.code.project, 'PhysIO');
-paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
-paths.code.preprocessing = fullfile(paths.code.project, 'PreprocessingAnalysis');
+code.physio = fullfile(code.project, 'PhysIO');
+code.model = fullfile(code.project, 'WAGAD_model');
+code.preprocessing = fullfile(code.project, 'PreprocessingAnalysis');
 
-paths.code.batches = fullfile(paths.code.preprocessing, 'batches');
+code.batches = fullfile(code.preprocessing, 'batches');
 
-switch nameStrategy
+switch preproc.nameStrategy
     case 'preproc_realign_stc'
-        paths.code.batch.fnPreprocess = ['batch_preproc_fmri_realign_stc.m'];
+        code.batch.fnPreprocess = ['batch_preproc_fmri_realign_stc.m'];
     case 'preproc_stc_realign'
-        paths.code.batch.fnPreprocess = ['batch_preproc_fmri_stc_realign.m'];
+        code.batch.fnPreprocess = ['batch_preproc_fmri_stc_realign.m'];
 end
-paths.preproc.nameStrategy = nameStrategy;
 
-paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
-paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
-paths.code.batch.fnStatsContrasts = 'batch_stats_single_subject_report_contrasts.m';
+code.batch.fnPhysIO = 'batch_physio_regressors.m';
+code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
+code.batch.fnStatsContrasts = 'batch_stats_single_subject_report_contrasts.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
@@ -109,9 +118,9 @@ paths.dirLogsOther = fullfile(paths.phys, 'logs');
 paths.fnMultipleConditions = fullfile(paths.behav, [paths.idSubjBehav '_multiple_conditions.mat']);
 paths.fnBehavMatrix = fullfile(paths.behav, [paths.idSubjBehav '_behav_matrix.mat']);
 
-for iRsp = 1:numel(rp_model);
+for iRsp = 1:numel(nameResponseModels);
     paths.fnFittedModel{iRsp} = fullfile(paths.behav, sprintf('%s_behav_model_rsp_%s.mat', ...
-        paths.idSubjBehav, rp_model{iRsp}));
+        paths.idSubjBehav, nameResponseModels{iRsp}));
 end
 
 paths.fnPhyslogRenamed = strcat(paths.dirSess(1:2), fs, 'phys.log');
@@ -148,107 +157,105 @@ paths.nSess = length(paths.fnFunctRaw);
 
 %% Derived file paths for SPM batches
 
-paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
+preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
     fs, paths.fnFunctRenamed(1:2));
-paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
+preproc.input.fnStruct = fullfile(paths.struct,  ...
     paths.fnFunctRenamed{3});
 
-paths.preproc.output.root = fullfile(paths.subj, nameStrategy);
+preproc.output.root = fullfile(paths.subj, preproc.nameStrategy);
 
 %% PhysIO Output
-paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
-[~,~] = mkdir(paths.preproc.output.physio);
-paths.fnMultipleRegressors = fullfile(paths.preproc.output.physio, 'multiple_regressors_concat_run12.txt');
-paths.preproc.output.fnPhysioArray = strcat(...
-    paths.preproc.output.physio, fs, ...
+preproc.output.physio = fullfile(preproc.output.root, 'physio');
+[~,~] = mkdir(preproc.output.physio);
+paths.fnMultipleRegressors = fullfile(preproc.output.physio, 'multiple_regressors_concat_run12.txt');
+preproc.output.fnPhysioArray = strcat(...
+    preproc.output.physio, fs, ...
     {'physio_run1.mat'; ...
     'physio_run2.mat'});
 
 %% Output paths Preprocessing
 
 % replace funct by new folders of preproc output
-paths.preproc.output.funct = regexprep(paths.funct, paths.subj, ...
-    paths.preproc.output.root);
-paths.preproc.output.struct = regexprep(paths.struct, paths.subj, ...
-    paths.preproc.output.root);
+preproc.output.funct = regexprep(paths.funct, paths.subj, ...
+    preproc.output.root);
+preproc.output.struct = regexprep(paths.struct, paths.subj, ...
+    preproc.output.root);
 
 % all in same folder
-paths.preproc.output.sess1 = paths.preproc.output.funct ;
-paths.preproc.output.sess2 = paths.preproc.output.funct ;
-paths.preproc.output.dirSess = {
-    paths.preproc.output.sess1
-    paths.preproc.output.sess2
-    paths.preproc.output.struct
+preproc.output.sess1 = preproc.output.funct ;
+preproc.output.sess2 = preproc.output.funct ;
+preproc.output.dirSess = {
+    preproc.output.sess1
+    preproc.output.sess2
+    preproc.output.struct
     };
 
 
 
-switch nameStrategy
+switch preproc.nameStrategy
     case 'preproc_realign_stc' 
-        paths.preproc.output.pfxFunct = 'swau';
-        paths.preproc.output.pfxRealignParams = 'rp_';
+        preproc.output.pfxFunct = 'swau';
+        preproc.output.pfxRealignParams = 'rp_';
     case 'preproc_stc_realign';
-        paths.preproc.output.pfxFunct = 'swua';
-        paths.preproc.output.pfxRealignParams = 'rp_a';
+        preproc.output.pfxFunct = 'swua';
+        preproc.output.pfxRealignParams = 'rp_a';
 end
 
-paths.preproc.output.fnFunctArray = strcat(paths.preproc.output.pfxFunct, ...
+preproc.output.fnFunctArray = strcat(preproc.output.pfxFunct, ...
     paths.fnFunctRenamed);
 
-paths.preproc.output.fnFunctArray{3} = 'wBrain.nii';
+preproc.output.fnFunctArray{3} = 'wBrain.nii';
 
 % where subject-specific batches are saved
-paths.preproc.output.batch = fullfile(paths.subj, 'batches');
+preproc.output.batch = fullfile(paths.subj, 'batches');
 
-[tmp, tmp2] = mkdir(paths.preproc.output.batch);
+[tmp, tmp2] = mkdir(preproc.output.batch);
 
 
 % realignment parameter filenames
-paths.preproc.output.fnRealignConcat = [...
-        paths.preproc.output.pfxRealignParams paths.fnFunctRenamed{1}(1:end-4), ...
+preproc.output.fnRealignConcat = [...
+        preproc.output.pfxRealignParams paths.fnFunctRenamed{1}(1:end-4), ...
         '.txt'];
 
-paths.preproc.output.fnRealignSession = {
-    [paths.preproc.output.pfxRealignParams , paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
-    [paths.preproc.output.pfxRealignParams , paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
+preproc.output.fnRealignSession = {
+    [preproc.output.pfxRealignParams , paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
+    [preproc.output.pfxRealignParams , paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
 };    
 
 
 
 %% Preproc output: prepend paths for file names
 
-paths.preproc.output.fnRealignConcat = fullfile(paths.preproc.output.sess1, ...
-    paths.preproc.output.fnRealignConcat);
+preproc.output.fnRealignConcat = fullfile(preproc.output.sess1, ...
+    preproc.output.fnRealignConcat);
 
-paths.preproc.output.fnRealignSession = strcat(paths.preproc.output.dirSess(1:2), ...
-   fs, paths.preproc.output.fnRealignSession);
+preproc.output.fnRealignSession = strcat(preproc.output.dirSess(1:2), ...
+   fs, preproc.output.fnRealignSession);
 
-paths.preproc.output.fnFunctArray = ...
-    strcat( paths.preproc.output.dirSess, ...
-    fs, paths.preproc.output.fnFunctArray);
+preproc.output.fnFunctArray = ...
+    strcat( preproc.output.dirSess, ...
+    fs, preproc.output.fnFunctArray);
 
-paths.preproc.output.fnStruct = paths.preproc.output.fnFunctArray{3};
+preproc.output.fnStruct = preproc.output.fnFunctArray{3};
 
-paths.preproc.output.report = fullfile(paths.preproc.output.root, ...
+preproc.output.report = fullfile(preproc.output.root, ...
     'report_preproc_quality');
 
 
 
 %% Paths GLM
-paths.stats.glm.root = fullfile(paths.subj, 'glm');
-[~,~] = mkdir(paths.stats.glm.root);
-paths.stats.glm.designs = strcat(paths.stats.glm.root, ...
- fs, paths.preproc.nameStrategy, fs, ...
-    {
-    'first_design'
-    });
+glm.root = fullfile(paths.subj, 'glm');
 
-for iDesign = 1:numel(paths.stats.glm.designs);
-    [~,~] = mkdir(paths.stats.glm.designs{iDesign});
-end
+[~,~] = mkdir(glm.root);
+glm.design = fullfile(glm.root, preproc.nameStrategy, glm.nameDesign);
 
-paths.stats.fnSpmArray = strcat(paths.stats.glm.designs, fs, 'SPM.mat');
-paths.stats.contrasts.fnReportArray = strcat(paths.stats.glm.designs, '.ps');
+mkdir(glm.design);
+
+paths.stats.fnSpm = strcat(glm.design, fs, 'SPM.mat');
+
+contrasts.fnReport = strcat(glm.design, '.ps');
+contrasts.names = {'arbitration', 'belief_precision'};
+contrasts.indices = [2 4];
 
 %%  Scan Info
 
@@ -260,3 +267,26 @@ inputTR = 2.65781;
 if exist(fnFunctionalArray{1}, 'file')
     paths.scanInfo = get_scan_info(fnFunctionalArray, inputTR);
 end
+
+
+%% Second level folders
+
+secondLevel.root = fullfile(paths.data, 'SecondLevel');
+secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
+    glm.nameDesign);
+
+
+secondLevel.contrasts = strcat(secondLevel.design, fs, contrasts.names);
+
+for iContrast = 1:numel(secondLevel.contrasts);
+    [~,~] = mkdir(secondLevel.contrasts{iContrast});
+end
+
+
+%% Assemble sub-modules of paths-structure
+
+paths.stats.contrasts = contrasts;
+paths.code = code;
+paths.preproc = preproc;
+paths.stats.glm = glm;
+paths.stats.secondLevel = secondLevel;
