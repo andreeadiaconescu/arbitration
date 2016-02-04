@@ -29,17 +29,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+iExcludedSubjects = [14 25 32 33 34 37];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
-if ismac
-    iSubjectArray = get_subject_ids(paths.data, 'test_')';
-else
-    iSubjectArray = get_subject_ids(paths.data)';
-end
-
 % manual setting...if you want to exclude any subjects
 iSubjectArray = get_subject_ids(paths.data)';
+iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);
