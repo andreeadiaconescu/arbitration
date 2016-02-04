@@ -35,12 +35,13 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-% 3 finished successfully
+% 3 4 already finished successfully
 % 6 and 14 don't work because of missing physio or split session
 % 12 is still running
 % 18 has weird svd error => follow up!
 %
-iSubjectArray = setdiff(iSubjectArray, [3 6 12 14 18]);
+% iSubjectArray = setdiff(iSubjectArray, [6 14 18]);
+iSubjectArray = [12 22:24];
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);

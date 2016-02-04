@@ -1,4 +1,4 @@
-function multiple_regressors = get_multiple_regressors_physio(iSubjectArray)
+function [multiple_regressors, idErrors] = get_multiple_regressors_physio(iSubjectArray)
 % computes PhysIO regressors and assembles with pre-existing realignment
 % parameters to 1 concatenated multiple_regressors-matrix for both sessions
 %
@@ -37,7 +37,8 @@ if nargin < 1
 
     
     % since we have done this one...
-    iSubjectArray = setdiff(iSubjectArray, [3 4 5]);
+    % iSubjectArray = setdiff(iSubjectArray, [3 4 5]);
+    iSubjectArray = setdiff(iSubjectArray, [1:24 14 25 32 33 34 37]);
 end
 
 multiple_regressors = {};
@@ -51,9 +52,8 @@ for iSubj = iSubjectArray
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Split realignment parameter file into 2 for PhysIO
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    nVols(1) = load(fullfile(paths.sess1, 'nvols.txt'));
-    nVols(2) = load(fullfile(paths.sess2, 'nvols.txt'));
+    scanInfo = get_scan_info(paths.dirSess(1:2));
+    nVols = scanInfo.nVols;
     realignParamsConcat = ...
         load(paths.preproc.output.fnRealignConcat);
     realignParamsSess1 = realignParamsConcat(1:nVols(1), :);
@@ -146,6 +146,7 @@ for iSubj = iSubjectArray
     multiple_regressors{end+1,1} = multipleRegressorsConcat;
     
     catch idError
+        idErrors{iSubj} = idError;
     end
 
 end

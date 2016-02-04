@@ -3,7 +3,7 @@ function get_multiple_conditions(iSubjectArray, doPlotFigures)
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
-    iSubjectArray = 3;
+    iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
 end
 
 if nargin < 2
@@ -13,7 +13,7 @@ end
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
     
-    doFitModel = true;
+    doFitModel = false;
     
     
     
@@ -60,7 +60,12 @@ for iSubj = iSubjectArray
         %%
         
         if doFitModel
-            est=fitModel(y,input_u);
+            if iRsp==2
+                est=fitModel(y,input_u,'hgf_binary3l_reward_social_config',...
+                    'hgf_ioio_precision_weight_new_config');
+            else
+                est=fitModel(y,input_u);
+            end
             save(paths.fnFittedModel{iRsp}, 'est');
         else
             load(paths.fnFittedModel{iRsp},'est','-mat');
@@ -76,7 +81,6 @@ for iSubj = iSubjectArray
         px = 1./(x_a.*(1-x_a));
         pc = 1./(x_r.*(1-x_r));
         ze1=est.p_obs.ze1;
-        
         pmod(1,1).param = {[ze1.*1./sa2hat_a.*px./...
             (ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r)]};
         % Arbitration
@@ -96,12 +100,12 @@ for iSubj = iSubjectArray
         pmod(1,2).poly={[1]};
         
         %% Prediction Errors
-        pmod(1,3).name = {'Epsilon2_Adv','Epsilon2_Cue'}; % PEs
+        pmod(1,3).name = {'Delta1_Adv','Delta1_Cue'}; % PEs
         
-        Epsilon2.Advice       = est.traj.da_a(:,1).*est.traj.sa_a(:,2);
-        Epsilon2.Reward       = abs(est.traj.da_r(:,1).*est.traj.sa_a(:,2));
+        Delta1.Advice       = est.traj.da_a(:,1);
+        Delta1.Reward       = abs(est.traj.da_r(:,1));
         
-        pmod(1,3).param = {[Epsilon2.Advice],[Epsilon2.Reward]}; % Precision (Model-based wager)
+        pmod(1,3).param = {[Delta1.Advice],[Delta1.Reward]}; % Precision (Model-based wager)
         pmod(1,3).poly={[1], [1]};
         
         %% Plot
@@ -137,7 +141,7 @@ for iSubj = iSubjectArray
             
             subplot(4,1,1);
             title([sprintf('cscore = %d', SOC.cscore), ' with \zeta=', ...
-                num2str(log(est.p_obs.ze1)), ...
+                num2str(est.p_obs.ze1), ...
                 ' for subject ', paths.idSubjBehav], ...
                 'FontWeight', 'bold');
         end

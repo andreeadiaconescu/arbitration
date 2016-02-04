@@ -4,3 +4,5 @@ display('Using physIO, version 861');
 addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/project'));
 addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/spm12'));
 addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/WAGAD_model'));
+
+addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/batches'));

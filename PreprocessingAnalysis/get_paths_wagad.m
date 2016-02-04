@@ -1,4 +1,4 @@
-function paths = get_paths_wagad(iSubj)
+function paths = get_paths_wagad(iSubj, nameStrategy)
 % Provides all paths for subject-specific data of WAGAD study
 %
 fs = filesep;
@@ -7,7 +7,12 @@ if nargin < 1
     iSubj = 3;
 end
 
-rp_model= {'softmax_multiple_readouts_reward_social'};
+if nargin < 2
+    nameStrategy = 'preproc_realign_stc'; 
+   nameStrategy = 'preproc_stc_realign';
+end
+
+rp_model= {'softmax_multiple_readouts_reward_social','hgf_ioio_precision_weight_new_config'};
 
 %% Paths study
 
@@ -40,11 +45,16 @@ paths.code.physio = fullfile(paths.code.project, 'PhysIO');
 paths.code.model = fullfile(paths.code.project, 'WAGAD_model');
 paths.code.preprocessing = fullfile(paths.code.project, 'PreprocessingAnalysis');
 
+<<<<<<< Updated upstream:PreprocessingAnalysis/get_paths_wagad.m
 paths.code.batches = fullfile(paths.code.preprocessing, 'batches');
 paths.code.batch.fnPreprocess = 'batch_preproc_fmri_realign_stc.m';
 % paths.code.batch.fnPreprocess = 'batch_preproc_fmri_stc_realign.m';
+=======
+paths.code.batches = fullfile(paths.code.project, 'batches');
+paths.code.batch.fnPreprocess = ['batch_' nameStrategy '.m'];
+>>>>>>> Stashed changes:get_paths_wagad.m
 
-paths.preproc.nameStrategy = paths.code.batch.fnPreprocess(1:end-2);
+paths.preproc.nameStrategy = nameStrategy;
 
 paths.code.batch.fnPhysIO = 'batch_physio_regressors.m';
 paths.code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
@@ -96,10 +106,6 @@ paths.fnFunctRenamed = {
     'struct.nii'
     };
 
-paths.realign.fnParameters = regexprep(strcat(paths.dirSess, fs ,'rp_', ...
-    paths.fnFunctRenamed), 'nii$', 'txt');
-
-
 paths.fnFunctRaw = {
     'run1'
     'run2'
@@ -128,7 +134,7 @@ paths.preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
 paths.preproc.input.fnStruct = fullfile(paths.struct,  ...
     paths.fnFunctRenamed{3});
 
-paths.preproc.output.root = fullfile(paths.subj, 'preproc_realign_stc');
+paths.preproc.output.root = fullfile(paths.subj, nameStrategy);
 
 %% PhysIO Output
 paths.preproc.output.physio = fullfile(paths.preproc.output.root, 'physio');
@@ -156,8 +162,20 @@ paths.preproc.output.dirSess = {
     paths.preproc.output.struct
     };
 
-paths.preproc.output.fnFunctArray = strcat('swau', ...
+
+
+switch nameStrategy
+    case 'preproc_realign_stc' 
+        paths.preproc.output.pfxFunct = 'swau';
+        paths.preproc.output.pfxRealignParams = 'rp_';
+    case 'preproc_stc_realign';
+        paths.preproc.output.pfxFunct = 'swua';
+        paths.preproc.output.pfxRealignParams = 'rp_a';
+end
+
+paths.preproc.output.fnFunctArray = strcat(paths.preproc.output.pfxFunct, ...
     paths.fnFunctRenamed);
+
 paths.preproc.output.fnFunctArray{3} = 'wBrain.nii';
 
 % where subject-specific batches are saved
@@ -167,12 +185,13 @@ paths.preproc.output.batch = fullfile(paths.subj, 'batches');
 
 
 % realignment parameter filenames
-paths.preproc.output.fnRealignConcat = ...
-        regexprep(sprintf('rp_%s', paths.fnFunctRenamed{1}), '\.nii', '\.txt');
+paths.preproc.output.fnRealignConcat = [...
+        paths.preproc.output.pfxRealignParams paths.fnFunctRenamed{1}(1:end-4), ...
+        '.txt'];
 
 paths.preproc.output.fnRealignSession = {
-    ['rp_', paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
-    ['rp_', paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
+    [paths.preproc.output.pfxRealignParams , paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
+    [paths.preproc.output.pfxRealignParams , paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
 };    
 
 

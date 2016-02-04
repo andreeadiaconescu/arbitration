@@ -35,7 +35,7 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-iSubjectArray = setdiff(iSubjectArray, [14]);
+iSubjectArray = setdiff(iSubjectArray, [3:24]);
 
 % checked via run through via in WAGAD/data-folder run:
 % find . -name swau*run1* |sort

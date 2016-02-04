@@ -39,7 +39,7 @@ else
 end
 
 % manual setting...if you want to exclude any subjects
-iSubjectArray = setdiff(iSubjectArray, [3 14]);
+iSubjectArray = get_subject_ids(paths.data)';
 
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);

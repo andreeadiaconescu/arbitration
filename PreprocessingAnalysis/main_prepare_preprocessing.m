@@ -14,9 +14,9 @@
 iSubjectArray = reshape(iSubjectArray, 1, []);
 
 % manual subject selection
-iSubjectArray = setdiff(iSubjectArray, [3 14]);
+iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
 
-prepStepArray = [3]; % [1 2 3] % to start with
+prepStepArray = [3];% [1 2 3]; % to start with
 
 doRenameRaw     = ismember(1, prepStepArray);
 doRenamePhys    = ismember(2, prepStepArray);
