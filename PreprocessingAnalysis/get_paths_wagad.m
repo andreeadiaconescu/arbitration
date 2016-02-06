@@ -272,6 +272,7 @@ end
 %% Second level folders
 
 secondLevel.root = fullfile(paths.data, 'SecondLevel');
+secondLevel.covariates = fullfile(secondLevel.root,'covariates');
 secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
     glm.nameDesign);
 

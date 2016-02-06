@@ -26,27 +26,21 @@
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+iExcludedSubjects = [14 25 32 33 34 37];
+
 paths = get_paths_wagad(); % dummy subject to get general paths
 
-if ismac
-    iSubjectArray = get_subject_ids(paths.data, 'test_')';
-else
-    iSubjectArray = get_subject_ids(paths.data)';
-end
-
 % manual setting...if you want to exclude any subjects
-% 3 4 already finished successfully
-% 6 and 14 don't work because of missing physio or split session
-% 12 is still running
-% 18 has weird svd error => follow up!
-%
-% iSubjectArray = setdiff(iSubjectArray, [6 14 18]);
-iSubjectArray = [12 22:24];
+iSubjectArray = get_subject_ids(paths.data)';
+iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
+
+paths = get_paths_wagad(); % dummy subject to get general paths
+
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
 
-useCluster = false;
+useCluster = true;
 
 idPreproc = 1;
 idDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
