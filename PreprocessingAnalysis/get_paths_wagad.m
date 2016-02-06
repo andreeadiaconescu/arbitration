@@ -254,7 +254,7 @@ mkdir(glm.design);
 paths.stats.fnSpm = strcat(glm.design, fs, 'SPM.mat');
 
 contrasts.fnReport = strcat(glm.design, '.ps');
-contrasts.names = {'arbitration', 'belief_precision'};
+contrasts.names = {'arbitration'; 'belief_precision'};
 contrasts.indices = [2 4];
 
 %%  Scan Info
@@ -273,6 +273,8 @@ end
 
 secondLevel.root = fullfile(paths.data, 'SecondLevel');
 secondLevel.covariates = fullfile(secondLevel.root,'covariates');
+secondLevel.fnCovariates = fullfile(secondLevel.covariates, 'parameters.mat');
+secondLevel.fnNuisanceRegressors = fullfile(secondLevel.covariates, 'nuisance_regressors.txt');
 secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
     glm.nameDesign);
 
