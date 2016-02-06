@@ -77,12 +77,14 @@ job{1}.spm.stats.factorial_design.dir = {path2ndLevel};
 load(fullfile([paths.stats.secondLevel.covariates,'/parameters.mat']));
 %%
 allparameters=temp;
-for iSubj = iSubjectArray; %
-    sub{iSubj,1}=iSubjectArray{iSubj};
-end
+
+
+pathGlmAllSubjects = get_path_all_subjects('stats.glm.design', iSubjectArray);
+fnContrastAllSubjects= strcat(pathGlmAllSubjects, filesep, ...
+    sprintf('con_%04d.nii', iContrast));
+
 newSub=sub(~cellfun(@isempty,sub));
-job{1}.spm.stats.factorial_design.des.t1.scans = strcat(dirScan, newSub, ...
-    '/glm_adv_cue_belief/con_0005.nii');
+job{1}.spm.stats.factorial_design.des.t1.scans = fnContrastAllSubjects;
 %% Change to the desired glm and contrast
 job{1}.spm.stats.factorial_design.des.t1.scans = ...
     regexprep(regexprep(job{1}.spm.stats.factorial_design.des.t1.scans, ...

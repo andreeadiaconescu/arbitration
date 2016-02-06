@@ -58,15 +58,15 @@ else % brutus cluster
     code.spm = fullfile(paths.study, 'code', 'spm12');
 end
 
-idSubj = sprintf('TNU_WAGAD_%04d',iSubj);
+paths.patternIdSubj = 'TNU_WAGAD_%04d';
+paths.patternIdSubjBehav = 'WAGAD_%04d';  
+paths.idSubj = sprintf(paths.patternIdSubj, iSubj);
+paths.idSubjBehav = sprintf(paths.patternIdSubjBehav, iSubj);
+
 
 % for summary results over all subjects
 paths.summary = fullfile(paths.study, 'summaryReports');
 [~, ~] = mkdir(paths.summary);
-
-
-paths.idSubj = idSubj;
-paths.idSubjBehav = regexprep(idSubj, 'TNU_', '');
 
 
 %% Paths code
@@ -94,7 +94,7 @@ paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 
 %% Paths data
 
-paths.subj = fullfile(paths.data, idSubj);
+paths.subj = fullfile(paths.data, paths.idSubj);
 paths.raw = fullfile(paths.subj, 'scandata');
 paths.phys = fullfile(paths.subj, 'physlog');
 paths.behav = fullfile(paths.subj, 'behav');
