@@ -13,7 +13,11 @@ end
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
     
-    doFitModel = false;
+    if ismac
+        doFitModel = true;
+    else
+        doFitModel = false;
+    end
     
     
     

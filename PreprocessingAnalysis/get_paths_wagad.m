@@ -29,6 +29,7 @@ glm.nameDesign = nameGlmDesigns{idGlmDesign};
 
 if ismac
     [~,username] = unix('whoami');
+    username(end) = []; % remove trailing end of line character
     
     switch username
         case 'kasperla'; % Lars laptop
@@ -40,15 +41,16 @@ if ismac
             
         case 'drea' % Andreeas laptop
             paths.study = '/Users/drea/Dropbox/MadelineMSc/';
-            paths.data =  paths.study;
-            paths.code.project = '/Users/drea/Dropbox/MadelineMSc/Code/WAGAD';
-            paths.code.spm = '/Users/drea/Documents/MATLAB/spm12';
+            paths.data =  '/Users/drea/Dropbox/MadelineMSc/DatafMRI/fMRI_data/'; % behav data
+            code.project = '/Users/drea/Dropbox/MadelineMSc/Code/WAGAD';
+            code.spm = '/Users/drea/Documents/MATLAB/spm12';
             
         otherwise % @Madeline: change to your own paths HERE
-            paths.study = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
-            paths.data =  paths.study;
-            paths.code.project =  paths.study;
-            paths.code.spm = '/Users/kasperla/Documents/code/matlab/spm12';    
+
+            paths.study = '/Users/mstecy/Dropbox/MadelineMSc/';
+            paths.data =  '/Users/mstecy/Dropbox/MadelineMSc/DatafMRI/fMRI_data/';
+            code.project = '/Users/mstecy/Dropbox/MadelineMSc/Code/WAGAD';
+            code.spm = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12'; 
     end
     
 else % brutus cluster
