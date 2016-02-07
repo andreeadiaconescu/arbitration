@@ -8,7 +8,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    idPreprocStrategy = 1;
+    idPreprocStrategy =2;
 end
 
 if nargin < 3
