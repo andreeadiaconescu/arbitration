@@ -37,8 +37,29 @@ fnBatchSave = paths.code.batch.(fnBatchItemString);
 fnBatchSave(end-1:end) = []; % remove .m
 
 % add time stamp & path
-stringDate = datestr(now(), 'yyyy_mm_dd_HHMMSS');
+currentTime = now();
+stringDate = datestr(currentTime, 'yyyy_mm_dd_HHMMSS');
 fnBatchSave = sprintf('%s_%s.mat', fnBatchSave, ...
     stringDate);
+
+maxBatchNameLength = namelengthmax - 15; %-15 for run_WAGAD_0004_ etc. prefix later
+% Matlab variable length limit of 63 prevent -r call to long script name
+if numel(fnBatchSave) > maxBatchNameLength % 
+    
+    % try shorter date identifier first
+    stringDate = datestr(currentTime, 'yymmdd_HHMMSS');
+    fnBatchSave = sprintf('%s_%s.mat', fnBatchSave, ...
+        stringDate);
+    
+    % shorten script name as well...could create collisions with similarly
+    % named scripts...
+    if numel(fnBatchSave) > maxBatchNameLength
+         fnBatchSave = sprintf('%s_%s.mat', ...
+             fnBatchSave(1:(maxBatchNameLength-numel(stringDate)-1)), ...
+        stringDate);
+    
+    end
+end
+
 fnBatchSave = fullfile(paths.preproc.output.batch, ...
     fnBatchSave);

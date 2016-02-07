@@ -70,7 +70,7 @@ for iSubj = iSubjectArray
     run(fnBatchStatsContrasts);
     
     % update SPM.mat dir
-    matlabbatch{1}.spm.stats.con.spmmat = paths.stats.fnSpm;
+    matlabbatch{1}.spm.stats.con.spmmat = cellstr(paths.stats.fnSpm);
     
     % save subject-specific batch in subject-folder, but as mat-file for
     % simplicity, and with a time stamp
