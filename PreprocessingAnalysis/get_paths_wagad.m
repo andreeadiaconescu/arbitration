@@ -281,9 +281,9 @@ secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
 
 secondLevel.contrasts = strcat(secondLevel.design, fs, contrasts.names);
 
-for iContrast = 1:numel(secondLevel.contrasts);
-    [~,~] = mkdir(secondLevel.contrasts{iContrast});
-end
+% for iContrast = 1:numel(secondLevel.contrasts);
+%     [~,~] = mkdir(secondLevel.contrasts{iContrast});
+% end
 
 
 %% Assemble sub-modules of paths-structure

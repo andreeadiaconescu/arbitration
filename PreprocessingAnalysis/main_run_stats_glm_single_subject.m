@@ -35,6 +35,7 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 
 % manual setting...if you want to exclude any subjects
 iSubjectArray = get_subject_ids(paths.data)';
+iSubjectArray=[3:24];
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
 fnBatchStatsGlm = fullfile(paths.code.batches, ...

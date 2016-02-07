@@ -17,10 +17,12 @@ if nargin < 2
     doStats = 1;
 end
 
-for iSubj = iSubjectArray
+addpath(paths.code.model);
+nSubjects = numel(iSubjectArray);
+
+for s = 1:nSubjects
+    iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    
-    addpath(paths.code.model);
     for iRsp=1
         %%
         parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
@@ -31,16 +33,15 @@ for iSubj = iSubjectArray
         th_a=est.p_prc.th_a;
         ze=est.p_obs.ze1;
         beta=est.p_obs.beta;
-        iScans=numel(iSubjectArray);
         for j = 1:numel(parameters)
-            par{iScans,j} = [];
+            par{nSubjects,j} = [];
         end
-        par{iSubj,1} = ka_r; % kappa reward
-        par{iSubj,2} = ka_a; % kappa advice
-        par{iSubj,3} = th_r; % theta reward
-        par{iSubj,4} = th_a; % theta advice
-        par{iSubj,5} = ze;   % zeta
-        par{iSubj,6} = beta; % decision noise
+        par{s,1} = ka_r; % kappa reward
+        par{s,2} = ka_a; % kappa advice
+        par{s,3} = th_r; % theta reward
+        par{s,4} = th_a; % theta advice
+        par{s,5} = log(ze);   % zeta
+        par{s,6} = beta; % decision noise
     end
 end
 if doStats
@@ -58,6 +59,6 @@ if doStats
     parMean=num2str(mean(diffParameters));
     disp(['Parameter Mean: ', parMean])
 end
-save([paths.stats.secondLevel.covariates, '/parameters.mat'],'temp', '-mat');
+save([paths.stats.secondLevel.covariates, '/covariates.mat'],'temp', '-mat');
 end
 

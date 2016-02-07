@@ -39,6 +39,7 @@ if nargin < 1
     % since we have done this one...
     % iSubjectArray = setdiff(iSubjectArray, [3 4 5]);
     iSubjectArray = setdiff(iSubjectArray, [1:24 14 25 32 33 34 37]);
+    iSubjectArray = [1:24];
 end
 
 multiple_regressors = {};
