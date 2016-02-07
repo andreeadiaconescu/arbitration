@@ -35,7 +35,6 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 
 % manual setting...if you want to exclude any subjects
 iSubjectArray = get_subject_ids(paths.data)';
-iSubjectArray=[3:24];
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
@@ -76,7 +75,7 @@ for iSubj = iSubjectArray
     run(fnBatchStatsGlm);
     
     % update glm dir
-    matlabbatch{1}.spm.stats.fmri_spec.dir = paths.stats.glm.design;
+    matlabbatch{1}.spm.stats.fmri_spec.dir = cellstr(paths.stats.glm.design);
     
     % update scan info
     matlabbatch{1}.spm.stats.fmri_spec.timing.RT = paths.scanInfo.TR(1);
