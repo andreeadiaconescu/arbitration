@@ -7,14 +7,14 @@ if nargin < 1
 end
 
 if nargin < 2
-    learningParameter = 'zeta';
+    learningParameter = 'beta';
 end
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-iExcludedSubjects = [14 25 32 33 34 37];
+iExcludedSubjects = [6 14 25 32 33 34 37];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
