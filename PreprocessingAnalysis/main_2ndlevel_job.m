@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------------
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
-function main_2ndlevel_job(regressor, learningParameter)
+function main_2ndlevel_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
     regressor = 'arbitration';
 end
@@ -10,7 +10,9 @@ if nargin < 2
     learningParameter = 'theta_a';
 end
 
-
+if nargin < 3
+    dir1stLevel = 'first_design';
+end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,23 +25,63 @@ iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
 datapath = paths.stats.secondLevel.root;
-dir1stLevel = 'first_design';
-switch regressor
-    case 'basic_advice'
-        iContrast = 1;
-    case 'arbitration'
-        iContrast = 2;
-    case 'basic_wager'
-        iContrast = 3;
-    case 'belief_precision'
-        iContrast = 4;
-    case 'basic_outcome'
-        iContrast = 5;
-    case 'delta1_advice'
-        iContrast = 6;
-    case 'delta1_cue'
-        iContrast = 7;
+
+switch dir1stLevel
+    case 'first_design'
+        switch regressor
+            case 'basic_advice'
+                iContrast = 1;
+            case 'arbitration'
+                iContrast = 2;
+            case 'basic_wager'
+                iContrast = 3;
+            case 'belief_precision'
+                iContrast = 4;
+            case 'basic_outcome'
+                iContrast = 5;
+            case 'delta1_advice'
+                iContrast = 6;
+            case 'delta1_cue'
+                iContrast = 7;
+        end
+    case 'ModelBased_ModelFree'
+        switch regressor
+            case 'basic_advice'
+                iContrast = 1;
+            case 'arbitration'
+                iContrast = 2;
+            case 'Arbitration_StableAUnstableR'
+                iContrast = 3;
+            case 'Arbitration_StableAStableR'
+                iContrast = 4;
+            case 'Arbitration_UnstableAStableR'
+                iContrast = 5;
+            case 'Arbitration_UnstableAUnstableR'
+                iContrast = 6;
+            case 'basic_wager'
+                iContrast = 7;
+            case 'belief_precision'
+                iContrast = 8;
+            case 'Wager_StableAUnstableR'
+                iContrast = 9;
+            case 'Wager_StableAStableR'
+                iContrast = 10;
+            case 'Wager_UnstableAStableR'
+                iContrast = 11;
+            case 'Wager_UnstableAUnstableR'
+                iContrast = 12;
+            case 'basic_outcome'
+                iContrast = 13;
+            case 'delta1_advice'
+                iContrast = 14;
+            case 'delta1_cue'
+                iContrast = 15;
+                
+                
+        end
 end
+
+
 
 % Initialize
 spm_jobman('initcfg');
