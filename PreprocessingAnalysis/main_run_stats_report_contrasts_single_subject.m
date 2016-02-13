@@ -26,7 +26,7 @@
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-iExcludedSubjects = [6 14 25 32 33 34 37];
+iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 

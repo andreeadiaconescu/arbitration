@@ -85,8 +85,8 @@ for iSubj = iSubjectArray
         px = 1./(x_a.*(1-x_a));
         pc = 1./(x_r.*(1-x_r));
         ze1=est.p_obs.ze1;
-        pmod(1,1).param = {[ze1.*1./sa2hat_a.*px./...
-            (ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r)]};
+        pmod(1,1).param = {[1./sa2hat_a.*px./...
+            (px.*1./sa2hat_a + pc.*1./sa2hat_r)]};
         % Arbitration
         pmod(1,1).poly={[1]};
         

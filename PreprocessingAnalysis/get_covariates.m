@@ -2,7 +2,7 @@ function get_covariates(iSubjectArray, doStats)
 % computes HGF for given subjects and creates parametric modulators for
 % concatenated design matrix, plus base regressors for event onsets
 %
-iExcludedSubjects = [6 14 25 32 33 34 37];
+iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
 
 % for WAGAD_0006, no physlogs were recorded 
 
