@@ -17,7 +17,7 @@ end
 
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
-nameGlmDesigns = {'first_design'};
+nameGlmDesigns = {'first_design','ModelBased_ModelFree'};
 nameResponseModels= {'softmax_multiple_readouts_reward_social','hgf_ioio_precision_weight_new_config'};
 
 %% Paths study
@@ -117,8 +117,8 @@ paths.dirSess = {
 paths.dirLogs = regexprep(paths.dirSess, 'data/funct', 'phys');
 paths.dirLogsOther = fullfile(paths.phys, 'logs');
 
-paths.fnMultipleConditions = fullfile(paths.behav, [paths.idSubjBehav '_multiple_conditions.mat']);
-paths.fnBehavMatrix = fullfile(paths.behav, [paths.idSubjBehav '_behav_matrix.mat']);
+paths.fnMultipleConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
+paths.fnBehavMatrix = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_behav_matrix.mat']);
 
 for iRsp = 1:numel(nameResponseModels);
     paths.fnFittedModel{iRsp} = fullfile(paths.behav, sprintf('%s_behav_model_rsp_%s.mat', ...

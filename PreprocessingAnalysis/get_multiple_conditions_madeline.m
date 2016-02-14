@@ -3,7 +3,7 @@ function get_multiple_conditions_madeline(iSubjectArray, doPlotFigures)
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
-    iSubjectArray = setdiff([29:47], [14 25 32 33 34 37]);
+    iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
 end
 
 if nargin < 2
@@ -11,10 +11,10 @@ if nargin < 2
 end
 
 for iSubj = iSubjectArray
-    paths = get_paths_wagad(iSubj);
+    paths = get_paths_wagad(iSubj,1,2);
     
     if ismac
-        doFitModel = false;
+        doFitModel = true;
     else
         doFitModel = false;
     end
@@ -94,10 +94,10 @@ for iSubj = iSubjectArray
         ze1=est.p_obs.ze1;
         pmod(1,1).param = {[ze1.*1./sa2hat_a.*px./...
             (ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r)]};
-        pmod(2,1).param = load(fullfile(paths.code.project, 'StableA_UnstableR.txt')); 
-        pmod(3,1).param = load(fullfile(paths.code.project, 'StableA_StableR.txt')); 
-        pmod(4,1).param = load(fullfile(paths.code.project, 'UnstableA_StableR.txt'));
-        pmod(5,1).param = load(fullfile(paths.code.project, 'UnstableA_UnstableR.txt')); 
+        pmod(2,1).param = load(fullfile(paths.code.model, 'StableA_UnstableR.txt')); 
+        pmod(3,1).param = load(fullfile(paths.code.model, 'StableA_StableR.txt')); 
+        pmod(4,1).param = load(fullfile(paths.code.model, 'UnstableA_StableR.txt'));
+        pmod(5,1).param = load(fullfile(paths.code.model, 'UnstableA_UnstableR.txt')); 
        
         pmod(1,1).poly={[1]};
         pmod(2,1).poly={[1]};
@@ -124,10 +124,10 @@ for iSubj = iSubjectArray
         pmod(1,2).param = {[pib]}; % Precision (Model-based wager)
         pmod(1,2).poly={[1]};
         
-        pmod(2,2).param = load(fullfile(paths.code.project, 'StableA_UnstableR.txt')); 
-        pmod(3,2).param = load(fullfile(paths.code.project, 'StableA_StableR.txt')); 
-        pmod(4,2).param = load(fullfile(paths.code.project, 'UnstableA_StableR.txt')); 
-        pmod(5,2).param = load(fullfile(paths.code.project, 'UnstableA_UnstableR.txt')); 
+        pmod(2,2).param = load(fullfile(paths.code.model, 'StableA_UnstableR.txt')); 
+        pmod(3,2).param = load(fullfile(paths.code.model, 'StableA_StableR.txt')); 
+        pmod(4,2).param = load(fullfile(paths.code.model, 'UnstableA_StableR.txt')); 
+        pmod(5,2).param = load(fullfile(paths.code.model, 'UnstableA_UnstableR.txt')); 
        
         
         pmod(2,2).poly={[1]};
