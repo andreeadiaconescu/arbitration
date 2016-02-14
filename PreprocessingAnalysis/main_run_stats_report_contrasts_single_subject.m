@@ -26,6 +26,8 @@
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+idPreproc = 1;
+idDesign   = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-
 iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
@@ -33,16 +35,16 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 % manual setting...if you want to exclude any subjects
 iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
-paths = get_paths_wagad(); % dummy subject to get general paths
 
+% dummy subject to get general paths for selected design/preproc strategies
+paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign); 
+
+useCluster = false;
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
 
-useCluster = true;
 
-idPreproc = 1;
-idDesign   = 1; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -54,7 +56,7 @@ end
 %% Loop over subjects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for iSubj = iSubjectArray
+for iSubj = iSubjectArray(1)
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Load paths, setup report-contrasts matlabbatch for subject
@@ -64,7 +66,7 @@ for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj, idPreproc, idDesign);
     
     % Load template batch, change relevant subject-specific paths in batch & save
-    try
+    %try
     clear matlabbatch;
     run(fnBatchStatsContrasts);
     
@@ -108,7 +110,7 @@ for iSubj = iSubjectArray
         'reportContrastThreshold', 0.05, ...
         'reportContrastCorrection', 'FWE', ...
         'fileReport', fnReport, ...
-        'fileSpm', paths.stats.fnSpmArray{idDesign}, ...
+        'fileSpm', paths.stats.fnSpm, ...
         'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
         'fileStructural', paths.preproc.output.fnStruct);
     
@@ -116,10 +118,10 @@ for iSubj = iSubjectArray
     % again with liberal threshold: 0.001 uncorrected
     args = tapas_physio_report_contrasts(...
         'fileReport', fnReport, ...
-        'fileSpm', paths.stats.fnSpmArray{idDesign}, ...
+        'fileSpm', paths.stats.fnSpm, ...
         'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
         'fileStructural', paths.preproc.output.fnStruct);
-    catch err
-    end
+    %catch err
+    %end
 
 end

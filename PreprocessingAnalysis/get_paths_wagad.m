@@ -15,10 +15,18 @@ if nargin < 3
     idGlmDesign = 1;
 end
 
+% Array for different options at a particular preproc/analysis stage
+% The corresponding paths are chosen based on the id-input-parameters
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
 nameGlmDesigns = {'first_design','ModelBased_ModelFree'};
 nameResponseModels= {'softmax_multiple_readouts_reward_social','hgf_ioio_precision_weight_new_config'};
+
+fnStatsContrastsArray = {'batch_stats_single_subject_report_contrasts.m', ...
+    'batch_stats_modelfree_single_subject_report_contrasts.m'};
+fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
+    'batch_preproc_fmri_stc_realign.m'};
+
 
 %% Paths study
 
@@ -79,16 +87,15 @@ code.preprocessing = fullfile(code.project, 'PreprocessingAnalysis');
 
 code.batches = fullfile(code.preprocessing, 'batches');
 
-switch preproc.nameStrategy
-    case 'preproc_realign_stc'
-        code.batch.fnPreprocess = ['batch_preproc_fmri_realign_stc.m'];
-    case 'preproc_stc_realign'
-        code.batch.fnPreprocess = ['batch_preproc_fmri_stc_realign.m'];
-end
+code.batch.fnPreprocessArray = fnPreprocessArray;
+code.batch.fnPreprocess = fnPreprocessArray{idPreprocStrategy};
+
 
 code.batch.fnPhysIO = 'batch_physio_regressors.m';
 code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
-code.batch.fnStatsContrasts = 'batch_stats_single_subject_report_contrasts.m';
+code.batch.fnStatsContrastsArray = fnStatsContrastsArray;
+code.batch.fnStatsContrasts = fnStatsContrastsArray{idGlmDesign};
+
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
@@ -253,7 +260,7 @@ glm.design = fullfile(glm.root, preproc.nameStrategy, glm.nameDesign);
 
 mkdir(glm.design);
 
-paths.stats.fnSpm = strcat(glm.design, fs, 'SPM.mat');
+paths.stats.fnSpm = fullfile(glm.design, 'SPM.mat');
 
 contrasts.fnReport = strcat(glm.design, '.ps');
 contrasts.names = {'arbitration'; 'belief_precision'};
