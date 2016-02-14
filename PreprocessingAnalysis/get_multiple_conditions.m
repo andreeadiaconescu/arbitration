@@ -27,6 +27,10 @@ for iSubj = iSubjectArray
     
     
     y = [];
+    
+    % construct output matrix from behavioral log files:
+    % outputmatrix=[onsets1 onsets2 onsets3 choice onsets_resp RS' inmatrix(:,17)];
+
     outputmatrix = [];
     for iRun = 1:2
         
@@ -52,9 +56,9 @@ for iSubj = iSubjectArray
         
         outputmatrixSession{iRun} = apply_trigger(fileTrigger, ...
             SOC.Session(2).exp_data, offsetRunSeconds);
-        choice = outputmatrixSession{iRun}(:,4);
-        wager = outputmatrixSession{iRun}(:,7);
-        y = [y; choice wager];
+        choice  = outputmatrixSession{iRun}(:,4);
+        wager   = outputmatrixSession{iRun}(:,7);
+        y       = [y; choice wager];
         outputmatrix = [outputmatrix; outputmatrixSession{iRun}];
     end
     save(paths.fnBehavMatrix,'outputmatrix','-mat');
@@ -75,7 +79,8 @@ for iSubj = iSubjectArray
             load(paths.fnFittedModel{iRsp},'est','-mat');
         end
         %% Arbitration
-         pmod(1,1).name = {'Arbitration','StableA_UnstableR','StableA_StableR','UnstableA_StableR','UnstableA_UnstableR'}; % Arbitration
+         pmod(1,1).name = {'Arbitration','StableA_UnstableR',...
+             'StableA_StableR','UnstableA_StableR'}; % Arbitration
         x_a=sgm(est.traj.muhat_a(:,2), 1);
         x_r=sgm(est.traj.muhat_r(:,2), 1);
         
@@ -99,13 +104,14 @@ for iSubj = iSubjectArray
         UnstableA_StableR =AdviceCodingUnstable.*RewardCodingStable;
         UnstableA_UnstableR = AdviceCodingUnstable.*RewardCodingUnstable; 
        
-        pmod(1,1).param = {[Arbitration],[StableA_UnstableR],[StableA_StableR],[UnstableA_StableR],[UnstableA_UnstableR]}; % Precision (Model-based wager)
-        pmod(1,1).poly={[1],[1],[1],[1],[1]};
+        pmod(1,1).param = {[Arbitration],[StableA_UnstableR],...
+            [StableA_StableR],[UnstableA_StableR]}; % Precision (Model-based wager)
+        pmod(1,1).poly={[1],[1],[1],[1]};
         
         
         %% Wager %add 2 parametric modulator - coding files in terms of advice volatility and coding files in term of 
 
-        pmod(1,2).name = {'Wager','StableA_UnstableR','StableA_StableR','UnstableA_StableR','UnstableA_UnstableR'}; % Arbitration
+        pmod(1,2).name = {'Wager','StableA_UnstableR','StableA_StableR','UnstableA_StableR'}; % Arbitration
         wx = ze1.*1./sa2hat_a.*px./(ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
         wc = pc.*1./sa2hat_r./(ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
        
@@ -114,8 +120,9 @@ for iSubj = iSubjectArray
         b = wx.*x_a + wc.*x_r;
         
         pib = 1./(b.*(1-b));
-        pmod(1,2).param = {[pib],[StableA_UnstableR],[StableA_StableR],[UnstableA_StableR],[UnstableA_UnstableR]}; % Precision (Model-based wager)
-        pmod(1,2).poly={[1],[1],[1],[1],[1]};
+        pmod(1,2).param = {[pib],[StableA_UnstableR],...
+            [StableA_StableR],[UnstableA_StableR]}; % Precision (Model-based wager)
+        pmod(1,2).poly={[1],[1],[1],[1]};
        
         %% Prediction Errors
         pmod(1,3).name = {'Delta1_Adv','Delta1_Cue'}; % PEs
