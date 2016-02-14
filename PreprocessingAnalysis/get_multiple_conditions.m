@@ -11,7 +11,7 @@ if nargin < 2
 end
 
 for iSubj = iSubjectArray
-    paths = get_paths_wagad(iSubj);
+    paths = get_paths_wagad(iSubj,1,2);
     
     if ismac
         doFitModel = true;
@@ -75,34 +75,48 @@ for iSubj = iSubjectArray
             load(paths.fnFittedModel{iRsp},'est','-mat');
         end
         %% Arbitration
-        pmod(1,1).name = {'Arbitration'}; % Arbitration
-        x_a=sgm(est.traj.mu_a(:,2), 1);
-        x_r=sgm(est.traj.mu_r(:,2), 1);
+         pmod(1,1).name = {'Arbitration','StableA_UnstableR','StableA_StableR','UnstableA_StableR','UnstableA_UnstableR'}; % Arbitration
+        x_a=sgm(est.traj.muhat_a(:,2), 1);
+        x_r=sgm(est.traj.muhat_r(:,2), 1);
         
-        sa2hat_a=est.traj.sa_a(:,2);
-        sa2hat_r=est.traj.sa_r(:,2);
+        sa2hat_a=est.traj.sahat_a(:,2);
+        sa2hat_r=est.traj.sahat_r(:,2);
         
+         % Arbitration
         px = 1./(x_a.*(1-x_a));
         pc = 1./(x_r.*(1-x_r));
         ze1=est.p_obs.ze1;
-        pmod(1,1).param = {[1./sa2hat_a.*px./...
-            (px.*1./sa2hat_a + pc.*1./sa2hat_r)]};
-        % Arbitration
-        pmod(1,1).poly={[1]};
+        Arbitration = [1./sa2hat_a.*px./...
+            (px.*1./sa2hat_a + pc.*1./sa2hat_r)];
         
-        %% Wager
-        pmod(1,2).name = {'Wager'}; % Arbitration
+        AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
+        RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
+        AdviceCodingStable = (1-AdviceCodingUnstable')';
+        RewardCodingStable = (1-RewardCodingUnstable')';
+        % Model-free Arbitration
+        StableA_UnstableR = AdviceCodingStable.*RewardCodingUnstable; 
+        StableA_StableR = AdviceCodingStable.*RewardCodingStable; 
+        UnstableA_StableR =AdviceCodingUnstable.*RewardCodingStable;
+        UnstableA_UnstableR = AdviceCodingUnstable.*RewardCodingUnstable; 
+       
+        pmod(1,1).param = {[Arbitration],[StableA_UnstableR],[StableA_StableR],[UnstableA_StableR],[UnstableA_UnstableR]}; % Precision (Model-based wager)
+        pmod(1,1).poly={[1],[1],[1],[1],[1]};
+        
+        
+        %% Wager %add 2 parametric modulator - coding files in terms of advice volatility and coding files in term of 
+
+        pmod(1,2).name = {'Wager','StableA_UnstableR','StableA_StableR','UnstableA_StableR','UnstableA_UnstableR'}; % Arbitration
         wx = ze1.*1./sa2hat_a.*px./(ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
         wc = pc.*1./sa2hat_r./(ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
+       
         
         % Belief vector
         b = wx.*x_a + wc.*x_r;
         
         pib = 1./(b.*(1-b));
-        
-        pmod(1,2).param = {[pib]}; % Precision (Model-based wager)
-        pmod(1,2).poly={[1]};
-        
+        pmod(1,2).param = {[pib],[StableA_UnstableR],[StableA_StableR],[UnstableA_StableR],[UnstableA_UnstableR]}; % Precision (Model-based wager)
+        pmod(1,2).poly={[1],[1],[1],[1],[1]};
+       
         %% Prediction Errors
         pmod(1,3).name = {'Delta1_Adv','Delta1_Cue'}; % PEs
         
