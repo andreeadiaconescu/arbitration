@@ -39,7 +39,7 @@ iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 % dummy subject to get general paths for selected design/preproc strategies
 paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign); 
 
-useCluster = false;
+useCluster = true;
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
@@ -56,7 +56,7 @@ end
 %% Loop over subjects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for iSubj = iSubjectArray(1)
+for iSubj = iSubjectArray
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Load paths, setup report-contrasts matlabbatch for subject
