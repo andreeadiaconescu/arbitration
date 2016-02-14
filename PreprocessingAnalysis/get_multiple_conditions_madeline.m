@@ -7,7 +7,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    doPlotFigures = 1;
+    doPlotFigures = 0;
 end
 
 for iSubj = iSubjectArray
@@ -88,11 +88,15 @@ for iSubj = iSubjectArray
         Arbitration = [1./sa2hat_a.*px./...
             (px.*1./sa2hat_a + pc.*1./sa2hat_r)];
         
+        AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
+        RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
+        AdviceCodingStable = (1-AdviceCodingUnstable')';
+        RewardCodingStable = (1-RewardCodingUnstable')';
         % Model-free Arbitration
-        StableA_UnstableR = load(fullfile(paths.code.model, 'StableA_UnstableR.txt')); 
-        StableA_StableR = load(fullfile(paths.code.model, 'StableA_StableR.txt')); 
-        UnstableA_StableR = load(fullfile(paths.code.model, 'UnstableA_StableR.txt'));
-        UnstableA_UnstableR = load(fullfile(paths.code.model, 'UnstableA_UnstableR.txt')); 
+        StableA_UnstableR = AdviceCodingStable.*RewardCodingUnstable; 
+        StableA_StableR = AdviceCodingStable.*RewardCodingStable; 
+        UnstableA_StableR =AdviceCodingUnstable.*RewardCodingStable;
+        UnstableA_UnstableR = AdviceCodingUnstable.*RewardCodingUnstable; 
        
         pmod(1,1).param = {[Arbitration],[StableA_UnstableR],[StableA_StableR],[UnstableA_StableR],[UnstableA_UnstableR]}; % Precision (Model-based wager)
         pmod(1,1).poly={[1],[1],[1],[1],[1]};
@@ -130,11 +134,13 @@ for iSubj = iSubjectArray
             subplot(4,1,1);
             plot(pmod(1,1).param{1}, 'm', 'LineWidth', 4);
             hold on;
+            
             plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
             
             subplot(4,1,2);
-            plot(pmod(1,2).param{1} , 'r', 'LineWidth', 4);
+            plot(pmod(1,2).param{1}, 'r', 'LineWidth', 4);
             hold on;
+            
             plot(ones(170,1).*0,'k','LineWidth', 1,'LineStyle','-.');
             
             subplot(4,1,3);
