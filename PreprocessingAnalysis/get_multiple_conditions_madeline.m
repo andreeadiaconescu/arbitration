@@ -3,7 +3,7 @@ function get_multiple_conditions_madeline(iSubjectArray, doPlotFigures)
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
-    iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
+    iSubjectArray = setdiff([35:47], [14 25 32 33 34 37]);
 end
 
 if nargin < 2
