@@ -46,11 +46,11 @@ matlabbatch{1}.spm.stats.con.consess{13}.tcon.name = 'Delta1 Reward';
 matlabbatch{1}.spm.stats.con.consess{13}.tcon.weights = [zeros(12,1)' 1];
 matlabbatch{1}.spm.stats.con.consess{13}.tcon.sessrep = 'none';
 matlabbatch{1}.spm.stats.con.consess{14}.tcon.name = 'Arbitration_UnstableAUnstableR';
-matlabbatch{1}.spm.stats.con.consess{14}.tcon.weights = [1 0 -1 -1 -1];
+matlabbatch{1}.spm.stats.con.consess{14}.tcon.weights = [1 0 -1/3 -1/3 -1/3];
 matlabbatch{1}.spm.stats.con.consess{14}.tcon.sessrep = 'none';
 
 matlabbatch{1}.spm.stats.con.consess{15}.tcon.name = 'Wager_UnstableAUnstableR';
-matlabbatch{1}.spm.stats.con.consess{15}.tcon.weights = [0 0 0 0 0 1 0 -1 -1 -1];
+matlabbatch{1}.spm.stats.con.consess{15}.tcon.weights = [0 0 0 0 0 1 0 -1/3 -1/3 -1/3];
 matlabbatch{1}.spm.stats.con.consess{15}.tcon.sessrep = 'none';
 
 matlabbatch{1}.spm.stats.con.delete = 1;

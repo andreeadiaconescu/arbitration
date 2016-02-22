@@ -3,7 +3,7 @@
 %-----------------------------------------------------------------------
 function main_2ndlevel_madeline_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
-    regressor = 'Arbitration_UnstableAStableR';
+    regressor = 'Wager_StableAUnstableR';
 end
 
 if nargin < 2
