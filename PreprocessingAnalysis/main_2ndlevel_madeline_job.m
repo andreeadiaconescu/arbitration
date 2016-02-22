@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------------
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
-function main_2ndlevel_job(regressor, learningParameter,dir1stLevel)
+function main_2ndlevel_madeline_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
     regressor = 'arbitration';
 end
@@ -11,13 +11,12 @@ if nargin < 2
 end
 
 if nargin < 3
-    dir1stLevel = 'first_design';
+    dir1stLevel = 'ModelBased_ModelFree';
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-iExcludedSubjects = [14 25 32 33 34 37];
-
+iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
 paths = get_paths_wagad(); % dummy subject to get general paths
 
 % manual setting...if you want to exclude any subjects
@@ -57,25 +56,25 @@ switch dir1stLevel
             case 'Arbitration_UnstableAStableR'
                 iContrast = 5;
             case 'Arbitration_UnstableAUnstableR'
-                iContrast = 6;
+                iContrast = 14;               
             case 'basic_wager'
-                iContrast = 7;
+                iContrast = 6;
             case 'belief_precision'
-                iContrast = 8;
+                iContrast = 7;
             case 'Wager_StableAUnstableR'
-                iContrast = 9;
+                iContrast = 8;
             case 'Wager_StableAStableR'
-                iContrast = 10;
+                iContrast = 9;
             case 'Wager_UnstableAStableR'
-                iContrast = 11;
+                iContrast = 10;               
             case 'Wager_UnstableAUnstableR'
-                iContrast = 12;
-            case 'basic_outcome'
-                iContrast = 13;
-            case 'delta1_advice'
-                iContrast = 14;
-            case 'delta1_cue'
                 iContrast = 15;
+            case 'basic_outcome'
+                iContrast = 11;
+            case 'delta1_advice'
+                iContrast = 12;
+            case 'delta1_cue'
+                iContrast = 13;
                 
                 
         end

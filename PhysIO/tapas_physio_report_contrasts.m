@@ -226,11 +226,20 @@ for c = 1:nContrasts
         spm_orthviews('Zoom', fovMillimeter); % zoom to FOV*2 view
         spm_orthviews('Interp', 0); % next neighbour interpolation plot
         
-        if isequal(reportContrastPosition, 'max');
-            spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax'); % goto global max
+        % find out, whether supra thresholds voxels exist
+        handleMipAxis = spm_mip_ui('FindMIPax');
+        MD   = get(handleMipAxis,'UserData');
+        hasSupraThresholdVoxels = ~isempty(MD.XYZ);
+        
+        if isequal(reportContrastPosition, 'max')
+            if hasSupraThresholdVoxels
+                spm_mip_ui('Jump',handleMipAxis,'glmax'); % goto global max
+            else
+                spm_mip_ui('SetCoords', [0 0 0 ]);
+            end
         else
             spm_mip_ui('SetCoords', reportContrastPosition, ...
-                spm_mip_ui('FindMIPax')); % goto global max
+                handleMipAxis); % goto global max
         end
         
         % to be able to turn off the blue Crosshir
