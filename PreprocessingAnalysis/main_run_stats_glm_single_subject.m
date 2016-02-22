@@ -59,7 +59,7 @@ spm_get_defaults('stats.maxmem', 2^30);
 %% Loop over subjects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for iSubj = iSubjectArray(1)
+for iSubj = iSubjectArray
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Load paths, setup matlabbatch for subject

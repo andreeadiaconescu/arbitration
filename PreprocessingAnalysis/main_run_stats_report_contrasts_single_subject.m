@@ -39,7 +39,7 @@ iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 % dummy subject to get general paths for selected design/preproc strategies
 paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign); 
 
-useCluster = false;
+useCluster = true;
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
@@ -56,7 +56,7 @@ end
 %% Loop over subjects
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-for iSubj = iSubjectArray(1)
+for iSubj = iSubjectArray
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Load paths, setup report-contrasts matlabbatch for subject
@@ -86,7 +86,7 @@ for iSubj = iSubjectArray(1)
         [nameScriptBrutus, fileScriptBrutus] = ...
             submit_job_cluster_matlabbatch(paths, fnBatchSave);
     else
-        spm_jobman('interactive', matlabbatch);
+        spm_jobman('run', matlabbatch);
     end
     
     %% move created spm_*.ps to right location
