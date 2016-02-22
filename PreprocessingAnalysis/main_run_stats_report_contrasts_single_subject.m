@@ -28,7 +28,7 @@
 
 idPreproc = 1;
 idDesign   = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-
-iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
+iExcludedSubjects = [3 4 5 6 7 8 14 25 31 32 33 34 37 44];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
@@ -36,13 +36,18 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
+iSubjectArray = 9;
+
 % dummy subject to get general paths for selected design/preproc strategies
-paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign); 
+paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign);
 
 useCluster = true;
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
+
+fnBatchStatsContrastsPhysio = fullfile(paths.code.batches, ...
+    paths.code.batch.fnStatsContrastsPhysio);
 
 
 
@@ -65,6 +70,11 @@ for iSubj = iSubjectArray
     % load subject specific paths
     paths = get_paths_wagad(iSubj, idPreproc, idDesign);
     
+    % report file with timeStamp
+    fnReport = regexprep(paths.stats.contrasts.fnReport, '\.ps', ...
+        [datestr(now, '_yyyy_mm_dd_HHMMSS') '\.ps']);
+    
+    
     % Load template batch, change relevant subject-specific paths in batch & save
     %try
     clear matlabbatch;
@@ -73,8 +83,42 @@ for iSubj = iSubjectArray
     % update SPM.mat dir
     matlabbatch{1}.spm.stats.con.spmmat = cellstr(paths.stats.fnSpm);
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Concat other matlabbatch to run PhysIO-toolbox report contrasts function,
+    %   using information from created physio-structure for relevant
+    %   contrasts,  FWE-corrected
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    % the following changes to the input function of the matlab batch
+    % correspond to the direct call of
+    %     args = tapas_physio_report_contrasts(...
+    %         'reportContrastThreshold', 0.05, ...
+    %         'reportContrastCorrection', 'FWE', ...
+    %         'fileReport', fnReport, ...
+    %         'fileSpm', paths.stats.fnSpm, ...
+    %         'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
+    %         'fileStructural', paths.preproc.output.fnStruct, ...
+    %         'titleGraphicsWindow, paths.idSubjBehav);
+    matlabbatch1 = matlabbatch;
+    clear matlabbatch
+    run(fnBatchStatsContrastsPhysio)
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{6}.evaluated = ...
+        spm_file(fnReport, 'suffix', '_physio');
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{8}.evaluated = ...
+        paths.stats.fnSpm;
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{10}.evaluated = ...
+        paths.preproc.output.fnPhysioArray{1};
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{12}.evaluated = ...
+        paths.preproc.output.fnStruct;
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{12}.evaluated = ...
+        paths.idSubjBehav;
+    
+    % concat batches
+    matlabbatch = [matlabbatch1 matlabbatch];
+    
     % save subject-specific batch in subject-folder, but as mat-file for
     % simplicity, and with a time stamp
+    
     fnBatchSave = get_batch_filename_subject_timestamp(paths, 'fnStatsContrasts');
     save(fnBatchSave, 'matlabbatch');
     
@@ -89,39 +133,36 @@ for iSubj = iSubjectArray
         spm_jobman('run', matlabbatch);
     end
     
-    %% move created spm_*.ps to right location
-    pathGlm = paths.stats.glm.design;
-    fnReportDefault = dir(fullfile(pathGlm, 'spm_*ps'));
-    fnReportDefault = fullfile(pathGlm, fnReportDefault(end).name);
-    
-    fnReport = regexprep(paths.stats.contrasts.fnReport, '\.ps', ...
-        [datestr(now, '_yyyy_mm_dd_HHMMSS') '\.ps']);
-    movefile(fnReportDefault, fnReport);
-    
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %% run PhysIO-toolbox report contrasts function,
-    %   using information from created physio-structure for relevant
-    %   contrasts
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % FWE-corrected
-    args = tapas_physio_report_contrasts(...
-        'reportContrastThreshold', 0.05, ...
-        'reportContrastCorrection', 'FWE', ...
-        'fileReport', fnReport, ...
-        'fileSpm', paths.stats.fnSpm, ...
-        'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
-        'fileStructural', paths.preproc.output.fnStruct);
-    
-    
-    % again with liberal threshold: 0.001 uncorrected
-    args = tapas_physio_report_contrasts(...
-        'fileReport', fnReport, ...
-        'fileSpm', paths.stats.fnSpm, ...
-        'filePhysIO', paths.preproc.output.fnPhysioArray{1}, ...
-        'fileStructural', paths.preproc.output.fnStruct);
     %catch err
     %end
+    
+    fnReportArray{iSubj} = fnReport;
+    
+end
 
+%% move created spm_*.ps from contrast report to right location, if existing
+for iSubj = iSubjectArray
+    
+    paths           = get_paths_wagad(iSubj, idPreproc, idDesign);
+    fnReport        = fnReportArray{iSubj};
+    fnReportPhysio  = spm_file(fnReport, 'suffix', '_physio');
+    
+    % pause until file is created
+    fprintf('Waiting for creation of file %s', fnReportPhysio);
+    while ~exist(fnReportPhysio, 'file')
+        pause(1);
+        fprintf('.');
+    end
+    fprintf('\n');
+    
+    % move last created standard postscript file from spm contrast manager
+    % to meaningful name
+    pathGlm = paths.stats.glm.design;
+    fnReportDefault = dir(fullfile(pathGlm, 'spm_*ps'));
+    
+    if numel(fnReportDefault) > 0
+        fnReportDefault = fullfile(pathGlm, fnReportDefault(end).name);
+        movefile(fnReportDefault, fnReport);
+    end
+    
 end

@@ -47,7 +47,7 @@ if nargin < 2
     iSubjectArray = get_subject_ids()';
 end
 
-paths = get_paths_wagad();
+paths = get_paths_wagad(iSubjectArray,1,2);
 nSubjects = numel(iSubjectArray);
 itemArray = cell(nSubjects, 1);
 for s = 1:nSubjects

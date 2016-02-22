@@ -23,6 +23,12 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
+% initialise spm
+spm_get_defaults('modality', 'FMRI');
+if ~exist('cfg_files', 'file')
+    spm_jobman('initcfg')
+end
+
 datapath = paths.stats.secondLevel.root;
 
 switch dir1stLevel
@@ -86,6 +92,7 @@ end
 spm_jobman('initcfg');
 which spm
 
+paths = get_paths_wagad(iSubjectArray, 1, 2); % dummy subject to get general paths
 path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', learningParameter, regressor);
 
 if exist(path2ndLevel, 'dir')

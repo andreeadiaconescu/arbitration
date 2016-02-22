@@ -95,7 +95,7 @@ code.batch.fnPhysIO = 'batch_physio_regressors.m';
 code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
 code.batch.fnStatsContrastsArray = fnStatsContrastsArray;
 code.batch.fnStatsContrasts = fnStatsContrastsArray{idGlmDesign};
-
+code.batch.fnStatsContrastsPhysio = 'batch_stats_single_subject_report_contrasts_physio.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
 [~, ~] = mkdir(paths.cluster.scripts);
@@ -258,7 +258,7 @@ glm.root = fullfile(paths.subj, 'glm');
 [~,~] = mkdir(glm.root);
 glm.design = fullfile(glm.root, preproc.nameStrategy, glm.nameDesign);
 
-mkdir(glm.design);
+% mkdir(glm.design);
 
 paths.stats.fnSpm = fullfile(glm.design, 'SPM.mat');
 
