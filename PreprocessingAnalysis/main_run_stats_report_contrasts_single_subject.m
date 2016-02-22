@@ -28,7 +28,7 @@
 
 idPreproc = 1;
 idDesign   = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-
-iExcludedSubjects = [3 4 5 6 7 8 14 25 31 32 33 34 37 44];
+iExcludedSubjects = [6 14 25 32 31 33 34 37 44];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
@@ -36,12 +36,14 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 
-iSubjectArray = 9;
+
 
 % dummy subject to get general paths for selected design/preproc strategies
 paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign);
 
-useCluster = true;
+useCluster = false;
+
+doInteractivePlotOnly = true; % prevents deleting existing contrasts
 
 fnBatchStatsContrasts = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsContrasts);
@@ -80,8 +82,14 @@ for iSubj = iSubjectArray
     clear matlabbatch;
     run(fnBatchStatsContrasts);
     
-    % update SPM.mat dir
-    matlabbatch{1}.spm.stats.con.spmmat = cellstr(paths.stats.fnSpm);
+    % update SPM.mat dir & batch
+    if doInteractivePlotOnly & ~useCluster
+        % delete contrast creation
+        matlabbatch{2}.spm.stats.results.spmmat = cellstr(paths.stats.fnSpm);
+        matlabbatch(1) = [];
+    else
+        matlabbatch{1}.spm.stats.con.spmmat = cellstr(paths.stats.fnSpm);
+    end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Concat other matlabbatch to run PhysIO-toolbox report contrasts function,
@@ -110,7 +118,7 @@ for iSubj = iSubjectArray
         paths.preproc.output.fnPhysioArray{1};
     matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{12}.evaluated = ...
         paths.preproc.output.fnStruct;
-    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{12}.evaluated = ...
+    matlabbatch{1}.cfg_basicio.run_ops.call_matlab.inputs{14}.evaluated = ...
         paths.idSubjBehav;
     
     % concat batches
