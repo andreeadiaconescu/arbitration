@@ -62,14 +62,14 @@ if ismac
     end
     
 else % brutus cluster
-    paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
-    paths.data = fullfile(paths.study, 'data');
+    paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/IOIO_pharm';
+    paths.data = fullfile(paths.study, 'data_pharm');
     code.project = fullfile(paths.study, 'code', 'project');
     code.spm = fullfile(paths.study, 'code', 'spm12');
 end
 
-paths.patternIdSubj = 'TNU_WAGAD_%04d';
-paths.patternIdSubjBehav = 'WAGAD_%04d';  
+paths.patternIdSubj = 'DMPAD_%04d';
+paths.patternIdSubjBehav = 'DMPAD_%04d';  
 paths.idSubj = sprintf(paths.patternIdSubj, iSubj);
 paths.idSubjBehav = sprintf(paths.patternIdSubjBehav, iSubj);
 
