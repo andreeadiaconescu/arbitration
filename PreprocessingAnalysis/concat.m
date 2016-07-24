@@ -1,0 +1,14 @@
+SOC1.Session=[[SOC1.Session]',[SOC2.Session]']';
+SOC1.Session=[SOC1.Session]';
+SOC1.Block_codes=[[SOC1.Block_codes]',[SOC2.Block_codes]']';
+SOC1.Block_codes=[SOC1.Block_codes]';
+SOC1.ITI_codes=[[SOC1.ITI_codes]',[SOC2.ITI_codes]']';
+SOC1.ITI_codes=[SOC1.ITI_codes]';
+SOC1.Video_codes=[[SOC1.Video_codes]',[SOC2.Video_codes]']';
+SOC1.Video_codes=[SOC1.Video_codes]';
+SOC1.displaystim=[[SOC1.displaystim]',[SOC2.displaystim]']';
+SOC1.displaystim=[SOC1.displaystim]';
+SOC1.Outcome_codes=[[SOC1.Outcome_codes]',[SOC2.Outcome_codes]']';
+SOC1.Outcome_codes=[SOC1.displaystim]';
+SOC1.displaytarget=[[SOC1.displaytarget]',[SOC2.displaytarget]']';
+SOC1.displaytarget=[SOC1.displaytarget]';
