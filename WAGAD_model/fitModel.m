@@ -152,7 +152,7 @@ r.c_prc = hgf_binary3l_reward_social_config;
 % - squared_pe_config                 (compatible with hgf_config)
 % - softmax_reward_social             (compatible with
 %                                      hgf_binary3l_reward_social_config)
-r.c_obs = softmax_multiple_readouts_reward_social_config;      
+r.c_obs = softmax_multiple_readouts_reward_social_config;
 
 % Optimization algorithm
 % ~~~~~~~~~~~~~~~~~~~~~~

@@ -55,7 +55,7 @@ for iSubj = iSubjectArray
         outputmatrix = [outputmatrix; outputmatrixSession{iRun}];
     end
     save(paths.fnBehavMatrix,'outputmatrix','-mat');
-    
+  
     %% Run Inversion
     for iRsp=1
         %%
@@ -65,7 +65,8 @@ for iSubj = iSubjectArray
                 est=fitModel(y,input_u,'hgf_binary3l_reward_social_config',...
                     'hgf_ioio_precision_weight_new_config');
             else
-                est=fitModel(y,input_u);
+                est=fitModel(y,input_u,'hgf_binary3l_reward_social_config',...
+                    'softmax_precision_weighting_reward_social_config');
             end
             save(paths.fnFittedModel{iRsp}, 'est');
         else
