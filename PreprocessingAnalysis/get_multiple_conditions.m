@@ -9,17 +9,18 @@ end
 if nargin < 2
     doPlotFigures = 1;
 end
-
-typeDesign = 'ModelFree';
+iSubjectArray =31;
+typeDesign = 'ModelBased';
 
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    paths = get_paths_wagad(iSubj,1,2);
+    idDesign = 3;
+    paths = get_paths_wagad(iSubj,1,idDesign);
     
     if ismac
         doFitModel = true;
     else
-        doFitModel = false;
+        doFitModel = true;
     end
     
     
@@ -98,7 +99,7 @@ for iSubj = iSubjectArray
             pi_a = px +1./sa2hat_a;
             wx   = ze1.*pi_a./(ze1.*pi_a + pi_r);
             wc   = pi_r./(ze1.*pi_a + pi_r);
-            Arbitration = wx;
+            Arbitration = pi_a./(pi_a + pi_r);
             pmod(1,1).param = {[Arbitration],[x_a],[x_r]}; % Precision (Model-based wager)
             pmod(1,1).poly={[1],[1],[1]};
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

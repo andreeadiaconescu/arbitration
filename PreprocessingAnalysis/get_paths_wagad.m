@@ -23,7 +23,8 @@ nameGlmDesigns = {'first_design','ModelBased_ModelFree','second_design'};
 nameResponseModels= {'softmax_additiveprecision_reward_social'};
 
 fnStatsContrastsArray = {'batch_stats_single_subject_report_contrasts.m', ...
-    'batch_stats_modelfree_single_subject_report_contrasts.m'};
+    'batch_stats_modelfree_single_subject_report_contrasts.m',...
+    'batch_stats_single_subject_report_contrasts.m'};
 fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
     'batch_preproc_fmri_stc_realign.m'};
 
