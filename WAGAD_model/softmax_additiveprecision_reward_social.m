@@ -64,7 +64,7 @@ pi_a = px +1./sa2hat_a;
 wx   = ze1.*pi_a./(ze1.*pi_a + pi_r);
 wc   = pi_r./(ze1.*pi_a + pi_r);
 
-decision_noise=exp(-mu3hat_r)+exp(-mu3hat_a);
+decision_noise=exp(-mu3hat_r)+exp(-mu3hat_a)+exp(log(beta);
 decision_noise_wager=exp(-mu3hat_r)+exp(-mu3hat_a)+exp(log(beta));
 
 %% Belief vector
