@@ -63,10 +63,14 @@ if nargin < 4
 end
 
 % TODO: the following can be done via more general input parameters
+% paths to be added WITHOUT subfolders
 pathsToAddArray = {
-    paths.code.project
     paths.code.spm
-    paths.code.model
+    };
+
+% paths to be added WITH subfolders
+pathsToAddGenArray = {
+    paths.code.project
     };
 
 if ~ischar(functionName)
@@ -86,6 +90,11 @@ fid = fopen(fileScriptCluster, 'w+');
 nPaths = numel(pathsToAddArray);
 for p = 1:nPaths
    fprintf(fid, 'addpath %s;\n', pathsToAddArray{p});
+end
+
+nPaths = numel(pathsToAddGenArray);
+for p = 1:nPaths
+   fprintf(fid, 'addpath(genpath(''%s''));\n', pathsToAddGenArray{p});
 end
 
 %% Assemble argument string
