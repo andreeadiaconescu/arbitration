@@ -36,15 +36,14 @@ paths = get_paths_wagad(); % dummy subject to get general paths
 % manual setting...if you want to exclude any subjects
 iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
-
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);
-
-useCluster = true;
+iSubjectArray = 3;
+useCluster = false;
 
 iRunArray = 1:2; % Sessions that enter GLM
 idPreproc = 1;
-idDesign   = 3; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idDesign   = 4; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -112,7 +111,7 @@ for iSubj = iSubjectArray
         [nameScriptBrutus, fileScriptBrutus] = ...
             submit_job_cluster_matlabbatch(paths, fnBatchSave);        
     else
-        spm_jobman('run', matlabbatch);
+        spm_jobman('interactive', matlabbatch);
     end
     
 end

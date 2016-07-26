@@ -9,18 +9,17 @@ end
 if nargin < 2
     doPlotFigures = 1;
 end
-iSubjectArray =31;
-typeDesign = 'ModelBased';
+typeDesign = 'ModelFree';
 
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    idDesign = 3;
+    idDesign = 4;
     paths = get_paths_wagad(iSubj,1,idDesign);
     
     if ismac
         doFitModel = true;
     else
-        doFitModel = true;
+        doFitModel = false;
     end
     
     
@@ -160,7 +159,7 @@ for iSubj = iSubjectArray
             names={'Advice','Wager','Outcome'};
             
             durationsAdvice = [outputmatrix(:,5)-outputmatrix(:,1)];
-            durationsWager = 0;
+            durations = 0;
             
             hasInvalidDurations = any(isnan(durationsAdvice));
             
@@ -169,7 +168,7 @@ for iSubj = iSubjectArray
             else
                 durations{1} = durationsAdvice;
             end
-            durations{2} = durationsWager;
+            durations{2} = durations;
             durations{3} = 0;
             save(paths.fnMultipleConditions, 'onsets', 'names', 'durations', 'names', 'pmod', '-mat');
             
@@ -178,27 +177,28 @@ for iSubj = iSubjectArray
             RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
             AdviceCodingStable = (1-AdviceCodingUnstable')';
             RewardCodingStable = (1-RewardCodingUnstable')';
-            namesPrediction={'RewardStable','RewardUnstable','AdviceStable','AdviceUnstable'};
-            onsetsPrediction{1} = outputmatrix(RewardCodingStable==1,1);
-            onsetsPrediction{2} = outputmatrix(RewardCodingUnstable==1,1);
-            onsetsPrediction{3} = outputmatrix(AdviceCodingStable==1,1);
-            onsetsPrediction{4} = outputmatrix(AdviceCodingUnstable==1,1);
-            durationsPrediction{1} = 2;
-            durationsPrediction{2} = 2;
-            durationsPrediction{3} = 2;
-            durationsPrediction{4} = 2;
-            save(paths.fnModelFreePredictionConditions, 'onsetsPrediction', 'namesPrediction', 'durationsPrediction', '-mat');
+            names={'RewardStable','RewardUnstable','AdviceStable','AdviceUnstable'};
+            onsets{1} = outputmatrix(RewardCodingStable==1,1);
+            onsets{2} = outputmatrix(RewardCodingUnstable==1,1);
+            onsets{3} = outputmatrix(AdviceCodingStable==1,1);
+            onsets{4} = outputmatrix(AdviceCodingUnstable==1,1);
+            durations{1} = 2;
+            durations{2} = 2;
+            durations{3} = 2;
+            durations{4} = 2;
+            save(paths.fnModelFreePredictionConditions, 'onsets', 'names', 'durations', '-mat');
             
-            namesWager={'RewardStable','RewardUnstable','AdviceStable','AdviceUnstable'};
-            onsetsWager{1} = outputmatrix(RewardCodingStable==1,2);
-            onsetsWager{2} = outputmatrix(RewardCodingUnstable==1,2);
-            onsetsWager{3} = outputmatrix(AdviceCodingStable==1,2);
-            onsetsWager{4} = outputmatrix(AdviceCodingUnstable==1,2);
-            durationsWager{1} = 0;
-            durationsWager{2} = 0;
-            durationsWager{3} = 0;
-            durationsWager{4} = 0;
-            save(paths.fnModelFreeWagerConditions, 'onsetsWager', 'namesWager', 'durationsWager', '-mat');
+            clear onsets;
+            clear durations;
+            onsets{1} = outputmatrix(RewardCodingStable==1,2);
+            onsets{2} = outputmatrix(RewardCodingUnstable==1,2);
+            onsets{3} = outputmatrix(AdviceCodingStable==1,2);
+            onsets{4} = outputmatrix(AdviceCodingUnstable==1,2);
+            durations{1} = 0;
+            durations{2} = 0;
+            durations{3} = 0;
+            durations{4} = 0;
+            save(paths.fnModelFreeWagerConditions, 'onsets', 'names', 'durations', '-mat');
         end
     end
 end

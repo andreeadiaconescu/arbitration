@@ -19,12 +19,14 @@ end
 % The corresponding paths are chosen based on the id-input-parameters
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
-nameGlmDesigns = {'first_design','ModelBased_ModelFree','second_design'};
+nameGlmDesigns = {'first_design','ModelBased_ModelFree','second_design',...
+                  'factorial_design'};
 nameResponseModels= {'softmax_additiveprecision_reward_social'};
 
 fnStatsContrastsArray = {'batch_stats_single_subject_report_contrasts.m', ...
     'batch_stats_modelfree_single_subject_report_contrasts.m',...
-    'batch_stats_single_subject_report_contrasts_second_design.m'};
+    'batch_stats_single_subject_report_contrasts_second_design.m',...
+    'batch_stats_single_factorial_design.m'};
 fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
     'batch_preproc_fmri_stc_realign.m'};
 
@@ -126,8 +128,8 @@ paths.dirLogs = regexprep(paths.dirSess, 'data/funct', 'phys');
 paths.dirLogsOther = fullfile(paths.phys, 'logs');
 
 paths.fnMultipleConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
-paths.fnModelFreePredictionConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_modelfree_prediction_conditions.mat']);
-paths.fnModelFreeWagerConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_modelfree_wager_conditions.mat']);
+paths.fnModelFreePredictionConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
+paths.fnModelFreeWagerConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
 paths.fnBehavMatrix = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_behav_matrix.mat']);
 
 for iRsp = 1:numel(nameResponseModels);
