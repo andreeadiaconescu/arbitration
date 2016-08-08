@@ -9,11 +9,11 @@ end
 if nargin < 2
     doPlotFigures = 0;
 end
-typeDesign = 'ModelFree';
+typeDesign = 'ModelBased';
 
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    idDesign = 6;
+    idDesign = 3;
     paths = get_paths_wagad(iSubj,1,idDesign);
     
     if ismac
@@ -176,23 +176,21 @@ for iSubj = iSubjectArray
         elseif strcmp(typeDesign,'ModelFree')==1
             AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
             RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
-            
-            AdviceCodingStable = [ones(25,1)' ones(15,1)' zeros(30,1)' ones(25,1)' zeros(25,1)' ones(15,1)' zeros(25,1)'];
-            RewardCodingStable = [ones(25,1)' zeros(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' ones(15,1)' ones(25,1)'];
-            
+            AdviceCodingStable = [ones(25,1)' ones(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
+            RewardCodingStable = [ones(25,1)' zeros(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
             names={'RewardStable','RewardUnstable','AdviceStable','AdviceUnstable'};
-%             onsets{1} = outputmatrix(RewardCodingStable==1,1);
-%             onsets{2} = outputmatrix(RewardCodingUnstable==1,1);
-%             onsets{3} = outputmatrix(AdviceCodingStable==1,1);
-%             onsets{4} = outputmatrix(AdviceCodingUnstable==1,1);
-%             durations{1} = 0;
-%             durations{2} = 0;
-%             durations{3} = 0;
-%             durations{4} = 0;
-%             save(paths.fnModelFreePredictionConditions, 'onsets', 'names', 'durations', '-mat');
-%             
-%             clear onsets;
-%             clear durations;
+            onsets{1} = outputmatrix(RewardCodingStable==1,1);
+            onsets{2} = outputmatrix(RewardCodingUnstable==1,1);
+            onsets{3} = outputmatrix(AdviceCodingStable==1,1);
+            onsets{4} = outputmatrix(AdviceCodingUnstable==1,1);
+            durations{1} = 0;
+            durations{2} = 0;
+            durations{3} = 0;
+            durations{4} = 0;
+            save(paths.fnModelFreePredictionConditions, 'onsets', 'names', 'durations', '-mat');
+            
+            clear onsets;
+            clear durations;
             onsets{1} = outputmatrix(RewardCodingStable==1,2);
             onsets{2} = outputmatrix(RewardCodingUnstable==1,2);
             onsets{3} = outputmatrix(AdviceCodingStable==1,2);

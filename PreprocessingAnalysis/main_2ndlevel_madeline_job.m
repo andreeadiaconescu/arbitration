@@ -3,7 +3,7 @@
 %-----------------------------------------------------------------------
 function main_2ndlevel_madeline_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
-    regressor = 'basic_wager';
+    regressor = 'interaction_reward';
 end
 
 if nargin < 2
@@ -11,7 +11,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    dir1stLevel = 'ModelBased_ModelFree';
+    dir1stLevel = 'factorial_design_wager';
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
@@ -62,7 +62,7 @@ switch dir1stLevel
             case 'Arbitration_UnstableAStableR'
                 iContrast = 5;
             case 'Arbitration_UnstableAUnstableR'
-                iContrast = 14;               
+                iContrast = 14;
             case 'basic_wager'
                 iContrast = 6;
             case 'belief_precision'
@@ -72,7 +72,7 @@ switch dir1stLevel
             case 'Wager_StableAStableR'
                 iContrast = 9;
             case 'Wager_UnstableAStableR'
-                iContrast = 10;               
+                iContrast = 10;
             case 'Wager_UnstableAUnstableR'
                 iContrast = 15;
             case 'basic_outcome'
@@ -81,8 +81,55 @@ switch dir1stLevel
                 iContrast = 12;
             case 'delta1_cue'
                 iContrast = 13;
-                
-                
+        end
+    case 'forth_design'
+        switch regressor
+            case 'basic_advice'
+                iContrast = 1;
+            case 'arbitration'
+                iContrast = 2;
+            case 'prediction_advice'
+                iContrast = 3;
+            case 'prediction_cue'
+                iContrast = 4;
+            case 'basic_wager'
+                iContrast = 5;
+            case 'belief_precision'
+                iContrast = 6;
+            case 'belief'
+                iContrast = 7;
+            case 'outcome'
+                iContrast = 8;
+            case 'advice_delta1'
+                iContrast = 9;
+            case 'reward_delta1'
+                iContrast = 10;
+            case 'advice_delta2'
+                iContrast = 11;
+            case 'reward_delta2'
+                iContrast = 12;
+        end
+        case 'factorial_design_cue'
+        switch regressor
+            case 'main_stability'
+                iContrast = 1;
+            case 'main_volatility'
+                iContrast = 2;
+            case 'interaction_reward'
+                iContrast = 3;
+            case 'interaction_advice'
+                iContrast = 4;
+        end
+                case 'factorial_design_wager'
+        switch regressor
+            case 'main_stability'
+                iContrast = 1;
+            case 'main_volatility'
+                iContrast = 2;
+            case 'interaction_reward'
+                iContrast = 3;
+            case 'interaction_advice'
+                iContrast = 4;
         end
 end
 
@@ -92,7 +139,7 @@ end
 spm_jobman('initcfg');
 which spm
 
-paths = get_paths_wagad(iSubjectArray, 1, 2); % dummy subject to get general paths
+paths = get_paths_wagad(iSubjectArray); % dummy subject to get general paths
 path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', learningParameter, regressor);
 
 if exist(path2ndLevel, 'dir')
