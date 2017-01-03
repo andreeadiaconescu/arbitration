@@ -25,10 +25,10 @@ logp = NaN(length(infStates),1);
 u = r.u(:,1);
 u(r.irr) = [];
 
-x_r = infStates(:,1,1);
+x_r = infStates(:,2,1);
 x_r(r.irr) = [];
 
-x_a = infStates(:,1,3);
+x_a = infStates(:,2,3);
 x_a(r.irr) = [];
 
 mu3hat_r = infStates(:,3,1);
@@ -59,16 +59,17 @@ pc = 1./(x_r.*(1-x_r));
 % wc = pc.*1./sa2hat_r./(ze1.*1./sa2hat_a + pc.*1./sa2hat_r);
 
 %% Version 3
-pi_r = pc +1./sa2hat_r;
-pi_a = px +1./sa2hat_a;
+pi_r = 1./sa2hat_r;
+pi_a = 1./sa2hat_a;
 wx   = ze1.*pi_a./(ze1.*pi_a + pi_r);
 wc   = pi_r./(ze1.*pi_a + pi_r);
 
-decision_noise=exp(-mu3hat_r)+exp(-mu3hat_a)+exp(log(beta));
-decision_noise_wager=exp(-mu3hat_r)+exp(-mu3hat_a)+exp(log(beta));
+decision_noise      =exp((-mu3hat_r)+(-mu3hat_a)+log(beta));
+decision_noise_wager=exp((-mu3hat_r)+(-mu3hat_a)+log(beta));
 
 %% Belief vector
-b = wx.*x_a + wc.*x_r;
+mub = wx.*x_a + wc.*x_r;
+b = tapas_sgm(mub,1);
 
 %% Calculate precision of the Bernoulli
 pib = 1./(b.*(1-b));

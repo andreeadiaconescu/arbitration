@@ -1,0 +1,57 @@
+function outputmatrix=apply_trigger(InputFile1, InputFile2, offsetRunSeconds)
+
+if nargin < 3
+    offsetRunSeconds = 0;
+end
+
+% read trigger value
+triggervalue = dlmread(InputFile1,'\t',0,0);
+
+%read inputfile1 into a matrix
+inmatrix = InputFile2;
+
+[rs cs] =size(inmatrix);
+
+outputmatrix=[];
+
+totalOffsetSeconds = triggervalue(1)/1000 - offsetRunSeconds;
+
+onsets1 = inmatrix(:,6) - totalOffsetSeconds;   % Onset Prediction
+onsets2 = inmatrix(:,14) - totalOffsetSeconds;  % Onset Outcome
+onsets_resp = inmatrix(:,10) - totalOffsetSeconds;
+onsets_resp(onsets_resp<0) = NaN;
+
+isNotValid = inmatrix(:,11)<0;
+RT = inmatrix(:,11)-inmatrix(:,11)-1000;
+RT(find(isNotValid))=NaN;
+RS=(1./RT)';
+isValidTrial = inmatrix(:,9)>=0;
+adviceBlue   = mod(inmatrix(:,5),2);
+resp = inmatrix(:,8);
+respBlue=mod(resp,2); % blue = 1, green = 2
+choice_congr  = (adviceBlue == respBlue);
+choice=double(choice_congr);
+takeAdv=sum(choice)./160.*100;
+correctness=inmatrix(:,14)+ones(size(inmatrix,1),1);
+outputmatrix=[onsets1 onsets2 onsets3 choice onsets_resp RS' inmatrix(:,17)];
+
+isNotValid = inmatrix(:,11)<0;
+RT = inmatrix(:,11);
+RT(find(isNotValid))=NaN;
+RS=(1./RT)';
+
+adviceBlue=mod(inmatrix(:,5),2);
+outcomeBlue=mod(inmatrix(:,13),2);
+isValidTrial = inmatrix(:,9)>=0;
+resp = inmatrix(:,9);
+resp(find(isNotValid))=NaN;
+resp=resp';
+respBlue=mod(resp,2); % blue = 1, green = 2
+choice_congr  = (adviceBlue == respBlue');
+input = (adviceBlue == outcomeBlue);
+input_u = double(input);
+choice=double(choice_congr);
+correctness=inmatrix(:,15)+ones(size(inmatrix,1),1);
+outputmatrix=[onsets1 onsets2 choice onsets_resp RS' correctness input_u];
+
+

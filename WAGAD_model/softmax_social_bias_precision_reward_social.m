@@ -88,7 +88,7 @@ max_wager=10;
 % Calculate predicted wager
 % rs_wager = (max_wager./max(alpha).*alpha)-4;
 % rs_wager=  rs_wager+sqrt(exp(-mu3hat_r)+exp(-mu3hat_a));
-rs_wager = round((2.*alpha -1).*max_wager);
+rs_wager = (2.*alpha -1).*max_wager+beta;
 
 % Calculate log-probabilities for non-irregular trials
 y_wager = r.y(:,2);

@@ -42,10 +42,10 @@ c.priorsas = [
 
 
 % Model filehandle
-c.obs_fun = @softmax_additiveprecision_reward_social;
+c.obs_fun = @softmax_precision_reward_social;
 
 % Handle to function that transforms observation parameters to their native space
 % from the space they are estimated in
-c.transp_obs_fun = @softmax_additiveprecision_reward_social_transp;
+c.transp_obs_fun = @softmax_precision_reward_social_transp;
 
 return;
