@@ -27,7 +27,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 idPreproc = 1;
-idDesign   = 6; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idDesign   = 10; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 iExcludedSubjects = [6 14 25 32 31 33 34 37 44]; % Subjects excluded from the analysis 
 
 
@@ -39,7 +39,7 @@ iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 % dummy subject to get general paths for selected design/preproc strategies
 paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign);
 
-useCluster = true;
+useCluster = false;
 
 doInteractivePlotOnly = false; % prevents deleting existing contrasts
 

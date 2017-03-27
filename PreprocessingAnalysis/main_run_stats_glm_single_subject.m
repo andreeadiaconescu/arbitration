@@ -38,10 +38,10 @@ iSubjectArray = get_subject_ids(paths.data)';
 iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);
-useCluster = true;
+useCluster = false;
 iRunArray = 1:2; % Sessions that enter GLM
 idPreproc = 1;
-idDesign   = 6; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idDesign   = 11; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');

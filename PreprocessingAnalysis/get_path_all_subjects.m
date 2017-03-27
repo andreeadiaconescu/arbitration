@@ -48,7 +48,7 @@ if nargin < 2
 end
 
 idPreproc = 1;
-idDesign   = 3; % GLM design matrix selection by Id See also get_paths_wagad which folder it is 
+idDesign   = 11; % GLM design matrix selection by Id See also get_paths_wagad which folder it is 
 paths = get_paths_wagad(iSubjectArray, idPreproc,idDesign);
 nSubjects = numel(iSubjectArray);
 itemArray = cell(nSubjects, 1);

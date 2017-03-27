@@ -12,7 +12,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    idGlmDesign = 6;
+    idGlmDesign = 11;
 end
 
 % Array for different options at a particular preproc/analysis stage
@@ -20,16 +20,28 @@ end
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
 nameGlmDesigns = {'first_design','ModelBased_ModelFree','forth_design',...
-                  'factorial_design','factorial_design_cue',...
-                  'factorial_design_wager'};
-nameResponseModels= {'softmax_additiveprecision_reward_social'};
-
+    'factorial_design','factorial_design_cue',...
+    'factorial_design_wager','fifth_design','newmodel_design','newmodel_design_ortho_off',...
+    'newmodel_precision_ortho_off', 'newmodel_zeta_socialweighting'};
+filesResponseModels= {'softmax_social_bias_precision_reward_social_config',...
+    'softmax_social_bias_precision_social_config',...
+    'softmax_social_bias_precision_reward_config',...
+    'softmax_social_bias_precision_bayes_config'};
+nameResponseModels= {'softmax_social_bias_precision_reward_social',...
+    'softmax_social_bias_precision_social',...
+    'softmax_social_bias_precision_reward',...
+    'softmax_social_bias_precision_bayes'};
 fnStatsContrastsArray = {'batch_stats_single_subject_report_contrasts.m', ...
     'batch_stats_modelfree_single_subject_report_contrasts.m',...
     'batch_stats_single_subject_report_contrasts_second_design.m',...
     'batch_stats_single_factorial_design.m',...
     'batch_stats_single_factorial_design.m',...
-    'batch_stats_single_factorial_design.m'};
+    'batch_stats_single_factorial_design.m',...
+    'batch_stats_single_subject_report_contrasts_fifth_design.m',...
+    'batch_stats_single_subject_report_contrasts_new_design.m',...
+    'batch_stats_single_subject_report_contrasts_new_design.m',...
+    'batch_stats_single_subject_report_contrasts_new_design.m',...
+    'batch_stats_single_subject_report_contrasts_new_design.m'};
 fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
     'batch_preproc_fmri_stc_realign.m'};
 
@@ -39,7 +51,7 @@ fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
 preproc.nameStrategies = namePreprocStrategies;
 preproc.nameStrategy = namePreprocStrategies{idPreprocStrategy};
 glm.nameDesigns = nameGlmDesigns;
-glm.nameDesign = nameGlmDesigns{idGlmDesign}; 
+glm.nameDesign = nameGlmDesigns{idGlmDesign};
 
 if ismac
     [~,username] = unix('whoami');
@@ -54,17 +66,17 @@ if ismac
             paths.code.spm = '/Users/kasperla/Documents/code/matlab/spm12';
             
         case 'drea' % Andreeas laptop
-            paths.study = '/Users/drea/Dropbox/MadelineMSc/';
-            paths.data =  '/Users/drea/Dropbox/MadelineMSc/DatafMRI/fMRI_data/'; % behav data
+            paths.study = '/Volumes/External/WAGAD';
+            paths.data =  '/Volumes/External/WAGAD/data/'; % data
             code.project = '/Users/drea/Dropbox/MadelineMSc/Code/WAGAD';
             code.spm = '/Users/drea/Documents/MATLAB/spm12';
             
         otherwise % @Madeline: change to your own paths HERE
-
+            
             paths.study = '/Users/mstecy/Dropbox/MadelineMSc/';
             paths.data =  '/Users/mstecy/Dropbox/MadelineMSc/DatafMRI/fMRI_data/';
             code.project = '/Users/mstecy/Dropbox/MadelineMSc/Code/WAGAD';
-            code.spm = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12'; 
+            code.spm = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12';
     end
     
 else % brutus cluster
@@ -75,7 +87,7 @@ else % brutus cluster
 end
 
 paths.patternIdSubj = 'TNU_WAGAD_%04d';
-paths.patternIdSubjBehav = 'WAGAD_%04d';  
+paths.patternIdSubjBehav = 'WAGAD_%04d';
 paths.idSubj = sprintf(paths.patternIdSubj, iSubj);
 paths.idSubjBehav = sprintf(paths.patternIdSubjBehav, iSubj);
 
@@ -139,9 +151,9 @@ for iRsp = 1:numel(nameResponseModels);
     paths.fnFittedModel{iRsp} = fullfile(paths.behav, sprintf('%s_behav_model_rsp_%s.mat', ...
         paths.idSubjBehav, nameResponseModels{iRsp}));
 end
+paths.fileResponseModels = filesResponseModels;
+paths.fnPhyslogRenamed   = strcat(paths.dirSess(1:2), fs, 'phys.log');
 
-paths.fnPhyslogRenamed = strcat(paths.dirSess(1:2), fs, 'phys.log');
- 
 
 %% Paths renamed raw data
 
@@ -210,7 +222,7 @@ preproc.output.dirSess = {
 
 
 switch preproc.nameStrategy
-    case 'preproc_realign_stc' 
+    case 'preproc_realign_stc'
         preproc.output.pfxFunct = 'swau';
         preproc.output.pfxRealignParams = 'rp_';
     case 'preproc_stc_realign';
@@ -231,13 +243,13 @@ preproc.output.batch = fullfile(paths.subj, 'batches');
 
 % realignment parameter filenames
 preproc.output.fnRealignConcat = [...
-        preproc.output.pfxRealignParams paths.fnFunctRenamed{1}(1:end-4), ...
-        '.txt'];
+    preproc.output.pfxRealignParams paths.fnFunctRenamed{1}(1:end-4), ...
+    '.txt'];
 
 preproc.output.fnRealignSession = {
     [preproc.output.pfxRealignParams , paths.fnFunctRenamed{1}(1:end-4), '_split.txt']
     [preproc.output.pfxRealignParams , paths.fnFunctRenamed{2}(1:end-4), '_split.txt']
-};    
+    };
 
 
 
@@ -247,7 +259,7 @@ preproc.output.fnRealignConcat = fullfile(preproc.output.sess1, ...
     preproc.output.fnRealignConcat);
 
 preproc.output.fnRealignSession = strcat(preproc.output.dirSess(1:2), ...
-   fs, preproc.output.fnRealignSession);
+    fs, preproc.output.fnRealignSession);
 
 preproc.output.fnFunctArray = ...
     strcat( preproc.output.dirSess, ...

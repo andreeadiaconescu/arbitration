@@ -1,4 +1,4 @@
-function c = softmax_social_bias_precision_reward_social_config
+function c = softmax_social_bias_precision_bayes_config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Contains the configuration for the Softmax reward and social learning observation model
@@ -16,14 +16,14 @@ function c = softmax_social_bias_precision_reward_social_config
 c = struct;
 
 % Model name
-c.model = 'softmax_social_bias_precision_reward_social';
+c.model = 'softmax_social_bias_precision_bayes';
 
 % Sufficient statistics of Gaussian parameter priors
 
 
 % Zeta is in log-space
 c.logze1mu = log(2.7183);
-c.logze1sa = 5^2;
+c.logze1sa = 0;
 
 % Beta in log-space
 c.logbetamu = log(48);

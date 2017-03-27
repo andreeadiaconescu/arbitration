@@ -22,12 +22,12 @@ c.model = 'softmax_social_bias_precision_reward';
 
 
 % Zeta is in log-space
-c.logze1mu = log(1);
-c.logze1sa = 5^2;
+c.logze1mu = log(0.006);
+c.logze1sa = 0;
 
 % Beta in log-space
 c.logbetamu = log(48);
-c.logbetasa = 1;
+c.logbetasa = 6;
 
 % Gather prior settings in vectors
 c.priormus = [
@@ -42,10 +42,10 @@ c.priorsas = [
 
 
 % Model filehandle
-c.obs_fun = @softmax_additiveprecision_reward_social;
+c.obs_fun = @softmax_social_bias_precision_reward_social;
 
 % Handle to function that transforms observation parameters to their native space
 % from the space they are estimated in
-c.transp_obs_fun = @softmax_additiveprecision_reward_social_transp;
+c.transp_obs_fun = @softmax_social_bias_precision_reward_social_transp;
 
 return;

@@ -17,7 +17,7 @@ outputmatrix=[];
 totalOffsetSeconds = triggervalue(1)/1000 - offsetRunSeconds;
 
 onsets1 = inmatrix(:,5) - totalOffsetSeconds;   % Onset Prediction
-onsets2 = onsets1+2;                            % Onset Wager (plus 2 seconds)
+onsets2 = onsets1+5;                            % Onset Wager (plus 5 seconds)
 onsets3 = inmatrix(:,13) - totalOffsetSeconds;  % Onset Outcome
 onsets_resp = inmatrix(:,9) - totalOffsetSeconds;
 onsets_resp(onsets_resp<0) = NaN;

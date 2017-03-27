@@ -54,16 +54,8 @@ for s = 1:nSubjects
         par{s,2} = ka_a; % kappa advice
         par{s,3} = th_r; % theta reward
         par{s,4} = th_a; % theta advice
-        par{s,5} = mu20_r;
-        par{s,6} = sa20_r;
-        par{s,7} = mu30_r;
-        par{s,8} = sa30_r;
-        par{s,9} = mu20_a;
-        par{s,10} = sa20_a;
-        par{s,11} = mu30_a;
-        par{s,12} = sa30_a;
-        par{s,13} = log(ze);   % zeta
-        par{s,14} = beta; % decision noise
+        par{s,5} = ze;   % zeta
+        par{s,6} = beta; % decision noise
     end
 end
 if doStats
@@ -74,14 +66,14 @@ if doStats
     [h,p,ci,stats]=ttest(temp(:,3),temp(:,4));
     statsTheta=p;
     disp(['Significance paired t-test theta ' num2str(statsTheta)]);
-    [h,p,ci,stats]=ttest(temp(:,5),1.5353);
+    [h,p,ci,stats]=ttest(temp(:,5),1);
     statsZeta=p;
-    disp(['Significance paired t-test theta ' num2str(statsZeta)]);
+    disp(['Significance paired t-test zeta ' num2str(statsZeta)]);
     diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3) temp(:,5) temp(:,6)];
     parMean=num2str(mean(temp));
     disp(['Parameter Mean: ', parMean])
     parSTD=num2str(std(temp));
-    disp(['Parameter Mean: ', parSTD])
+    disp(['Parameter STD: ', parSTD])
 end
 save([paths.stats.secondLevel.covariates, '/covariates.mat'],'temp', '-mat');
 end

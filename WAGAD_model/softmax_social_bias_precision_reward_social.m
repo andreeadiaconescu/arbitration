@@ -31,6 +31,12 @@ x_r(r.irr) = [];
 x_a = infStates(:,2,3);
 x_a(r.irr) = [];
 
+mu1hat_r = infStates(:,1,1);
+mu1hat_r(r.irr) = [];
+
+mu1hat_a = infStates(:,1,3);
+mu1hat_a(r.irr) = [];
+
 mu3hat_r = infStates(:,3,1);
 mu3hat_r(r.irr) = [];
 
@@ -46,49 +52,37 @@ sa2hat_a(r.irr) = [];
 y_ch = r.y(:,1);
 y_ch(r.irr) = [];
 
-% Precision (i.e., Fisher information) vectors
+%% Precision 1st level (i.e., Fisher information) vectors
 px = 1./(x_a.*(1-x_a));
 pc = 1./(x_r.*(1-x_r));
 
-% Weight vectors
-%% Version 1
-% wx = ze1.*px./(ze1.*px + pc); % precision first level
-% wc = pc./(ze1.*px + pc);
-%% Version 2
-% wx = ze1.*1./sa2hat_a./(ze1.*1./sa2hat_a + pc.*1./sa2hat_r);
-% wc = pc.*1./sa2hat_r./(ze1.*1./sa2hat_a + pc.*1./sa2hat_r);
+% Weight vectors 1st level
+wx = ze1.*px./(ze1.*px + pc); % precision first level
+wc = pc./(ze1.*px + pc);
 
-% %% Version 3
-% pi_r = pc +1./sa2hat_r;
-% pi_a = px +1./sa2hat_a;
-% wx   = ze1.*pi_a./(ze1.*pi_a + pi_r);
-% wc   = pi_r./(ze1.*pi_a + pi_r);
-
-%% Version 4
+%% Precision 2nd level
 pi_r = 1./sa2hat_r;
-pi_a = ze1.*1./sa2hat_a;
-wx   = pi_a./(pi_a + pi_r);
-wc   = pi_r./(pi_a + pi_r);
+pi_a = 1./sa2hat_a;
 
-decision_noise=exp((-mu3hat_r)+(-mu3hat_a)+log(beta));
-decision_noise_wager=beta;
+% Weight vectors 2nd level
+wa   = ze1.*pi_a./(ze1.*pi_a + pi_r);
+wr   = pi_r./(ze1.*pi_a + pi_r);
 
-%% Belief vector
-mu2b = wx.*x_a + wc.*x_r;
-b    = tapas_sgm(mu2b,1);
+%% Belief Vector
+mu2b           = wa.*x_a + wr.*x_r;
+b              = tapas_sgm(mu2b,1);
+decision_noise = beta;
 
-%% Calculate precision of the Bernoulli
+%% Precision of the Bernoulli Vector
 pib = 1./(b.*(1-b));
 
 % Calculate confidence
 alpha = tapas_sgm((pib-4),1);
 max_wager=10;
 
-
 % Calculate predicted wager
-% rs_wager = (max_wager./max(alpha).*alpha)-4;
-% rs_wager=  rs_wager+sqrt(exp(-mu3hat_r)+exp(-mu3hat_a));
-rs_wager = (2.*alpha -1).*max_wager+beta;
+rs_wager            = (2.*alpha -1).*max_wager+beta;
+decision_noise_wager=beta;
 
 % Calculate log-probabilities for non-irregular trials
 y_wager = r.y(:,2);

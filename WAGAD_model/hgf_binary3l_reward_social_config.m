@@ -106,18 +106,18 @@ c.model = 'hgf_binary3l_reward_social';
 
 % Upper bound for kappa and theta (lower bound is always zero)
 c.kaub_r = 2;
-c.thub_r = 0.5;
+c.thub_r = 1;
 c.kaub_a = 2;
-c.thub_a = 0.5;
+c.thub_a = 1;
 
 % Sufficient statistics of Gaussian parameter priors
 
 % Initial mu2
 % Usually best kept fixed to 0 (neutral regarding inputs).
 c.mu2r_0mu = 0;
-c.mu2r_0sa = 1;
+c.mu2r_0sa = 0;
 c.mu2a_0mu = 0;
-c.mu2a_0sa = 1;
+c.mu2a_0sa = 0;
 
 % Initial sigma2
 c.logsa2r_0mu = log(1);
@@ -128,15 +128,15 @@ c.logsa2a_0sa = 0;
 % Initial mu3
 % Usually best kept fixed to 1 (determines origin on x3-scale).
 c.mu3r_0mu = 1;
-c.mu3r_0sa = 1;
+c.mu3r_0sa = 0;
 c.mu3a_0mu = 1;
-c.mu3a_0sa = 1;
+c.mu3a_0sa = 0;
 
 % Initial sigma3
 c.logsa3r_0mu = log(1);
-c.logsa3r_0sa = 1;
+c.logsa3r_0sa = 0;
 c.logsa3a_0mu = log(1);
-c.logsa3a_0sa = 1;
+c.logsa3a_0sa = 0;
 
 % Kappa
 % This should be fixed (preferably to 1) if the observation model
@@ -153,10 +153,10 @@ c.ommu_a = -4;
 c.omsa_a = 0;
 
 % Theta, this is also fixed to 0.5
-c.logitthmu_r = 0.25;
-c.logitthsa_r = 4^2; % 
-c.logitthmu_a = 0.25;
-c.logitthsa_a = 4^2;
+c.logitthmu_r = 0.5;
+c.logitthsa_r = 1; % 
+c.logitthmu_a = 0.5;
+c.logitthsa_a = 1;
 
 % Gather prior settings in vectors
 c.priormus = [
