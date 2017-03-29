@@ -3,7 +3,7 @@
 %-----------------------------------------------------------------------
 function main_2ndlevel_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
-    regressor = 'reward_delta2';
+    regressor = 'social_weighting';
 end
 
 if nargin < 2
@@ -11,7 +11,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    dir1stLevel = 'fifth_design';
+    dir1stLevel = 'newmodel_zeta_socialweighting';
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
@@ -32,6 +32,39 @@ end
 datapath = paths.stats.secondLevel.root;
 
 switch dir1stLevel
+    case 'newmodel_zeta_socialweighting'
+        switch regressor
+            case 'basic_advice'
+                iContrast = 1;
+            case 'new_arbitration'
+                iContrast = 2;
+            case 'social_weighting'
+                iContrast = 3;
+            case 'precision_advice'
+                iContrast = 4;
+            case 'precision_card'
+                iContrast = 5;
+            case 'basic_wager'
+                iContrast = 6;
+            case 'belief_precision'
+                iContrast = 7;
+            case 'belief'
+                iContrast = 8;
+            case 'alpha'
+                iContrast = 9;
+            case 'wager_magnitude'
+                iContrast = 10;
+            case 'outcome'
+                iContrast = 11;
+            case 'advice_epsilon2'
+                iContrast = 12;
+            case 'reward_epsilon2'
+                iContrast = 13;
+            case 'advice_epsilon3'
+                iContrast = 14;
+            case 'reward_epsilon3'
+                iContrast = 15;
+        end
     case 'newmodel_precision_ortho_off'
         switch regressor
             case 'basic_advice'

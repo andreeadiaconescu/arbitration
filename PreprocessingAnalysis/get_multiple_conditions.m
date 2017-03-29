@@ -9,11 +9,11 @@ end
 if nargin < 2
     doPlotFigures = 1;
 end
-typeDesign = 'ModelBased';
+typeDesign = 'ModelFree';
 
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    idDesign = 11;
+    idDesign = 12;
     paths = get_paths_wagad(iSubj,1,idDesign);
     
     if ismac

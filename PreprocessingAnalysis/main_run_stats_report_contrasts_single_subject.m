@@ -27,7 +27,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 idPreproc = 1;
-idDesign   = 10; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idDesign   = 11; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 iExcludedSubjects = [6 14 25 32 31 33 34 37 44]; % Subjects excluded from the analysis 
 
 
