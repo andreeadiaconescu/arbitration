@@ -27,7 +27,7 @@ c.logze1sa = 5^2;
 
 % Beta in log-space
 c.logbetamu = log(48);
-c.logbetasa = 6;
+c.logbetasa = 1;
 
 % Gather prior settings in vectors
 c.priormus = [

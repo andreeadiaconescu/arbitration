@@ -22,12 +22,12 @@ c.model = 'softmax_social_bias_precision_reward';
 
 
 % Zeta is in log-space
-c.logze1mu = log(0.006);
+c.logze1mu = -realmax;
 c.logze1sa = 0;
 
 % Beta in log-space
 c.logbetamu = log(48);
-c.logbetasa = 6;
+c.logbetasa = 1;
 
 % Gather prior settings in vectors
 c.priormus = [

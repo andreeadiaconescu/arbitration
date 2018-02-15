@@ -25,5 +25,9 @@ pstruct.sa3a_0 = pvec(11);
 pstruct.ka_a    = pvec(12);
 pstruct.om_a    = pvec(13);
 pstruct.th_a    = pvec(14);
+pstruct.phi_r  = pvec(15);
+pstruct.m_r    = pvec(16);
+pstruct.phi_a  = pvec(17);
+pstruct.m_a    = pvec(18);
 
 return;

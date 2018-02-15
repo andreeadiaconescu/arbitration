@@ -34,17 +34,22 @@ mu2r_0 = p(1);
 sa2r_0 = p(2);
 mu3r_0 = p(3);
 sa3r_0 = p(4);
-ka_r    = p(5);
-om_r    = p(6);
-th_r    = p(7);
+ka_r   = p(5);
+om_r   = p(6);
+th_r   = p(7);
 
 mu2a_0 = p(8);
 sa2a_0 = p(9);
 mu3a_0 = p(10);
 sa3a_0 = p(11);
-ka_a    = p(12);
-om_a    = p(13);
-th_a    = p(14);
+ka_a   = p(12);
+om_a   = p(13);
+th_a   = p(14);
+
+phi_r  = p(15);
+m_r    = p(16);
+phi_a  = p(17);
+m_a    = p(18);
 
 % Add dummy "zeroth" trial
 u_r = [0; r.u(:,2)];
@@ -246,12 +251,12 @@ end
 % Get predictions on mu2 and mu3
 mu2hat_r = mu2_r;
 mu2hat_r(end) = [];
-mu3hat_r = mu3_r;
+mu3hat_r = mu3_r + phi_r*(m_r-mu3_r);
 mu3hat_r(end) = [];
 
 mu2hat_a = mu2_a;
 mu2hat_a(end) = [];
-mu3hat_a = mu3_a;
+mu3hat_a = mu3_a + phi_a*(m_a-mu3_a);
 mu3hat_a(end) = [];
 
 % Remove representation priors

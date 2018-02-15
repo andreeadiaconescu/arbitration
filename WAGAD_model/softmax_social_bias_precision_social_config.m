@@ -16,18 +16,18 @@ function c = softmax_social_bias_precision_social_config
 c = struct;
 
 % Model name
-c.model = 'softmax_social_bias_precision_social';
+c.model = 'softmax_social_bias_precision_reward_social';
 
 % Sufficient statistics of Gaussian parameter priors
 
 
 % Zeta is in log-space
-c.logze1mu = log(6*10^3);
+c.logze1mu = log(1.7977e+300);
 c.logze1sa = 0;
 
 % Beta in log-space
 c.logbetamu = log(48);
-c.logbetasa = 6;
+c.logbetasa = 1;
 
 % Gather prior settings in vectors
 c.priormus = [

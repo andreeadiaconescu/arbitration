@@ -2,7 +2,8 @@ function get_covariates(iSubjectArray, doStats)
 % computes HGF for given subjects and creates parametric modulators for
 % concatenated design matrix, plus base regressors for event onsets
 %
-iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
+
+iExcludedSubjects = [14 25 32 33 34 37];
 
 % for WAGAD_0006, no physlogs were recorded 
 
@@ -26,7 +27,7 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=1
+    for iRsp=5
         %%
         parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
         load(paths.fnFittedModel{iRsp},'est','-mat');
@@ -60,21 +61,29 @@ for s = 1:nSubjects
 end
 if doStats
     temp = cell2mat(par);
+    figure; hist(log(temp(:,[5]))); hold on; stem(0);
     [h,p,ci,stats]=ttest(temp(:,1),temp(:,2));
     statsKappa=p;
     disp(['Significance paired t-test kappa ' num2str(statsKappa)]);
     [h,p,ci,stats]=ttest(temp(:,3),temp(:,4));
     statsTheta=p;
     disp(['Significance paired t-test theta ' num2str(statsTheta)]);
-    [h,p,ci,stats]=ttest(temp(:,5),1);
+    [h,p,ci,stats]=ttest(log(temp(:,5)),0);
     statsZeta=p;
     disp(['Significance paired t-test zeta ' num2str(statsZeta)]);
     diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3) temp(:,5) temp(:,6)];
-    parMean=num2str(mean(temp));
+    diffTheta = temp(:,4)-temp(:,3);
+    [R,P,RLO,RUP]=corrcoef(temp(:,3),temp(:,4));
+    figure; scatter(temp(:,3),temp(:,4));
+    disp(['Significance correlation theta' num2str(P(1,2))]);
+    [R,P,RLO,RUP]=corrcoef(temp(:,1),temp(:,2));
+    figure; scatter(temp(:,1),temp(:,2));
+    disp(['Significance correlation kappa' num2str(P(1,2))]);
+    parMean=num2str(mean(diffParameters));
     disp(['Parameter Mean: ', parMean])
-    parSTD=num2str(std(temp));
+    parSTD=num2str(std(diffParameters));
     disp(['Parameter STD: ', parSTD])
 end
-save([paths.stats.secondLevel.covariates, '/covariates.mat'],'temp', '-mat');
+save([paths.stats.secondLevel.covariates, '/covariates_model2.mat'],'temp', '-mat');
 end
 

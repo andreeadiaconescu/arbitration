@@ -28,7 +28,7 @@ c.tolArg  = 1e-3;
 c.maxStep = 2;
 c.maxIter = 100;
 c.maxRegu = 16;
-c.maxRst  = 0;
+c.maxRst  = 0; % 10
 
 % Algorithm filehandle
 c.opt_algo = @quasinewton_optim;

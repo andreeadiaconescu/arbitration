@@ -3,7 +3,7 @@
 %-----------------------------------------------------------------------
 function main_2ndlevel_job(regressor, learningParameter,dir1stLevel)
 if nargin < 1
-    regressor = 'social_weighting';
+    regressor = 'advice_epsilon3';
 end
 
 if nargin < 2
@@ -11,7 +11,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    dir1stLevel = 'newmodel_zeta_socialweighting';
+    dir1stLevel = 'revised_model_arbitration1';
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
@@ -29,274 +29,9 @@ if ~exist('cfg_files', 'file')
     spm_jobman('initcfg')
 end
 
-datapath = paths.stats.secondLevel.root;
+datapath      = paths.stats.secondLevel.root;
 
-switch dir1stLevel
-    case 'newmodel_zeta_socialweighting'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'new_arbitration'
-                iContrast = 2;
-            case 'social_weighting'
-                iContrast = 3;
-            case 'precision_advice'
-                iContrast = 4;
-            case 'precision_card'
-                iContrast = 5;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'belief'
-                iContrast = 8;
-            case 'alpha'
-                iContrast = 9;
-            case 'wager_magnitude'
-                iContrast = 10;
-            case 'outcome'
-                iContrast = 11;
-            case 'advice_epsilon2'
-                iContrast = 12;
-            case 'reward_epsilon2'
-                iContrast = 13;
-            case 'advice_epsilon3'
-                iContrast = 14;
-            case 'reward_epsilon3'
-                iContrast = 15;
-        end
-    case 'newmodel_precision_ortho_off'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'new_arbitration'
-                iContrast = 2;
-            case 'social_weighting'
-                iContrast = 3;
-            case 'precision_advice'
-                iContrast = 4;
-            case 'precision_card'
-                iContrast = 5;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'belief'
-                iContrast = 8;
-            case 'alpha'
-                iContrast = 9;
-            case 'wager_magnitude'
-                iContrast = 10;
-            case 'outcome'
-                iContrast = 11;
-            case 'advice_epsilon2'
-                iContrast = 12;
-            case 'reward_epsilon2'
-                iContrast = 13;
-            case 'advice_epsilon3'
-                iContrast = 14;
-            case 'reward_epsilon3'
-                iContrast = 15;
-        end
-    case 'newmodel_design_ortho_off'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'new_arbitration'
-                iContrast = 2;
-            case 'social_weighting'
-                iContrast = 3;
-            case 'prediction_advice'
-                iContrast = 4;
-            case 'prediction_card'
-                iContrast = 5;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'belief'
-                iContrast = 8;
-            case 'alpha'
-                iContrast = 9;
-            case 'wager_magnitude'
-                iContrast = 10;
-            case 'outcome'
-                iContrast = 11;
-            case 'advice_epsilon2'
-                iContrast = 12;
-            case 'reward_epsilon2'
-                iContrast = 13;
-            case 'advice_epsilon3'
-                iContrast = 14;
-            case 'reward_epsilon3'
-                iContrast = 15;
-        end
-        
-    case 'new_design'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'new_arbitration'
-                iContrast = 2;
-            case 'social_weighting'
-                iContrast = 3;
-            case 'prediction_advice'
-                iContrast = 4;
-            case 'prediction_card'
-                iContrast = 5;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'belief'
-                iContrast = 8;
-            case 'alpha'
-                iContrast = 9;
-            case 'wager_magnitude'
-                iContrast = 10;
-            case 'outcome'
-                iContrast = 11;
-            case 'advice_epsilon2'
-                iContrast = 12;
-            case 'reward_epsilon2'
-                iContrast = 13;
-            case 'advice_epsilon3'
-                iContrast = 14;
-            case 'reward_epsilon3'
-                iContrast = 15;
-        end
-    case 'fifth_design'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'new_arbitration'
-                iContrast = 2;
-            case 'social_weighting'
-                iContrast = 3;
-            case 'prediction_advice'
-                iContrast = 4;
-            case 'prediction_card'
-                iContrast = 5;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'belief'
-                iContrast = 8;
-            case 'wager_magnitude'
-                iContrast = 9;
-            case 'outcome'
-                iContrast = 10;
-            case 'advice_delta1'
-                iContrast = 11;
-            case 'reward_delta1'
-                iContrast = 12;
-            case 'advice_delta2'
-                iContrast = 13;
-            case 'reward_delta2'
-                iContrast = 14;
-        end
-    case 'first_design'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'arbitration'
-                iContrast = 2;
-            case 'basic_wager'
-                iContrast = 3;
-            case 'belief_precision'
-                iContrast = 4;
-            case 'basic_outcome'
-                iContrast = 5;
-            case 'delta1_advice'
-                iContrast = 6;
-            case 'delta1_cue'
-                iContrast = 7;
-        end
-    case 'ModelBased_ModelFree'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'arbitration'
-                iContrast = 2;
-            case 'Arbitration_StableAUnstableR'
-                iContrast = 3;
-            case 'Arbitration_StableAStableR'
-                iContrast = 4;
-            case 'Arbitration_UnstableAStableR'
-                iContrast = 5;
-            case 'Arbitration_UnstableAUnstableR'
-                iContrast = 14;
-            case 'basic_wager'
-                iContrast = 6;
-            case 'belief_precision'
-                iContrast = 7;
-            case 'Wager_StableAUnstableR'
-                iContrast = 8;
-            case 'Wager_StableAStableR'
-                iContrast = 9;
-            case 'Wager_UnstableAStableR'
-                iContrast = 10;
-            case 'Wager_UnstableAUnstableR'
-                iContrast = 15;
-            case 'basic_outcome'
-                iContrast = 11;
-            case 'delta1_advice'
-                iContrast = 12;
-            case 'delta1_cue'
-                iContrast = 13;
-        end
-    case 'forth_design'
-        switch regressor
-            case 'basic_advice'
-                iContrast = 1;
-            case 'arbitration'
-                iContrast = 2;
-            case 'prediction_advice'
-                iContrast = 3;
-            case 'prediction_cue'
-                iContrast = 4;
-            case 'basic_wager'
-                iContrast = 5;
-            case 'belief_precision'
-                iContrast = 6;
-            case 'belief'
-                iContrast = 7;
-            case 'outcome'
-                iContrast = 8;
-            case 'advice_delta1'
-                iContrast = 9;
-            case 'reward_delta1'
-                iContrast = 10;
-            case 'advice_delta2'
-                iContrast = 11;
-            case 'reward_delta2'
-                iContrast = 12;
-        end
-    case 'factorial_design_cue'
-        switch regressor
-            case 'main_stability'
-                iContrast = 1;
-            case 'main_volatility'
-                iContrast = 2;
-            case 'interaction_reward'
-                iContrast = 3;
-            case 'interaction_advice'
-                iContrast = 4;
-        end
-    case 'factorial_design_wager'
-        switch regressor
-            case 'main_stability'
-                iContrast = 1;
-            case 'main_volatility'
-                iContrast = 2;
-            case 'interaction_reward'
-                iContrast = 3;
-            case 'interaction_advice'
-                iContrast = 4;
-        end
-end
-
+[iContrast] = get_WAGAD_contrast(dir1stLevel,regressor);
 
 
 % Initialize
@@ -332,7 +67,7 @@ job = job.matlabbatch;
 job{1}.spm.stats.factorial_design.dir = {path2ndLevel};
 
 %%
-load(fullfile([paths.stats.secondLevel.covariates,'/covariates.mat']));
+load(fullfile([paths.stats.secondLevel.covariates,'/covariates_model1.mat']));
 %%
 allparameters=temp;
 pathGlmAllSubjects = get_path_all_subjects('stats.glm.design', iSubjectArray);
@@ -414,6 +149,5 @@ job{4}.spm.stats.results.write.none = 1;
 actual_job = {job{1},job{2},job{3},job{4}};
 
 % Execute actual_job
-spm_jobman('interactive',actual_job);
-% spm_jobman('run',actual_job);
+spm_jobman('run',actual_job);
 end
