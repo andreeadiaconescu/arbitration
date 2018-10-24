@@ -11,9 +11,9 @@ function logp = softmax_social_bias_1stlevelprecision_reward_social(r, infStates
 % COPYING or <http://www.gnu.org/licenses/>.
 
 % Transform zetas to their native space
-ze1 = exp(ptrans(1));
-beta = exp(ptrans(2));
-
+ze  = exp(ptrans(1));
+be_ch = exp(ptrans(2));
+be_wager  = exp(ptrans(3));
 
 % Initialize returned log-probabilities (choice) as NaNs so that NaN is
 % returned for all irregular trials
@@ -51,12 +51,12 @@ px = 1./(mu1hat_a.*(1-mu1hat_a));
 pc = 1./(mu1hat_r.*(1-mu1hat_r));
 
 % Weight vectors 1st level
-wx = ze1.*px./(ze1.*px + pc); % precision first level
-wc = pc./(ze1.*px + pc);
+wx = ze.*px./(ze.*px + pc); % precision first level
+wc = pc./(ze.*px + pc);
 
 %% Belief Vector
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-decision_noise =exp((-mu3hat_r)+(-mu3hat_a)+log(beta));
+decision_noise =exp((-mu3hat_r)+(-mu3hat_a)+log(be_ch));
 
 %% Precision of the Bernoulli Vector
 pib = 1./(b.*(1-b));
@@ -66,8 +66,8 @@ alpha = tapas_sgm((pib-4),1);
 max_wager=10;
 
 % Calculate predicted wager
-rs_wager            = (2.*alpha -1).*max_wager+log(beta);
-decision_noise_wager=beta;
+rs_wager            = (2.*alpha -1).*max_wager+log(be_wager);
+decision_noise_wager=be_wager;
 
 
 % Calculate log-probabilities for non-irregular trials

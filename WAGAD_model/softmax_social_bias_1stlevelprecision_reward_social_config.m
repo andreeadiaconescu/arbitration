@@ -22,22 +22,28 @@ c.model = 'softmax_social_bias_1stlevelprecision_reward_social';
 
 
 % Zeta is in log-space
-c.logze1mu = log(2.7183);
-c.logze1sa = 5^2;
+c.logzemu = log(2.7183);
+c.logzesa = 5^2;
 
-% Beta in log-space
-c.logbetamu = log(48);
-c.logbetasa = 1;
+% be_ch in log-space
+c.logbe_chmu = log(48);
+c.logbe_chsa = 1;
+
+% Decision noise wager in log-space
+c.logbe_wagermu = log(5);
+c.logbe_wagersa = 10^3;
 
 % Gather prior settings in vectors
 c.priormus = [
-    c.logze1mu,...
-    c.logbetamu,...
+    c.logzemu,...
+    c.logbe_chmu,...
+    c.logbe_wagermu,...
     ];
 
 c.priorsas = [
-    c.logze1sa,...
-    c.logbetasa,...
+    c.logzesa,...
+    c.logbe_chsa,...
+    c.logbe_wagersa,...
     ];
 
 

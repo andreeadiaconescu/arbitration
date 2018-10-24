@@ -10,9 +10,10 @@ function [pvec, pstruct] = softmax_social_bias_1stlevelprecision_reward_social_t
 pvec    = NaN(1,length(ptrans));
 pstruct = struct;
 
-pvec(1)     = exp(ptrans(1));       % ze
-pstruct.ze1 = pvec(1);
+pvec(1)     = exp(ptrans(1));       % ze1
+pstruct.ze = pvec(1);
 pvec(2)     = exp(ptrans(2));       % beta
-pstruct.beta = pvec(2);
-
+pstruct.be_ch = pvec(2);
+pvec(3)     = exp(ptrans(3));       % ze3
+pstruct.be_wager = pvec(3);
 return;

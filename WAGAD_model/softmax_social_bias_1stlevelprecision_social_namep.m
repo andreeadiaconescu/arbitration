@@ -9,7 +9,7 @@ function pstruct = softmax_social_bias_1stlevelprecision_social_namep(pvec)
 
 pstruct = struct;
 
-pstruct.ze1 = pvec(1);
+pstruct.ze1  = pvec(1);
 pstruct.beta = pvec(2);
-
+pstruct.ze3  = pvec(3);
 return;

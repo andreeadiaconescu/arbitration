@@ -29,15 +29,21 @@ c.logze1sa = 5^2;
 c.logbetamu = log(48);
 c.logbetasa = 1;
 
+% Decision noise wager in log-space
+c.logze3mu = log(5);
+c.logze3sa = 10^3;
+
 % Gather prior settings in vectors
 c.priormus = [
     c.logze1mu,...
     c.logbetamu,...
+    c.logze3mu,...
     ];
 
 c.priorsas = [
     c.logze1sa,...
     c.logbetasa,...
+    c.logze3sa,...
     ];
 
 

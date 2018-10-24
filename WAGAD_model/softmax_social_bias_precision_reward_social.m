@@ -13,7 +13,7 @@ function logp = softmax_social_bias_precision_reward_social(r, infStates, ptrans
 % Transform zetas to their native space
 ze1 = exp(ptrans(1));
 beta = exp(ptrans(2));
-
+ze3 = exp(ptrans(3));
 
 % Initialize returned log-probabilities (choice) as NaNs so that NaN is
 % returned for all irregular trials
@@ -90,8 +90,8 @@ alpha = tapas_sgm((pib-4),1);
 max_wager=10;
 
 % Calculate predicted wager
-rs_wager            = (2.*alpha -1).*max_wager+log(beta);
-decision_noise_wager=beta;
+rs_wager            = (2.*alpha -1).*max_wager+log(ze3);
+decision_noise_wager=ze3;
 
 
 % Calculate log-probabilities for non-irregular trials
