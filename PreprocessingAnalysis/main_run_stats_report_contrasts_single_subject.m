@@ -1,3 +1,5 @@
+function main_run_stats_report_contrasts_single_subject(iSubjectArray,idDesign)
+
 % Script main_run_stats_report_contrasts_single_subject
 % Computes and visualizes contrasts of interests and nuisance regressors
 % F-contrasts to assess efficacy of physiological noise correction
@@ -27,15 +29,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 idPreproc = 1;
-idDesign   = 14; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
-iExcludedSubjects = [6 14 25 32 31 33 34 37 44]; % Subjects excluded from the analysis 
-
-
 paths = get_paths_wagad(); % dummy subject to get general paths
 
-% manual setting...if you want to exclude any subjects
-iSubjectArray = get_subject_ids(paths.data)';
-iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
+if nargin < 1
+    % manual setting...if you want to exclude any subjects
+    iExcludedSubjects = [6 14 25 32 31 33 34 37 44]; % Subjects excluded from the analysis
+    iSubjectArray = get_subject_ids(paths.data)';
+    iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
+end
+
+if nargin < 2
+    idDesign = 2;
+end
 % dummy subject to get general paths for selected design/preproc strategies
 paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign);
 
@@ -148,11 +153,11 @@ end
 
 % %% move created spm_*.ps from contrast report to right location, if existing
 % for iSubj = iSubjectArray
-%     
+%
 %     paths           = get_paths_wagad(iSubj, idPreproc, idDesign);
 %     fnReport        = fnReportArray{iSubj};
 %     fnReportPhysio  = spm_file(fnReport, 'suffix', '_physio');
-%     
+%
 %     % pause until file is created
 %     fprintf('Waiting for creation of file %s', fnReportPhysio);
 %     while ~exist(fnReportPhysio, 'file')
@@ -160,15 +165,15 @@ end
 %         fprintf('.');
 %     end
 %     fprintf('\n');
-%     
+%
 %     % move last created standard postscript file from spm contrast manager
 %     % to meaningful name
 %     pathGlm = paths.stats.glm.design;
 %     fnReportDefault = dir(fullfile(pathGlm, 'spm_*ps'));
-%     
+%
 %     if numel(fnReportDefault) > 0
 %         fnReportDefault = fullfile(pathGlm, fnReportDefault(end).name);
 %         movefile(fnReportDefault, fnReport);
 %     end
-%     
+%
 % end

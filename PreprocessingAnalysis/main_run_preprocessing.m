@@ -1,3 +1,4 @@
+function main_run_preprocessing(iSubjectArray)
 % Script main_run_preprocessing
 % Performs preprocessing of fMRI data for multiple subjects, using
 % pre-existing single-subject batch
@@ -34,8 +35,13 @@ else
     iSubjectArray = get_subject_ids(paths.data)';
 end
 
-% manual setting...if you want to exclude any subjects
-iSubjectArray = setdiff(iSubjectArray, [18 35 114 117 118 120]);
+if nargin < 1
+    
+    % manual setting...if you want to exclude any subjects
+    iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
+end
+
+
 
 % checked via run through via in WAGAD/data-folder run:
 % find . -name swau*run1* |sort

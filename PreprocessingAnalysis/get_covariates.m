@@ -3,16 +3,18 @@ function get_covariates(iSubjectArray, doStats)
 % concatenated design matrix, plus base regressors for event onsets
 %
 
-iExcludedSubjects = [14 25 32 33 34 37];
 
-% for WAGAD_0006, no physlogs were recorded 
+
+% for WAGAD_0006, no physlogs were recorded
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
-% manual setting...if you want to exclude any subjects
-iSubjectArray = get_subject_ids(paths.data)';
+
 
 if nargin < 1
+    % manual setting...if you want to exclude any subjects
+    iExcludedSubjects = [14 25 32 33 34 37];
+    iSubjectArray = get_subject_ids(paths.data)';
     % manual setting...if you want to exclude any subjects
     iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 end
@@ -27,7 +29,7 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=5
+    for iRsp=1
         %%
         parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
         load(paths.fnFittedModel{iRsp},'est','-mat');
@@ -46,8 +48,8 @@ for s = 1:nSubjects
         sa20_a=est.p_prc.sa2a_0;
         mu30_a=est.p_prc.mu3a_0;
         sa30_a=est.p_prc.sa3a_0;
-        ze=est.p_obs.ze1;
-        beta=est.p_obs.beta;
+        ze=est.p_obs.ze;
+        beta=est.p_obs.be_ch;
         for j = 1:14
             par{nSubjects,j} = [];
         end

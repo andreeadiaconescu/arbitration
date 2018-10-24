@@ -4,18 +4,15 @@
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
 matlabbatch{1}.spm.stats.con.spmmat = {'/Volumes/AndreeasBackUp/WAGAD/data/TNU_WAGAD_0003/glm/preproc_realign_stc/factorial_design_multiple_contrasts/SPM.mat'};
-matlabbatch{1}.spm.stats.con.consess{1}.tcon.name = 'Main_Stability';
-matlabbatch{1}.spm.stats.con.consess{1}.tcon.weights = [1 0 1 0];
+matlabbatch{1}.spm.stats.con.consess{1}.tcon.name = 'Interaction_Advice'; %
+matlabbatch{1}.spm.stats.con.consess{1}.tcon.weights = [-1 1 1 -1];
 matlabbatch{1}.spm.stats.con.consess{1}.tcon.sessrep = 'none';
-matlabbatch{1}.spm.stats.con.consess{2}.tcon.name = 'Main_Volatile';
-matlabbatch{1}.spm.stats.con.consess{2}.tcon.weights = [0 1 0 1];
+matlabbatch{1}.spm.stats.con.consess{2}.tcon.name = 'Stability>Volatility';
+matlabbatch{1}.spm.stats.con.consess{2}.tcon.weights = [1 -1 1 -1];
 matlabbatch{1}.spm.stats.con.consess{2}.tcon.sessrep = 'none';
-matlabbatch{1}.spm.stats.con.consess{3}.tcon.name = 'Interaction_Advice';
-matlabbatch{1}.spm.stats.con.consess{3}.tcon.weights = [-1 1 1 -1];
+matlabbatch{1}.spm.stats.con.consess{3}.tcon.name = 'Advice>Reward';
+matlabbatch{1}.spm.stats.con.consess{3}.tcon.weights = [-1 -1 1 1];
 matlabbatch{1}.spm.stats.con.consess{3}.tcon.sessrep = 'none';
-matlabbatch{1}.spm.stats.con.consess{4}.tcon.name = 'StabilityvsVolatility';
-matlabbatch{1}.spm.stats.con.consess{4}.tcon.weights = [1 -1 1 -1];
-matlabbatch{1}.spm.stats.con.consess{4}.tcon.sessrep = 'none';
 matlabbatch{1}.spm.stats.con.delete = 1;
 matlabbatch{2}.spm.stats.results.spmmat(1) = cfg_dep('Contrast Manager: SPM.mat File', substruct('.','val', '{}',{1}, '.','val', '{}',{1}, '.','val', '{}',{1}), substruct('.','spmmat'));
 matlabbatch{2}.spm.stats.results.conspec(1).titlestr = '';

@@ -41,7 +41,7 @@ fnBatchStatsGlm = fullfile(paths.code.batches, ...
 useCluster = false;
 iRunArray = 1:2; % Sessions that enter GLM
 idPreproc = 1;
-idDesign   = 14; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
+idDesign   = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');

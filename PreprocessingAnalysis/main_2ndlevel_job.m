@@ -1,27 +1,30 @@
 %-----------------------------------------------------------------------
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
-function main_2ndlevel_job(regressor, learningParameter,dir1stLevel)
+function main_2ndlevel_job(idDesign,iSubjectArray,regressor,learningParameter)
 if nargin < 1
-    regressor = 'advice_epsilon3';
+    idDesign = 2;
 end
 
 if nargin < 2
-    learningParameter = 'zeta';
+    iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
+    % manual setting...if you want to exclude any subjects
+    iSubjectArray = get_subject_ids(paths.data)';
+    iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 end
 
 if nargin < 3
-    dir1stLevel = 'revised_model_arbitration1';
+    regressor = 'advice_epsilon3';
 end
+if nargin < 4
+    learningParameter = 'zeta';
+end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-iExcludedSubjects = [6 14 25 31 32 33 34 37 44];
 paths = get_paths_wagad(); % dummy subject to get general paths
-
-% manual setting...if you want to exclude any subjects
-iSubjectArray = get_subject_ids(paths.data)';
-iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
+dir1stLevel = paths.nameGlmDesigns{idDesign};
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
