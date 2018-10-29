@@ -1,5 +1,8 @@
-display('Using SPM12, version 6225');
+display('Using SPM12, version 6470');
 display('Using physIO, version 861');
+% remove all other toolboxes
+restoredefaultpath;
+
 if ismac
     [~,username] = unix('whoami');
     username(end) = []; % remove trailing end of line character
@@ -8,7 +11,7 @@ if ismac
         
         case 'drea' % Andreeas laptop
             addpath(genpath('/Users/drea/Dropbox/MadelineMSc/Code/WAGAD/'));
-            addpath(genpath('/Users/drea/Documents/MATLAB/spm12'));
+            addpath('/Users/drea/Dropbox/Andreiuta/Collaborations_Lars/PhysFX/code/spm12');
             
         otherwise % @Madeline: change to your own paths HERE
             
