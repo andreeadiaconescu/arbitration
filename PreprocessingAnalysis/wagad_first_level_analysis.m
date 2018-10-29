@@ -5,7 +5,7 @@ function wagad_first_level_analysis(iSubjectArray,typeDesign)
 %           options     as set by dmpad_set_analysis_options();
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 1 1 1];
+Analysis_Strategy = [0 1 1 0];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -27,22 +27,19 @@ end
 
 doPreprocessing         = Analysis_Strategy(1);
 doInversion             = Analysis_Strategy(2);
-doCreateRegressors      = Analysis_Strategy(2);
-doFirstLevelStats       = Analysis_Strategy(3);
+doCreateRegressors      = Analysis_Strategy(3);
+doFirstLevelStats       = Analysis_Strategy(4);
 
 
 % Deletes previous preproc/stats files of analysis specified in options
 if doPreprocessing
     main_run_preprocessing;
 end
-
 if doInversion
-    doFitModel = true;
-else
-    doFitModel = false;
+   get_model_inversion(iSubjectArray,idDesign);    
 end
 if doCreateRegressors
-    get_multiple_conditions_1stlevel(iSubjectArray, typeDesign,doFitModel,idDesign);
+    get_multiple_conditions_1stlevel(iSubjectArray,typeDesign,idDesign);
 end
 
 if doFirstLevelStats
