@@ -121,8 +121,6 @@ for iSubj = iSubjectArray
             end
             save(paths.fnFittedModel{iRsp}, 'est');
             
-            hgf_plotTraj_reward_social(est);
-            
         end
     catch err
         errorSubjects{end+1,1}.id = iD;
