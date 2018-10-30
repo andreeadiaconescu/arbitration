@@ -56,7 +56,7 @@ wc = pc./(ze.*px + pc);
 
 %% Belief Vector
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-decision_noise =exp((-mu3hat_r)+(-mu3hat_a)+log(be_ch));
+decision_noise =exp((-mu3hat_r)+(-mu3hat_a)-log(be_ch));
 
 %% Precision of the Bernoulli Vector
 pib = 1./(b.*(1-b));

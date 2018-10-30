@@ -148,9 +148,9 @@ c.logitkasa_a = 1;
 
 % Omega
 c.ommu_r = -4;
-c.omsa_r = 1;
+c.omsa_r = 0;
 c.ommu_a = -4;
-c.omsa_a = 1;
+c.omsa_a = 0;
 
 % Theta, this is also fixed to 0.5
 c.logitthmu_r = 0.25;

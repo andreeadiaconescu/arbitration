@@ -80,7 +80,7 @@ wc = pc./(ze.*px + pc);
 
 % Belief and Choice Noise
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-decision_noise = exp((-mu3hat_r)+(-mu3hat_a)+log(be_ch));
+decision_noise = exp((-mu3hat_r)+(-mu3hat_a)-log(be_ch));
 
 % Precision of the Bernoulli Vector
 pib = 1./(b.*(1-b));
@@ -92,7 +92,7 @@ arbitration = wx;
 % Calculate predicted log-reaction time
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 logrt = be0 + be1.*pib + be2.*arbitration;
-wager = tapas_sgm(logrt,1).*10-ones(size(logrt)); % wager from 1 to 10
+wager = tapas_sgm(logrt,1); % wager from 1 to 10
 
 % Calculate log-probabilities for non-irregular trials
 % Note: 8*atan(1) == 2*pi (this is used to guard against
