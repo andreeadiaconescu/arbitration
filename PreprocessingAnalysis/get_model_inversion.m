@@ -18,7 +18,8 @@ errorFile = 'errorInversion.mat';
 for iSubj = iSubjectArray
     %% Load Model and inputs
     iD = iSubj;
-    try % continuation with new subjects, if error
+    fprintf('\n=======\n\n\tInverting subject %d\n\n', iD)
+    %try % continuation with new subjects, if error
         paths = get_paths_wagad(iSubj,1,idDesign);
         addpath(paths.code.model);
         
@@ -65,7 +66,8 @@ for iSubj = iSubjectArray
         
         %% Run Inversion
         for iRsp= 1:numel(paths.fileResponseModels)
-            
+            fprintf('\n=======\n\n\t\tInverting subject %d, model %d\n\n', iD, iRsp)
+
             est=fitModel(y,input_u,'hgf_binary3l_reward_social_config',...
                 paths.fileResponseModels{iRsp});
             if iRsp == 2
@@ -122,11 +124,11 @@ for iSubj = iSubjectArray
             save(paths.fnFittedModel{iRsp}, 'est');
             
         end
-    catch err
-        errorSubjects{end+1,1}.id = iD;
-        errorSubjects{end}.error = err;
-        errorIds{end+1} = iD;
-    end
+%     catch err
+%         errorSubjects{end+1,1}.id = iD;
+%         errorSubjects{end}.error = err;
+%         errorIds{end+1} = iD;
+%     end
 end
 
 save(fullfile(paths.behav, errorFile), 'errorSubjects', 'errorIds');
