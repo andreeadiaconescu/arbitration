@@ -29,10 +29,15 @@ nSubjects = numel(iSubjectArray);
 
 % Get task structure
 AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
+AdviceUnstable      = ones(size(AdviceCodingUnstable,2),1) == AdviceCodingUnstable';
+
 RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
+RewardUnstable      = ones(size(RewardCodingUnstable,2),1) == RewardCodingUnstable';
 
 AdviceCodingStable = [ones(25,1)' ones(15,1)' zeros(30,1)' ones(25,1)' zeros(25,1)' ones(15,1)' zeros(25,1)'];
+AdviceStable      = ones(size(AdviceCodingStable,2),1) == AdviceCodingStable';
 RewardCodingStable = [ones(25,1)' zeros(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' ones(15,1)' ones(25,1)'];
+RewardStable      = ones(size(RewardCodingStable,2),1) == RewardCodingStable';
 
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
@@ -43,15 +48,15 @@ for s = 1:nSubjects
         actual_wager = est.y([2:end],2);
         predicted_wager = est.predict_wager;
         
-        actual_wager_aStable = actual_wager(AdviceCodingStable);
-        actual_wager_aUnstable = actual_wager(AdviceCodingUnstable);
-        actual_wager_rStable = actual_wager(RewardCodingStable);
-        actual_wager_rUnstable = actual_wager(RewardCodingUnstable);
+        actual_wager_aStable = actual_wager(AdviceStable(2:end));
+        actual_wager_aUnstable = actual_wager(AdviceUnstable(2:end));
+        actual_wager_rStable = actual_wager(RewardStable(2:end));
+        actual_wager_rUnstable = actual_wager(RewardUnstable(2:end));
         
-        predicted_wager_aStable = predicted_wager(AdviceCodingStable);
-        predicted_wager_aUnstable = predicted_wager(AdviceCodingUnstable);
-        predicted_wager_rStable = predicted_wager(RewardCodingStable);
-        predicted_wager_rUnstable = predicted_wager(RewardCodingUnstable);
+        predicted_wager_aStable = predicted_wager(AdviceStable(2:end));
+        predicted_wager_aUnstable = predicted_wager(AdviceUnstable(2:end));
+        predicted_wager_rStable = predicted_wager(RewardStable(2:end));
+        predicted_wager_rUnstable = predicted_wager(RewardUnstable(2:end));
         
         par{s,1} = actual_wager_aStable;
         par{s,2} = actual_wager_aUnstable;
@@ -86,6 +91,10 @@ if doStats
     [R,P,RLO,RUP]=corrcoef(temp(:,4),temp(:,8));
     figure; scatter(temp(:,4),temp(:,8));
     disp(['Significance correlation RUnstable' num2str(P(1,2))]);
+    
+    [R,P,RLO,RUP]=corrcoef(temp(:,[1;2;3;4]),temp(:,[5;6;7;8]));
+    figure; scatter(temp(:,[1;2;3;4]),temp(:,[5;6;7;8]));
+    disp(['Significance correlation OverAllPhases' num2str(P(1,2))]); 
     
 end
 save([paths.stats.secondLevel.covariates, '/wagers_actual_versus_predicted.mat'],'temp', '-mat');
