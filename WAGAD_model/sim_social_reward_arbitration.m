@@ -9,25 +9,19 @@ function sim_social_reward_arbitration
 % COPYING or <http://www.gnu.org/licenses/>.
 
 pathroot=fileparts(mfilename('fullpath')); %%% CHANGE;
-savepath = [pathroot '/sim_results/'];
-rp_model= {'softmax_multiple_readouts_reward_social'};
+iRsp = 2;
+paths = get_paths_wagad();
+rp_model = paths.nameResponseModels{iRsp};
 prc_model= {'hgf_binary3l_reward_social'};
 
-data = {'final_inputs_advice_reward'}; % input structure
-
-omega_parArray=[-3.5:-0.5:-6.5];
-
-zeta_parArray=exp([0:0.1429:1]);
-
+[zeta_parArray] = subjectSpecificZeta;
 
 P=numel(zeta_parArray);
-%O=numel(zeta_parArray);
-
 p_prc=zeros(P,14);
 p_obs=zeros(numel(zeta_parArray),2);
 
-for m=1:numel(rp_model)
-    for i=1:numel(prc_model)
+for m=1
+    for i=1
         fh = [];
         sh = [];
         lgh_r = NaN(1,P);
@@ -35,25 +29,24 @@ for m=1:numel(rp_model)
         lgh_a = NaN(1,P);
         lgstr_a = cell(1,P);
         for par=1:P
-            
-            subj=data{1};
-            input_u = load(fullfile(pathroot, [subj '.txt']));
+            input_u = load(fullfile(paths.code.model, 'final_inputs_advice_reward.txt'));
             inputs_reward=input_u(:,2);
             inputs_advice=input_u(:,1);
-            om=omega_parArray(par);
+            advice_card  =input_u(:,3);
             ze=zeta_parArray(par);
-            p_prc=[0 1 1 1 1 om 0.5 0 1 1 1 1 om 0.5];
-            lgstr_a{par} = sprintf('\\zeta = %3.1f', log(ze));
+            p_prc=[0 1 1 1 0.58458 -4 0.59936 ...
+                   0 1 1 1 0.61243 -4 0.66502 ...
+                   0.1000 0.1000 1 1];
             
-            p_obs=[exp(ze) log(48)];
-            sim = simResponses(inputs_reward, inputs_advice, prc_model{i}, p_prc, rp_model{m},p_obs);
+            lgstr_a{par} = sprintf('\\zeta = %3.1f', ze);
+            
+            p_obs = [6.6606 -0.5679 0.5793 -0.3872 -0.1581 -1.7403 0.0164 ze 3.3213 7.6193];
+            sim   = simResponses(inputs_reward, inputs_advice, advice_card,prc_model{i}, p_prc, rp_model,p_obs);
             colors_r=jet(P);
             colors_a=cool(P);
             currCol_r = colors_r(par,:);
             currCol_a = colors_a(par,:);
             [fh, sh, lgh_r(par), lgh_a(par)] = hgf_plot_rainbowsim(par, fh, sh);
-            save(fullfile(savepath, sprintf('%s', subj, 'sim_par_', num2str(par), '_', rp_model{m},prc_model{i})), 'sim');
-            
         end
         legend(lgh_a, lgstr_a);
     end
@@ -85,38 +78,22 @@ end
         x_a=sgm(sim.traj.mu_a(:,2), 1);
         x_r=sgm(sim.traj.mu_r(:,2), 1);
         
-        sa2hat_a=sim.traj.sa_a(:,2);
-        sa2hat_r=sim.traj.sa_r(:,2);
         
         px = 1./(x_a.*(1-x_a));
         pc = 1./(x_r.*(1-x_r));
-
+        
+        mu1hat_r0 = sgm(sim.p_prc.mu2r_0, 1);
+        mu1hat_a0 = sgm(sim.p_prc.mu2a_0, 1);
+        
+        px_0      = 1./(mu1hat_a0.*(1-mu1hat_a0));
+        pc_0      = 1./(mu1hat_r0.*(1-mu1hat_r0));
+        
         % Version 1
-        % wx = ze1.*px./(ze1.*px + pc); % precision first level
-        % wc = pc./(ze1.*px + pc);
+        priorx=sim.p_obs.ze.*px_0./(sim.p_obs.ze.*px_0 + pc_0);
+        priorc=pc_0./(sim.p_obs.ze.*px_0 + pc_0);
         
-        % Version 2
-        priorx=sim.p_obs.ze1.*1./sim.p_prc.sa2a_0.*1./sgm(sim.p_prc.mu2a_0, 1)./...
-            (sim.p_obs.ze1.*1./sgm(sim.p_prc.mu2a_0, 1).* 1./sim.p_prc.sa2a_0 + 1./sgm(sim.p_prc.mu2r_0, 1).*1./sim.p_prc.sa2r_0);
-        priorc=1./sgm(sim.p_prc.mu2r_0, 1).*1./sim.p_prc.sa2r_0./...
-            (sim.p_obs.ze1.*1./sgm(sim.p_prc.mu2a_0, 1).*1./sim.p_prc.sa2a_0 + 1./sgm(sim.p_prc.mu2r_0, 1).*1./sim.p_prc.sa2r_0);
-        
-        wx = sim.p_obs.ze1.*1./sa2hat_a.*px./...
-            (sim.p_obs.ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
-        wc = 1./sa2hat_r.*pc./...
-            (sim.p_obs.ze1.*px.*1./sa2hat_a + pc.*1./sa2hat_r);
-        
-        % Version 3
-%         priorx=sim.p_obs.ze1.*exp(sim.p_prc.sa3a_0)./...
-%             (sim.p_obs.ze1.* exp(sim.p_prc.sa3a_0) + exp(sim.p_prc.sa3r_0));
-%         priorc=exp(sim.p_prc.sa3r_0)./...
-%             (sim.p_obs.ze1.* exp(sim.p_prc.sa3a_0) + exp(sim.p_prc.sa3r_0));
-%         
-%         wx = sim.p_obs.ze1.*exp(sim.traj.muhat_a(:,3))./...
-%             (sim.p_obs.ze1.*exp(sim.traj.muhat_a(:,3)) + exp(sim.traj.muhat_r(:,3)));
-%         wc = exp(sim.traj.muhat_r(:,3))./...
-%             (sim.p_obs.ze1.*exp(sim.traj.muhat_a(:,3)) + exp(sim.traj.muhat_r(:,3)));
-        
+        wx = ze.*px./(ze.*px + pc); % precision first level
+        wc = pc./(ze.*px + pc);
         
         % Subplots
         axes(sh(1))      

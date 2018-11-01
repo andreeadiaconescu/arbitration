@@ -1,4 +1,4 @@
-function r = simResponses(inputs_reward, inputs_advice, prc_model, prc_pvec, varargin)
+function r = simResponses(inputs_reward, inputs_advice, advice_card, prc_model, prc_pvec, varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % This is the main function for simulating responses (or only perceptual states) from a combination
@@ -99,6 +99,7 @@ r = struct;
 % Store inputs
 r.u(:,1)  = inputs_reward;
 r.u(:,2)  = inputs_advice;
+r.u(:,3)  = advice_card;
 
 % Determine ignored trials
 ign = [];
