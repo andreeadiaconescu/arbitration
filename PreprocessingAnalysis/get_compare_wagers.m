@@ -42,21 +42,21 @@ RewardStable      = ones(size(RewardCodingStable,2),1) == RewardCodingStable';
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=1
+    for iRsp=2
         %%
         load(paths.fnFittedModel{iRsp},'est','-mat');
-        actual_wager = est.y([2:end],2);
-        predicted_wager = est.predict_wager;
+        actual_wager = zscore(est.y([2:end],2));
+        predicted_wager = est.predicted_wager;
         
-        actual_wager_aStable = actual_wager(AdviceStable(2:end));
-        actual_wager_aUnstable = actual_wager(AdviceUnstable(2:end));
-        actual_wager_rStable = actual_wager(RewardStable(2:end));
-        actual_wager_rUnstable = actual_wager(RewardUnstable(2:end));
+        actual_wager_aStable = mean(actual_wager(AdviceStable(2:end)));
+        actual_wager_aUnstable = mean(actual_wager(AdviceUnstable(2:end)));
+        actual_wager_rStable = mean(actual_wager(RewardStable(2:end)));
+        actual_wager_rUnstable = mean(actual_wager(RewardUnstable(2:end)));
         
-        predicted_wager_aStable = predicted_wager(AdviceStable(2:end));
-        predicted_wager_aUnstable = predicted_wager(AdviceUnstable(2:end));
-        predicted_wager_rStable = predicted_wager(RewardStable(2:end));
-        predicted_wager_rUnstable = predicted_wager(RewardUnstable(2:end));
+        predicted_wager_aStable = mean(predicted_wager(AdviceStable(2:end)));
+        predicted_wager_aUnstable = mean(predicted_wager(AdviceUnstable(2:end)));
+        predicted_wager_rStable = mean(predicted_wager(RewardStable(2:end)));
+        predicted_wager_rUnstable = mean(predicted_wager(RewardUnstable(2:end)));
         
         par{s,1} = actual_wager_aStable;
         par{s,2} = actual_wager_aUnstable;
@@ -67,15 +67,13 @@ for s = 1:nSubjects
         par{s,6} = predicted_wager_aUnstable;
         par{s,7} = predicted_wager_rStable;
         par{s,8} = predicted_wager_rUnstable;
-           
+          
     end
 end
 
 if doStats
     temp = cell2mat(par);
-    figure; bar(mean(temp(:,[1:4]),1),'r');
-    hold on; bar(mean(temp(:,[5:8]),1),'b');
-    %
+    
     [R,P,RLO,RUP]=corrcoef(temp(:,1),temp(:,5));
     figure; scatter(temp(:,1),temp(:,5));
     disp(['Significance correlation AStable' num2str(P(1,2))]);   
@@ -91,10 +89,6 @@ if doStats
     [R,P,RLO,RUP]=corrcoef(temp(:,4),temp(:,8));
     figure; scatter(temp(:,4),temp(:,8));
     disp(['Significance correlation RUnstable' num2str(P(1,2))]);
-    
-    [R,P,RLO,RUP]=corrcoef(temp(:,[1;2;3;4]),temp(:,[5;6;7;8]));
-    figure; scatter(temp(:,[1;2;3;4]),temp(:,[5;6;7;8]));
-    disp(['Significance correlation OverAllPhases' num2str(P(1,2))]); 
     
 end
 save([paths.stats.secondLevel.covariates, '/wagers_actual_versus_predicted.mat'],'temp', '-mat');

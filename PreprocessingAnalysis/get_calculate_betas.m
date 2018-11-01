@@ -26,7 +26,7 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=1
+    for iRsp=2
         %%
         parameters = {'be_surp','be_arbitration','beta_inferv_a','beta_inferv_r','beta_pv_a','beta_pv_r'};
         load(paths.fnFittedModel{iRsp},'est','-mat');
@@ -37,12 +37,12 @@ for s = 1:nSubjects
         beta_pv_a=est.p_obs.be5;
         beta_pv_r=est.p_obs.be6;
         
-        par{s,1} = be_surp; 
-        par{s,2} = be_arbitration; 
-        par{s,3} = beta_inferv_a; 
-        par{s,4} = beta_inferv_r; 
-        par{s,5} = beta_pv_a;  
-        par{s,6} = beta_pv_r; 
+        par{s,1} = be_surp;
+        par{s,2} = be_arbitration;
+        par{s,3} = beta_inferv_a;
+        par{s,4} = beta_inferv_r;
+        par{s,5} = beta_pv_a;
+        par{s,6} = beta_pv_r;
     end
 end
 if doStats
@@ -55,9 +55,14 @@ if doStats
     disp(['Significance paired t-test beta_arbitration ' num2str(statsBeArbitration)]);
     [h,p,ci,stats]=ttest(temp(:,5),0);
     statsBePV_A = p;
-    disp(['Significance paired t-test beta_volatility_a ' num2str(statsBePV_A)]);
+    disp(['Significance paired t-test beta_volatility_a ' num2str(statsBePV_A)]);    
+    [h,p,ci,stats]=ttest(temp(:,6),0);
+    statsBePV_R = p;
+    disp(['Significance paired t-test beta_volatility_r ' num2str(statsBePV_R)]);
+    
+    betas = [iSubjectArray' temp];
     
 end
-save([paths.stats.secondLevel.covariates, '/betas_linear_rsp.mat'],'temp', '-mat');
+save([paths.stats.secondLevel.covariates, '/betas_linear_rsp.mat'],'betas', '-mat');
 
 end

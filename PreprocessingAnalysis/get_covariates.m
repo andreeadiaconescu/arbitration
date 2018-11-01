@@ -29,7 +29,7 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=1
+    for iRsp=2
         %%
         parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
         load(paths.fnFittedModel{iRsp},'est','-mat');
@@ -50,7 +50,7 @@ for s = 1:nSubjects
         par{s,2} = ka_a; % kappa advice
         par{s,3} = th_r; % theta reward
         par{s,4} = th_a; % theta advice
-        par{s,5} = ze;   % zeta
+        par{s,5} = log(ze);   % zeta
         par{s,6} = beta; % decision noise
     end
 end
@@ -58,8 +58,8 @@ if doStats
     temp = cell2mat(par);
     
     % Zeta
-    figure; hist(log(temp(:,[5]))); hold on; stem(0);
-    [h,p,ci,stats]=ttest(log(temp(:,5)),0);
+    figure; hist((temp(:,[5]))); hold on; stem(0);
+    [h,p,ci,stats]=ttest((temp(:,5)),1);
     statsZeta=p;
     disp(['Significance paired t-test zeta ' num2str(statsZeta)]);
     
@@ -81,12 +81,12 @@ if doStats
     
     diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3) temp(:,5) temp(:,6)];
     
-    
+    MAPparameters = [iSubjectArray' temp];
     parMean=num2str(mean(diffParameters));
-    disp(['Parameter Mean: ', parMean])
-    parSTD=num2str(std(diffParameters));
-    disp(['Parameter STD: ', parSTD])
+    disp(['Parameter Mean Difference: ', parMean])
+    parSTD=num2str(mean(temp));
+    disp(['Parameter Mean: ', parSTD])
 end
-save([paths.stats.secondLevel.covariates, '/covariates_model2.mat'],'temp', '-mat');
+save([paths.stats.secondLevel.covariates, '/covariates_model2.mat'],'MAPparameters', '-mat');
 end
 
