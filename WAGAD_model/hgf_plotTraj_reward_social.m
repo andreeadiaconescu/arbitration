@@ -1,4 +1,4 @@
-function hgf_plotTraj_reward_social(r)
+function hgf_plotTraj_reward_social(r,predicted_wager)
 % Plots trajectories estimated by fitModel for the hgf_binary3l_reward_social perceptual model
 % Usage:  est = fitModel(responses, inputs); hgf_plotTraj_reward_social(est);
 %
@@ -110,24 +110,9 @@ xlabel('Trial number');
 
 %%
 subplot(3,1,3);
-advice_card_space = r.u(:,3);
-x_a                  = r.traj.muhat_a(:,2);
-x_r                  = r.traj.muhat_r(:,2);
-transformed_x_r      = x_r.^advice_card_space.*(-1.*x_r).^(1-advice_card_space);
-sa2hat_a = r.traj.sahat_a(:,2);
-sa2hat_r = r.traj.sahat_r(:,2);
-px       = 1./sa2hat_a;
-pc       = 1./sa2hat_r;
-ze1      = r.p_obs.ze;
-wx       = ze1.*px./(ze1.*px + pc);
-wc       = pc./(ze1.*px + pc);
-mu2b          = wx.*x_a + wc.*transformed_x_r;
-b             = tapas_sgm(mu2b,1);
-pib           = 1./(b.*(1-b));
-alpha         = sgm((pib-4),1);
-predict_wager = (2.*alpha -1).*10;
-plot(predict_wager, 'k'); % wagers
+predict_wager = predicted_wager;
+plot(predict_wager, 'k'); % predicted wagers
 hold on;
-plot(r.y(:,2), 'g'); % wagers
+plot(zscore(r.y(:,2)), 'g'); % zscored wagers
 xlabel('Trial number');
 hold off;
