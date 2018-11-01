@@ -92,7 +92,7 @@ arbitration = wx;
 % Calculate predicted log-reaction time
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 logrt = be0 + be1.*pib + be2.*arbitration;
-wager = tapas_sgm(logrt,1); % wager from 1 to 10
+wager = logrt;
 
 % Calculate log-probabilities for non-irregular trials
 % Note: 8*atan(1) == 2*pi (this is used to guard against

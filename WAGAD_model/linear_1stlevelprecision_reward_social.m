@@ -80,7 +80,8 @@ wc = pc./(ze.*px + pc);
 
 % Belief and Choice Noise
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-decision_noise = exp((-mu3hat_r)+(-mu3hat_a)-log(be_ch));
+% decision_noise = exp((-mu3hat_r)+(-mu3hat_a)-log(be_ch));
+decision_noise = be_ch;
 
 % Surprise
 % ~~~~~~~~
@@ -107,8 +108,10 @@ pv_r(r.irr) = [];
 
 % Calculate predicted log-reaction time
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-logrt = be0 + be1.*surp + be2.*arbitration + be3.*inferv_a + be4.*inferv_r + be5.*pv_a + be6.*pv_r;
-wager = tapas_sgm(logrt,1); % wager from 1 to 10
+logrt    = be0 + be1.*surp + be2.*arbitration + be3.*inferv_a + be4.*inferv_r + be5.*pv_a + be6.*pv_r;
+% max_wager = 10;
+% wager    = tapas_sgm(logrt,1).*max_wager - ones(size(y_wager)); % wager from 1 to 10
+wager = logrt;
 
 % Calculate log-probabilities for non-irregular trials
 % Note: 8*atan(1) == 2*pi (this is used to guard against
@@ -116,5 +119,6 @@ wager = tapas_sgm(logrt,1); % wager from 1 to 10
 logp_ch(not(ismember(1:length(logp_ch),r.irr)))         = y_ch.*decision_noise.*log(b./(1-b)) +log((1-b).^decision_noise ./((1-b).^decision_noise +b.^decision_noise));
 logp_wager(~ismember(1:length(logp),r.irr))             = -1/2.*log(8*atan(1).*be_wager) -(y_wager-wager).^2./(2.*be_wager);
 logp(not(ismember(1:length(logp),r.irr)))               = logp_ch + logp_wager; 
+
 
 return;

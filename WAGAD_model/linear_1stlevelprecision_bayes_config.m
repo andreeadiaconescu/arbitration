@@ -1,4 +1,4 @@
-function c = linear_1stlevelprecision_reward_social_config
+function c = linear_1stlevelprecision_bayes_config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Contains the configuration for the linear response model of choices and wagers in the arbitration
@@ -55,7 +55,7 @@ c.be6sa = 4;
 
 % Zeta is in log-space
 c.logzemu = log(2.7183);
-c.logzesa = 5^2;
+c.logzesa = 0;
 
 % Beta in log-space
 c.logbe_chmu = log(48);

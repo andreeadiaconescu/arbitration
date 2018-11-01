@@ -62,8 +62,8 @@ c.logbe_chmu = log(48);
 c.logbe_chsa = 1;
 
 % Decision noise wager in log-space
-c.logbe_wagermu = log(log(20));
-c.logbe_wagersa = log(2);
+c.logbe_wagermu = log(5);
+c.logbe_wagersa = 10^3;
 
 % Gather prior settings in vectors
 c.priormus = [
