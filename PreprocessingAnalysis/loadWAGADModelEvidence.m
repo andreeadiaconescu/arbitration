@@ -1,13 +1,13 @@
 function [models_wagad] = loadWAGADModelEvidence(iSubjectArray,paths)
 
-original_models = true;
+original_models = paths.origModels;
 
 if original_models == true
     % pairs of perceptual and response model
     iCombPercResp = zeros(8,1); 
 else 
     % pairs of perceptual and response model
-    iCombPercResp = zeros(3,1);
+    iCombPercResp = zeros(4,1);
 end
 
 nModels = size(iCombPercResp,1);
