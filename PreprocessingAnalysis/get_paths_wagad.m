@@ -166,6 +166,7 @@ for iRsp = 1:numel(nameResponseModels);
     paths.fnFittedModel{iRsp} = fullfile(paths.behav, sprintf('%s_behav_model_rsp_%s.mat', ...
         paths.idSubjBehav, nameResponseModels{iRsp}));
 end
+
 paths.fileResponseModels = filesResponseModels;
 paths.nameResponseModels = nameResponseModels;
 paths.fileModelFamilyTemplate =  '/Users/drea/Documents/Social_Learning/BEHAV/gpo/regr_results/';
@@ -339,3 +340,5 @@ paths.code = code;
 paths.preproc = preproc;
 paths.stats.glm = glm;
 paths.stats.secondLevel = secondLevel;
+iWinningModel            = calculate_winningModel(paths);
+paths.winningModel       = paths.fnFittedModel{iWinningModel};

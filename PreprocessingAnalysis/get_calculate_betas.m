@@ -26,39 +26,44 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=2
-        %%
-        parameters = {'be_surp','be_arbitration','beta_inferv_a','beta_inferv_r','beta_pv_a','beta_pv_r'};
-        load(paths.fnFittedModel{iRsp},'est','-mat');
-        be_surp=est.p_obs.be1;
-        be_arbitration=est.p_obs.be2;
-        beta_inferv_a=est.p_obs.be3;
-        beta_inferv_r=est.p_obs.be4;
-        beta_pv_a=est.p_obs.be5;
-        beta_pv_r=est.p_obs.be6;
-        
-        par{s,1} = be_surp;
-        par{s,2} = be_arbitration;
-        par{s,3} = beta_inferv_a;
-        par{s,4} = beta_inferv_r;
-        par{s,5} = beta_pv_a;
-        par{s,6} = beta_pv_r;
-    end
+    %%
+    parameters = {'be_surp','be_arbitration','beta_inferv_a','beta_inferv_r','beta_pv_a','beta_pv_r'};
+    load(paths.winningModel,'est','-mat'); % Select the winning model only
+    be_surp=est.p_obs.be1;
+    be_arbitration=est.p_obs.be2;
+    beta_inferv_a=est.p_obs.be3;
+    beta_inferv_r=est.p_obs.be4;
+    beta_pv_a=est.p_obs.be5;
+    beta_pv_r=est.p_obs.be6;
+    
+    par{s,1} = be_surp;
+    par{s,2} = be_arbitration;
+    par{s,3} = beta_inferv_a;
+    par{s,4} = beta_inferv_r;
+    par{s,5} = beta_pv_a;
+    par{s,6} = beta_pv_r;
 end
 if doStats
     temp = cell2mat(par);
     [h,p,ci,stats]=ttest(temp(:,1),0);
     statsBeSurp=p;
-    disp(['Significance paired t-test beta_surp ' num2str(statsBeSurp)]);
+    disp(['Significance t-test for beta_surp ' num2str(statsBeSurp)]);
     [h,p,ci,stats]=ttest(temp(:,2),0);
     statsBeArbitration=p;
-    disp(['Significance paired t-test beta_arbitration ' num2str(statsBeArbitration)]);
+    disp(['Significance t-test for beta_arbitration ' num2str(statsBeArbitration)]);
     [h,p,ci,stats]=ttest(temp(:,5),0);
     statsBePV_A = p;
-    disp(['Significance paired t-test beta_volatility_a ' num2str(statsBePV_A)]);    
+    disp(['Significance t-test for beta_volatility_a ' num2str(statsBePV_A)]);
     [h,p,ci,stats]=ttest(temp(:,6),0);
     statsBePV_R = p;
-    disp(['Significance paired t-test beta_volatility_r ' num2str(statsBePV_R)]);
+    disp(['Significance t-test for beta_volatility_r ' num2str(statsBePV_R)]);
+    
+   [h,p,ci,stats]=ttest(temp(:,3),0);
+    statsBeInf_A = p;
+    disp(['Significance t-test for beta_inf_uncertainty_a ' num2str(statsBeInf_A)]);
+    [h,p,ci,stats]=ttest(temp(:,4),0);
+    statsBeInf_R = p;
+    disp(['Significance t-test for beta_inf_uncertainty_r ' num2str(statsBeInf_R)]);
     
     betas = [iSubjectArray' temp];
     

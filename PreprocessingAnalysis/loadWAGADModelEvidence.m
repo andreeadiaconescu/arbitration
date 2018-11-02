@@ -26,4 +26,6 @@ for iSubject = iSubjectArray
     end
 end
 models_wagad = cell2mat(models_wagad);
+
+save([paths.stats.secondLevel.covariates, '/BMS.mat'],'models_wagad', '-mat');
 end

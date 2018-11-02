@@ -66,6 +66,8 @@ if doPlotFigures
     set(gca,'XTick',1:8)
     set(gca,'XTickLabel',modelLabels);
     
-    ylabel('Probability of the model');
+    % Create ylabel
+    ylabel('p(m|y)');
+    
 end
 
