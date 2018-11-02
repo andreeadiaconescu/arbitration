@@ -35,6 +35,7 @@ for s = 1:nSubjects
     beta_inferv_r=est.p_obs.be4;
     beta_pv_a=est.p_obs.be5;
     beta_pv_r=est.p_obs.be6;
+    zeta     = est.p_obs.ze;
     
     par{s,1} = be_surp;
     par{s,2} = be_arbitration;
@@ -42,6 +43,7 @@ for s = 1:nSubjects
     par{s,4} = beta_inferv_r;
     par{s,5} = beta_pv_a;
     par{s,6} = beta_pv_r;
+    par{s,7} = zeta;
 end
 if doStats
     temp = cell2mat(par);

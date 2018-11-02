@@ -1,4 +1,4 @@
-function itemArray = get_path_all_subjects(stringItem, iSubjectArray)
+function itemArray = get_path_all_subjects(stringItem, iSubjectArray,idDesign)
 % returns an item of the paths-structure for all subjects, e.g. contrast
 % files from 1st level analysis for 2nd level analysis
 %
@@ -47,8 +47,11 @@ if nargin < 2
     iSubjectArray = get_subject_ids()';
 end
 
+if nargin < 3
+    idDesign = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is 
+end
+
 idPreproc = 1;
-idDesign   = 14; % GLM design matrix selection by Id See also get_paths_wagad which folder it is 
 paths = get_paths_wagad(iSubjectArray, idPreproc,idDesign);
 nSubjects = numel(iSubjectArray);
 itemArray = cell(nSubjects, 1);

@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------------
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
-function main_2ndlevel_job(idDesign,iSubjectArray,regressor,learningParameter)
+function main_2ndlevel_job(idDesign,iSubjectArray,regressor,responseModelParameter)
 if nargin < 1
     idDesign = 2;
 end
@@ -14,17 +14,17 @@ if nargin < 2
 end
 
 if nargin < 3
-    regressor = 'advice_epsilon3';
+    regressor = 'arbitration';
 end
 if nargin < 4
-    learningParameter = 'zeta';
+    responseModelParameter = 'be_arbitration';
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 paths = get_paths_wagad(); % dummy subject to get general paths
-dir1stLevel = paths.nameGlmDesigns{idDesign};
+dir1stLevel = paths.stats.glm.nameDesigns{idDesign};
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -42,7 +42,7 @@ spm_jobman('initcfg');
 which spm
 
 paths = get_paths_wagad(iSubjectArray); % dummy subject to get general paths
-path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', learningParameter, regressor);
+path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', responseModelParameter, regressor);
 
 if exist(path2ndLevel, 'dir')
     delete(path2ndLevel)
@@ -50,19 +50,17 @@ end;
 mkdir(path2ndLevel);
 
 
-switch learningParameter
-    case 'kappa_r'
-        iColumn = 1;
-    case 'kappa_a'
+switch responseModelParameter
+    case 'be_surp'
         iColumn = 2;
-    case 'theta_r'
+    case 'be_arbitration'
         iColumn = 3;
-    case 'theta_a'
-        iColumn = 4;
-    case 'zeta'
+    case 'beta_inferv_r'
         iColumn = 5;
-    case 'beta'
+    case 'beta_pv_a'
         iColumn = 6;
+    case 'zeta'
+        iColumn = 8;
 end
 
 job = load(fullfile([paths.stats.secondLevel.root, '/secondlevel_cov_template.mat']));
@@ -70,17 +68,17 @@ job = job.matlabbatch;
 job{1}.spm.stats.factorial_design.dir = {path2ndLevel};
 
 %%
-load(fullfile([paths.stats.secondLevel.covariates,'/covariates_model1.mat']));
+load(fullfile([paths.stats.secondLevel.covariates,'/betas_linear_rsp.mat']));
 %%
-allparameters=temp;
-pathGlmAllSubjects = get_path_all_subjects('stats.glm.design', iSubjectArray);
+allparameters=betas;
+pathGlmAllSubjects = get_path_all_subjects('stats.glm.design', iSubjectArray,idDesign);
 fnContrastAllSubjects= strcat(pathGlmAllSubjects, filesep, ...
     sprintf('con_%04d.nii', iContrast));
 job{1}.spm.stats.factorial_design.des.t1.scans = fnContrastAllSubjects;
 %%
 nuisance_regressors=get_nuisance_regressors_2ndlevel(paths, iSubjectArray);
 job{1}.spm.stats.factorial_design.cov(1).c = allparameters(:,iColumn);
-job{1}.spm.stats.factorial_design.cov(1).cname = learningParameter;
+job{1}.spm.stats.factorial_design.cov(1).cname = responseModelParameter;
 job{1}.spm.stats.factorial_design.cov(1).iCFI = 1;
 job{1}.spm.stats.factorial_design.cov(1).iCC = 1;
 job{1}.spm.stats.factorial_design.cov(2).c =nuisance_regressors(:,1);

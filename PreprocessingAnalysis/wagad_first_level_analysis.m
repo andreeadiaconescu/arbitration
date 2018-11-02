@@ -11,7 +11,7 @@ fprintf('\n\n===\n\n');
 pause(2);
 
 if nargin < 1
-    iSubjectArray = setdiff([3 6:47], [6 14 25 31 32 33 34 37]);
+    iSubjectArray = setdiff([3:47], [14 25 31 32 33 34 37]);
 end
 
 if nargin < 2

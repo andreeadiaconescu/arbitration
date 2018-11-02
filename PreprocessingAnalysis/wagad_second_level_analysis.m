@@ -3,13 +3,13 @@ function wagad_second_level_analysis(iSubjectArray,typeDesign)
 % first level modelbased statistics)
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [1 1 1 1 0];
+Analysis_Strategy = [0 0 0 0 1];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
 
 if nargin < 1
-    iSubjectArray = setdiff([3:47], [14 25 31 32 33 34 37]);
+    iSubjectArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); % 6 only excluded from neuroimaging analysis because of lack of physlog
 end
 
 if nargin < 2
@@ -52,7 +52,23 @@ if doCalculateBetas
 end
 
 if doSecondLevelStats
-    main_2ndlevel_job(idDesign,iSubjectArray);
+    switch typeDesign
+        case 'ModelBased'
+            idDesign = 2;
+            regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
+                'belief_precision', 'surprise','wager_magnitude','advice_epsilon2','reward_epsilon2','advice_epsilon3',...
+                'reward_epsilon3'};
+            responseModelParameters = {'be_surp','zeta'};
+            for iRegressor = 1:numel(regressorsGLM)
+                for iParameter = 1:numel(responseModelParameters)
+                    main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
+                end
+            end
+            
+        case 'ModelFree'
+            idDesign = 1;
+            main_2ndlevel_job(idDesign,iSubjectArray);
+    end
 end
 
-
+end
