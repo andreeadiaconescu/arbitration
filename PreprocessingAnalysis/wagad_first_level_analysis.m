@@ -5,13 +5,13 @@ function wagad_first_level_analysis(iSubjectArray,typeDesign)
 %           options     as set by dmpad_set_analysis_options();
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 1 0 0];
+Analysis_Strategy = [0 0 0 0 1];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
 
 if nargin < 1
-    iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
+    iSubjectArray = setdiff([3 6:47], [6 14 25 31 32 33 34 37]);
 end
 
 if nargin < 2
@@ -29,7 +29,7 @@ doPreprocessing         = Analysis_Strategy(1);
 doInversion             = Analysis_Strategy(2);
 doCreateRegressors      = Analysis_Strategy(3);
 doFirstLevelStats       = Analysis_Strategy(4);
-
+doFirstLevelContrasts   = Analysis_Strategy(5);
 
 % Deletes previous preproc/stats files of analysis specified in options
 if doPreprocessing
@@ -43,6 +43,10 @@ if doCreateRegressors
 end
 
 if doFirstLevelStats
+    main_run_stats_glm_single_subject(iSubjectArray,idDesign)
+end
+
+if doFirstLevelContrasts
     main_run_stats_report_contrasts_single_subject(iSubjectArray,idDesign)
 end
 

@@ -1,3 +1,5 @@
+function main_run_stats_glm_single_subject(iSubjectArray,idDesign)
+
 % Script main_run_stats_glm_single_subject
 % Performs Sets up and estimates 1st level design matrix for selected subjects
 %
@@ -29,19 +31,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-iExcludedSubjects = [6 14 25 32 31 33 34 37 44];
 
 paths = get_paths_wagad(); % dummy subject to get general paths
 
+
+if nargin < 1
+    % manual setting...if you want to exclude any subjects
+    iExcludedSubjects = [6 14 25 32 31 33 34 37 44]; % Subjects excluded from the analysis
+    iSubjectArray = get_subject_ids(paths.data)';
+    iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
+end
+
+if nargin < 2
+    idDesign = 2;
+end
+
 % manual setting...if you want to exclude any subjects
-iSubjectArray = get_subject_ids(paths.data)';
-iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 fnBatchStatsGlm = fullfile(paths.code.batches, ...
     paths.code.batch.fnStatsGlm);
 useCluster = false;
 iRunArray = 1:2; % Sessions that enter GLM
 idPreproc = 1;
-idDesign   = 2; % GLM design matrix selection by Id See also get_paths_wagad which folder it is :-)
 
 % initialise spm
 spm_get_defaults('modality', 'FMRI');
@@ -112,4 +122,5 @@ for iSubj = iSubjectArray
         spm_jobman('run', matlabbatch);
     end
     
+end
 end
