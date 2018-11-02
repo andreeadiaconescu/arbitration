@@ -3,7 +3,7 @@ function get_model_inversion(iSubjectArray, idDesign)
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
-    iSubjectArray = setdiff([3:47], [9 14 25 32 33 34 37]);
+    iSubjectArray = setdiff([3:47], [9 14 25 31 32 33 34 37]);
     
     % 6,7 = noisy; 9
 end
