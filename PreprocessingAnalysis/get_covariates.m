@@ -29,37 +29,38 @@ nSubjects = numel(iSubjectArray);
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
-    for iRsp=2
-        %%
-        parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
-        load(paths.fnFittedModel{iRsp},'est','-mat');
-        ka_r=est.p_prc.ka_r;
-        ka_a=est.p_prc.ka_a;
-        th_r=est.p_prc.th_r;
-        th_a=est.p_prc.th_a;
-        
-        ka_a=est.p_prc.ka_a;
-        th_r=est.p_prc.th_r;
-        th_a=est.p_prc.th_a;
-        ze=est.p_obs.ze;
-        beta=est.p_obs.be_ch;
-        for j = 1:14
-            par{nSubjects,j} = [];
-        end
-        par{s,1} = ka_r; % kappa reward
-        par{s,2} = ka_a; % kappa advice
-        par{s,3} = th_r; % theta reward
-        par{s,4} = th_a; % theta advice
-        par{s,5} = log(ze);   % zeta
-        par{s,6} = beta; % decision noise
-    end
+    %%
+    parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
+    load(paths.winningModel,'est','-mat'); % Select the winning model only
+    ka_r=est.p_prc.ka_r;
+    ka_a=est.p_prc.ka_a;
+    th_r=est.p_prc.th_r;
+    th_a=est.p_prc.th_a;
+    
+    ka_a=est.p_prc.ka_a;
+    th_r=est.p_prc.th_r;
+    th_a=est.p_prc.th_a;
+    ze=est.p_obs.ze;
+    beta=est.p_obs.be_ch;
+    par{s,1} = ka_r; % kappa reward
+    par{s,2} = ka_a; % kappa advice
+    par{s,3} = th_r; % theta reward
+    par{s,4} = th_a; % theta advice
+    par{s,5} = log(ze);   % zeta
+    par{s,6} = beta; % decision noise
 end
 if doStats
     temp = cell2mat(par);
     
     % Zeta
     figure; hist((temp(:,[5]))); hold on; stem(0);
-    [h,p,ci,stats]=ttest((temp(:,5)),1);
+    % Create xlabel
+    xlabel('log(\zeta)');
+    
+    % Create ylabel
+    ylabel('Count');
+    
+    [h,p,ci,stats]=ttest((temp(:,5)),0);
     statsZeta=p;
     disp(['Significance paired t-test zeta ' num2str(statsZeta)]);
     
@@ -67,26 +68,20 @@ if doStats
     [h,p,ci,stats]=ttest(temp(:,1),temp(:,2));
     statsKappa=p;
     disp(['Significance paired t-test kappa ' num2str(statsKappa)]);
-    figure; scatter(temp(:,1),temp(:,2));
-    [R,P,RLO,RUP]=corrcoef(temp(:,1),temp(:,2));
-    disp(['Significance correlation kappa' num2str(P(1,2))]);
     
     % Differences in Theta
     [h,p,ci,stats]=ttest(temp(:,3),temp(:,4));
     statsTheta=p;
     disp(['Significance paired t-test theta ' num2str(statsTheta)]);
-    [R,P,RLO,RUP]=corrcoef(temp(:,3),temp(:,4));
-    figure; scatter(temp(:,3),temp(:,4));
-    disp(['Significance correlation theta' num2str(P(1,2))]);
     
-    diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3) temp(:,5) temp(:,6)];
+    diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3)];
     
     MAPparameters = [iSubjectArray' temp];
     parMean=num2str(mean(diffParameters));
-    disp(['Parameter Mean Difference: ', parMean])
+    disp(['Parameter Mean Difference (Kappa & Theta): ', parMean])
     parSTD=num2str(mean(temp));
     disp(['Parameter Mean: ', parSTD])
 end
-save([paths.stats.secondLevel.covariates, '/covariates_model2.mat'],'MAPparameters', '-mat');
+save([paths.stats.secondLevel.covariates, '/covariates_model.mat'],'MAPparameters', '-mat');
 end
 
