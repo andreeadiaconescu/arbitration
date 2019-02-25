@@ -3,7 +3,7 @@ function wagad_second_level_analysis(iSubjectArray,typeDesign)
 % first level modelbased statistics)
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 0 0 0 1];
+Analysis_Strategy = [0 1 1 1 0];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -52,16 +52,24 @@ if doCalculateBetas
 end
 
 if doSecondLevelStats
+    includeRegressor = false;
+    
     switch typeDesign
         case 'ModelBased'
             idDesign = 2;
             regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
                 'belief_precision', 'surprise','wager_magnitude','advice_epsilon2','reward_epsilon2','advice_epsilon3',...
                 'reward_epsilon3'};
-            responseModelParameters = {'be_surp','zeta'};
-            for iRegressor = 1:numel(regressorsGLM)
-                for iParameter = 1:numel(responseModelParameters)
-                    main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
+            if includeRegressor == true
+                responseModelParameters = {'be_surp','zeta'};
+                for iRegressor = 1:numel(regressorsGLM)
+                    for iParameter = 1:numel(responseModelParameters)
+                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
+                    end
+                end
+            else
+                for iRegressor = 1:numel(regressorsGLM)
+                    main_2ndlevel_simple(idDesign,iSubjectArray,regressorsGLM{iRegressor})
                 end
             end
             

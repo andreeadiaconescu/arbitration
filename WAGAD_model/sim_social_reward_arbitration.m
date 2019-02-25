@@ -9,7 +9,7 @@ function sim_social_reward_arbitration
 % COPYING or <http://www.gnu.org/licenses/>.
 
 pathroot=fileparts(mfilename('fullpath')); %%% CHANGE;
-iRsp = 2;
+iRsp = 1;
 paths = get_paths_wagad();
 rp_model = paths.nameResponseModels{iRsp};
 prc_model= {'hgf_binary3l_reward_social'};

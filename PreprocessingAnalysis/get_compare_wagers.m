@@ -79,12 +79,14 @@ if doStats
     s.MarkerFaceColor = [0 0.5 0.5];
     % Create title
     title('Phase: Advice Stable');
+    disp(['Correlation AStable ' num2str(R(1,2))]);
     disp(['Significance correlation AStable ' num2str(P(1,2))]);
     %
     [R,P,RLO,RUP]=corrcoef(temp(:,2),temp(:,6));
     figure;
     s = createWagerComparison(temp(:,2),temp(:,6),100,'m');
     title('Phase: Advice Unstable');
+    disp(['Correlation AUnstable ' num2str(R(1,2))]);
     disp(['Significance correlation AUnstable ' num2str(P(1,2))]);
     %
     [R,P,RLO,RUP]=corrcoef(temp(:,3),temp(:,7));
@@ -93,12 +95,14 @@ if doStats
     s.LineWidth = 0.6;
     s.MarkerFaceColor = [0 0.5 0.5];
     title('Phase: Card Stable');
+    disp(['Correlation RStable ' num2str(R(1,2))]);
     disp(['Significance correlation RStable ' num2str(P(1,2))]);
     %
     [R,P,RLO,RUP]=corrcoef(temp(:,4),temp(:,8));
     figure;
     s = createWagerComparison(temp(:,4),temp(:,8),100,'r');
     title('Phase: Card Unstable');
+    disp(['Correlation RUnstable ' num2str(R(1,2))]);
     disp(['Significance correlation RUnstable ' num2str(P(1,2))]);
     
 end

@@ -11,7 +11,7 @@ function Corr = Cov2Corr(Cov)
 
 % Check if Cov is symmetric...
 if max(max(abs(Cov'-Cov))) >= eps % ...but give some tolerance, e.g. *machine precision
-    nEpsMax = 413; % max number of machine precision before error is prompted
+    nEpsMax = 950; % 413 max number of machine precision before error is prompted
     disp('Asymmetry of Cov Matrix: abs(Cov''-Cov)')
     abs(Cov'-Cov)
     fprintf('Maximum deviation in multiples of machine precision %.1f*eps (eps=%.1e)\n', ...

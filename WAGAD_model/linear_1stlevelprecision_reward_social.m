@@ -80,12 +80,11 @@ wc = pc./(ze.*px + pc);
 
 % Belief and Choice Noise
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-% decision_noise = exp((-mu3hat_r)+(-mu3hat_a)-log(be_ch));
-decision_noise = be_ch;
+decision_noise = exp((-mu3hat_r)+(-mu3hat_a)+log(be_ch));
 
-% Surprise
+% Irreducible uncertainty
 % ~~~~~~~~
-surp = -log2(b);
+uncertainty = b.*(1-b);
 
 % Arbitration
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -93,22 +92,22 @@ arbitration = wx;
 
 % Inferential variance (aka informational or estimation uncertainty, ambiguity)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-inferv_a = tapas_sgm(mu2hat_a, 1).*(1 -tapas_sgm(mu2hat_a, 1)).*sa2hat_a; % transform down to 1st level
+inferv_a = tapas_sgm(mu2hat_a, 1).*(1 -tapas_sgm(mu2hat_a, 1)).*sa2hat_a; 
 inferv_a(r.irr) = [];
 
-inferv_r = tapas_sgm(mu2hat_r, 1).*(1 -tapas_sgm(mu2hat_r, 1)).*sa2hat_r; % transform down to 1st level
+inferv_r = tapas_sgm(mu2hat_r, 1).*(1 -tapas_sgm(mu2hat_r, 1)).*sa2hat_r; 
 inferv_r(r.irr) = [];
 
 % Phasic volatility (aka environmental or unexpected uncertainty)
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-pv_a = tapas_sgm(mu2hat_a, 1).*(1-tapas_sgm(mu2hat_a, 1)).*exp(mu3hat_a); % transform down to 1st level
+pv_a = tapas_sgm(mu2hat_a, 1).*(1-tapas_sgm(mu2hat_a, 1)).*exp(mu3hat_a); 
 pv_a(r.irr) = [];
-pv_r = tapas_sgm(mu2hat_r, 1).*(1-tapas_sgm(mu2hat_r, 1)).*exp(mu3hat_r); % transform down to 1st level
+pv_r = tapas_sgm(mu2hat_r, 1).*(1-tapas_sgm(mu2hat_r, 1)).*exp(mu3hat_r); 
 pv_r(r.irr) = [];
 
 % Calculate predicted log-reaction time
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-logrt    = be0 + be1.*surp + be2.*arbitration + be3.*inferv_a + be4.*inferv_r + be5.*pv_a + be6.*pv_r;
+logrt    = be0 + be1.*uncertainty + be2.*arbitration + be3.*inferv_a + be4.*inferv_r + be5.*pv_a + be6.*pv_r;
 % max_wager = 10;
 % wager    = tapas_sgm(logrt,1).*max_wager - ones(size(y_wager)); % wager from 1 to 10
 wager = logrt;

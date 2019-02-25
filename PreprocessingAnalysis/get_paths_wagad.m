@@ -20,7 +20,7 @@ end
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
 nameGlmDesigns = {
-    'factorial_design','wagad_model'};
+    'factorial_design','wagad'};
 
 paths.origModels = false;
 

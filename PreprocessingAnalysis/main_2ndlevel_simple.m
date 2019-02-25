@@ -1,7 +1,7 @@
 %-----------------------------------------------------------------------
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
-function main_2ndlevel_job(idDesign,iSubjectArray,regressor,responseModelParameter)
+function main_2ndlevel_simple(idDesign,iSubjectArray,regressor)
 paths = get_paths_wagad(); % dummy subject to get general paths
 if nargin < 1
     idDesign = 2;
@@ -15,10 +15,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    regressor = 'basic_advice';
-end
-if nargin < 4
-    responseModelParameter = 'zeta';
+    regressor = 'arbitration';
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,7 +39,7 @@ spm_jobman('initcfg');
 which spm
 
 paths = get_paths_wagad(iSubjectArray); % dummy subject to get general paths
-path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', responseModelParameter, regressor);
+path2ndLevel = fullfile(paths.stats.secondLevel.design,'none', regressor);
 
 if exist(path2ndLevel, 'dir')
     delete(path2ndLevel)
@@ -50,45 +47,25 @@ end;
 mkdir(path2ndLevel);
 
 
-switch responseModelParameter
-    case 'be_surp'
-        iColumn = 2;
-    case 'be_arbitration'
-        iColumn = 3;
-    case 'beta_inferv_r'
-        iColumn = 5;
-    case 'beta_pv_a'
-        iColumn = 6;
-    case 'zeta'
-        iColumn = 8;
-end
-
 job = load(fullfile([paths.stats.secondLevel.root, '/secondlevel_cov_template.mat']));
 job = job.matlabbatch;
 job{1}.spm.stats.factorial_design.dir = {path2ndLevel};
 
 %%
-load(fullfile([paths.stats.secondLevel.covariates,'/betas_linear_rsp.mat']));
-%%
-allparameters=betas;
 pathGlmAllSubjects = get_path_all_subjects('stats.glm.design', iSubjectArray,idDesign);
 fnContrastAllSubjects= strcat(pathGlmAllSubjects, filesep, ...
     sprintf('con_%04d.nii', iContrast));
 job{1}.spm.stats.factorial_design.des.t1.scans = fnContrastAllSubjects;
 %%
 nuisance_regressors=get_nuisance_regressors_2ndlevel(paths, iSubjectArray);
-job{1}.spm.stats.factorial_design.cov(1).c = log(allparameters(:,iColumn));
-job{1}.spm.stats.factorial_design.cov(1).cname = responseModelParameter;
+job{1}.spm.stats.factorial_design.cov(1).c =nuisance_regressors(:,1);
+job{1}.spm.stats.factorial_design.cov(1).cname = 'gender';
 job{1}.spm.stats.factorial_design.cov(1).iCFI = 1;
 job{1}.spm.stats.factorial_design.cov(1).iCC = 1;
-job{1}.spm.stats.factorial_design.cov(2).c =nuisance_regressors(:,1);
-job{1}.spm.stats.factorial_design.cov(2).cname = 'gender';
+job{1}.spm.stats.factorial_design.cov(2).c =nuisance_regressors(:,2);
+job{1}.spm.stats.factorial_design.cov(2).cname = 'age';
 job{1}.spm.stats.factorial_design.cov(2).iCFI = 1;
 job{1}.spm.stats.factorial_design.cov(2).iCC = 1;
-job{1}.spm.stats.factorial_design.cov(3).c =nuisance_regressors(:,2);
-job{1}.spm.stats.factorial_design.cov(3).cname = 'age';
-job{1}.spm.stats.factorial_design.cov(3).iCFI = 1;
-job{1}.spm.stats.factorial_design.cov(3).iCC = 1;
 job{1}.spm.stats.factorial_design.masking.tm.tm_none = 1;
 job{1}.spm.stats.factorial_design.masking.im = 1;
 job{1}.spm.stats.factorial_design.masking.em = {''};
@@ -114,20 +91,20 @@ job{3}.spm.stats.con.spmmat(1).tgt_spec{1}(2).value = 'e';
 job{3}.spm.stats.con.spmmat(1).sname = 'Model estimation: SPM.mat File';
 job{3}.spm.stats.con.spmmat(1).src_exbranch = substruct('.','val', '{}',{2}, '.','val', '{}',{1}, '.','val', '{}',{1});
 job{3}.spm.stats.con.spmmat(1).src_output = substruct('.','spmmat');
-job{3}.spm.stats.con.consess{1}.tcon.name = 'POS_learning_parameter';
+job{3}.spm.stats.con.consess{1}.tcon.name = 'POS_gender';
 job{3}.spm.stats.con.consess{1}.tcon.convec = [0 1 0];
 job{3}.spm.stats.con.consess{1}.tcon.sessrep = 'none';
-job{3}.spm.stats.con.consess{2}.tcon.name = 'POS_effect_gender';
+job{3}.spm.stats.con.consess{2}.tcon.name = 'POS_age';
 job{3}.spm.stats.con.consess{2}.tcon.convec = [0 0 1];
 job{3}.spm.stats.con.consess{2}.tcon.sessrep = 'none';
 job{3}.spm.stats.con.consess{3}.tcon.name = 'POS_regress_out_all';
 job{3}.spm.stats.con.consess{3}.tcon.convec = [1 0 0];
 job{3}.spm.stats.con.consess{3}.tcon.sessrep = 'none';
 
-job{3}.spm.stats.con.consess{4}.tcon.name = 'NEG_learning_parameter';
+job{3}.spm.stats.con.consess{4}.tcon.name = 'NEG_gender';
 job{3}.spm.stats.con.consess{4}.tcon.convec = [0 -1 0];
 job{3}.spm.stats.con.consess{4}.tcon.sessrep = 'none';
-job{3}.spm.stats.con.consess{5}.tcon.name = 'NEG_effect_gender';
+job{3}.spm.stats.con.consess{5}.tcon.name = 'NEG_age';
 job{3}.spm.stats.con.consess{5}.tcon.convec = [0 0 -1];
 job{3}.spm.stats.con.consess{5}.tcon.sessrep = 'none';
 job{3}.spm.stats.con.consess{6}.tcon.name = 'NEG_regress_out_all';

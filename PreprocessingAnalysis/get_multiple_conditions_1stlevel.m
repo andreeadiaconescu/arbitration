@@ -98,7 +98,7 @@ for iSubj = iSubjectArray
         names={'Advice','Wager','Outcome'};
         
         
-        durations{1} = 2;
+        durations{1} = 0;
         durations{2} = 0;
         durations{3} = 0;
         
