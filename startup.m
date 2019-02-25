@@ -11,7 +11,7 @@ if ismac
         
         case 'drea' % Andreeas laptop
             addpath(genpath('/Users/drea/Dropbox/MadelineMSc/Code/WAGAD/'));
-            addpath('/Users/drea/Dropbox/Andreiuta/Collaborations_Lars/PhysFX/code/spm12');
+            addpath('/Users/drea/Documents/Toolboxes/spm12');
             
         otherwise % @Madeline: change to your own paths HERE
             
