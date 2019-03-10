@@ -79,7 +79,7 @@ plot(0, sgm(r.p_prc.mu2a_0, 1), 'or', 'LineWidth', 2); % prior
 plot(1:t, r.u(:,2), 'o', 'Color', [0 0.6 0]); % advice
 
 if ~isempty(find(strcmp(fieldnames(r),'y'))) && ~isempty(r.y)
-    y = r.y([2:160],1) -0.5; y = 1.16 *y; y = y +0.5; % stretch
+    y = r.y(:,1) -0.5; y = 1.16 *y; y = y +0.5; % stretch
     if ~isempty(find(strcmp(fieldnames(r),'irr')))
         y(r.irr) = NaN; % weed out irregular responses
         plot(r.irr,  1.08.*ones([1 length(r.irr)]), 'x', 'Color', [1 0.7 0], 'Markersize', 11, 'LineWidth', 2); % irregular responses
