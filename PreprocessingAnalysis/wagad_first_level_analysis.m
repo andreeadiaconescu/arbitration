@@ -5,7 +5,7 @@ function wagad_first_level_analysis(iSubjectArray,typeDesign)
 %           options     as set by dmpad_set_analysis_options();
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 1 1 1 1];
+Analysis_Strategy = [1 1 1 1 1];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);

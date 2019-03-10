@@ -3,7 +3,7 @@ function wagad_second_level_analysis(iSubjectArray,typeDesign)
 % first level modelbased statistics)
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 1 1 1 0];
+Analysis_Strategy = [0 0 0 1 0 1];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -27,7 +27,8 @@ doModelComparison       = Analysis_Strategy(1);
 doSecondLevelBehav      = Analysis_Strategy(2);
 doCompareWagers         = Analysis_Strategy(3);
 doCalculateBetas        = Analysis_Strategy(4);
-doSecondLevelStats      = Analysis_Strategy(5);
+doCalculateMAPS         = Analysis_Strategy(5);
+doSecondLevelStats      = Analysis_Strategy(6);
 
 % Set axes properties
 set(0,'defaultAxesFontName','Constantia');
@@ -51,8 +52,15 @@ if doCalculateBetas
     get_calculate_betas(iSubjectArray);
 end
 
+if doCalculateMAPS
+    wagad_extract_parameters_create_table(iSubjectArray);
+    wagad_extract_plot_MAPs(iSubjectArray,'accuracy');
+    wagad_extract_plot_MAPs(iSubjectArray,'advice');
+    wagad_extract_plot_MAPs(iSubjectArray,'wager');
+end
+
 if doSecondLevelStats
-    includeRegressor = false;
+    includeRegressor = true;
     
     switch typeDesign
         case 'ModelBased'

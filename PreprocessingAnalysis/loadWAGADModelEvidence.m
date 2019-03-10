@@ -1,26 +1,22 @@
 function [models_wagad] = loadWAGADModelEvidence(iSubjectArray,paths)
 
-original_models = paths.origModels;
+% pairs of perceptual and response model
+iCombPercResp = zeros(6,2);
+iCombPercResp(1:3,1) = 1;
+iCombPercResp(4:6,1) = 2;
 
-if original_models == true
-    % pairs of perceptual and response model
-    iCombPercResp = zeros(8,1); 
-else 
-    % pairs of perceptual and response model
-    iCombPercResp = zeros(4,1);
-end
+iCombPercResp(1:3,2) = 1:3;
+iCombPercResp(4:6,2) = 4:6;
 
 nModels = size(iCombPercResp,1);
 
 nSubjects = numel(iSubjectArray);
 models_wagad = cell(nSubjects, nModels);
 
-for iSubject = iSubjectArray
-    
-    
+for iSubject = iSubjectArray 
+    paths = get_paths_wagad(iSubject);
     % loop over perceptual and response models
     for iModel = 1:nModels
-        
         tmp = load(fullfile(paths.fnFittedModel{iModel}));
         models_wagad{iSubject,iModel} = tmp.est.F;
     end
