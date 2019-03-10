@@ -27,8 +27,6 @@ function main_run_preprocessing(iSubjectArray)
 %% Parameters to set (subjects, preproc-flavor)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-paths = get_paths_wagad(); % dummy subject to get general paths
-
 if ismac
     iSubjectArray = get_subject_ids(paths.data, 'test_')';
 else
@@ -41,7 +39,7 @@ if nargin < 1
     iSubjectArray = setdiff([3:47], [14 25 32 33 34 37]);
 end
 
-
+paths = get_paths_wagad(iSubjectArray(1)); % dummy subject to get general paths
 
 % checked via run through via in WAGAD/data-folder run:
 % find . -name swau*run1* |sort

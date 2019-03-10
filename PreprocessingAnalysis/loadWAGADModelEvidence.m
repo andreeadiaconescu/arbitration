@@ -6,7 +6,7 @@ iCombPercResp(1:3,1) = 1;
 iCombPercResp(4:6,1) = 2;
 
 iCombPercResp(1:3,2) = 1:3;
-iCombPercResp(4:6,2) = 4:6;
+iCombPercResp(4:6,2) = 1:3;
 
 nModels = size(iCombPercResp,1);
 

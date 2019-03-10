@@ -72,12 +72,12 @@ for iSubj = iSubjectArray
     %% Run Inversion
     
     % pairs of perceptual and response model
-    iCombPercResp = zeros(8,2);
-    iCombPercResp(1:4,1) = 1;
-    iCombPercResp(5:8,1) = 2;
+    iCombPercResp = zeros(6,2);
+    iCombPercResp(1:3,1) = 1;
+    iCombPercResp(4:6,1) = 2;
     
-    iCombPercResp(1:4,2) = 1:4;
-    iCombPercResp(5:8,2) = 1:4;
+    iCombPercResp(1:3,2) = 1:3;
+    iCombPercResp(4:6,2) = 1:3;
     
     nModels = size(iCombPercResp,1);
     
