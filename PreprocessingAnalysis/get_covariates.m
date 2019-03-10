@@ -32,11 +32,7 @@ for s = 1:nSubjects
     %%
     parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
     load(paths.winningModel,'est','-mat'); % Select the winning model only
-    ka_r=est.p_prc.ka_r;
-    ka_a=est.p_prc.ka_a;
-    th_r=est.p_prc.th_r;
-    th_a=est.p_prc.th_a;
-    
+    ka_r=est.p_prc.ka_r;   
     ka_a=est.p_prc.ka_a;
     th_r=est.p_prc.th_r;
     th_a=est.p_prc.th_a;

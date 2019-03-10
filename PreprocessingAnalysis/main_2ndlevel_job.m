@@ -8,7 +8,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    iExcludedSubjects = [6 14 25 31 32 33 34 37]; 
+    iExcludedSubjects = [6 14 25 31 32 33 34 37];
     % manual setting...if you want to exclude any subjects
     iSubjectArray = get_subject_ids(paths.data)';
     iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
@@ -41,7 +41,7 @@ datapath      = paths.stats.secondLevel.root;
 spm_jobman('initcfg');
 which spm
 
-paths = get_paths_wagad(iSubjectArray); % dummy subject to get general paths
+paths = get_paths_wagad(iSubjectArray(1)); % dummy subject to get general paths
 path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', responseModelParameter, regressor);
 
 if exist(path2ndLevel, 'dir')
@@ -77,7 +77,8 @@ fnContrastAllSubjects= strcat(pathGlmAllSubjects, filesep, ...
 job{1}.spm.stats.factorial_design.des.t1.scans = fnContrastAllSubjects;
 %%
 nuisance_regressors=get_nuisance_regressors_2ndlevel(paths, iSubjectArray);
-job{1}.spm.stats.factorial_design.cov(1).c = log(allparameters(:,iColumn));
+selectedCovariate = allparameters(:,iColumn);
+job{1}.spm.stats.factorial_design.cov(1).c = selectedCovariate;
 job{1}.spm.stats.factorial_design.cov(1).cname = responseModelParameter;
 job{1}.spm.stats.factorial_design.cov(1).iCFI = 1;
 job{1}.spm.stats.factorial_design.cov(1).iCC = 1;

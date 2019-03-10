@@ -2,7 +2,7 @@ function [iContrast] = get_WAGAD_contrast(dir1stLevel,regressor)
 
 switch dir1stLevel
     
-    case 'wagad_model'
+    case 'wagad_cosyne'
         switch regressor
             case 'basic_advice'
                 iContrast = 1;

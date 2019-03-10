@@ -8,7 +8,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    idPreprocStrategy =1;
+    idPreprocStrategy = 1;
 end
 
 if nargin < 3
@@ -18,80 +18,63 @@ end
 % Array for different options at a particular preproc/analysis stage
 % The corresponding paths are chosen based on the id-input-parameters
 
-namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign'};
-nameGlmDesigns = {
-    'factorial_design','wagad'};
+%% Names: preprocessing strategies, GLMs, computational models, batch files
 
-paths.origModels = false;
+namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
+nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'};
 
-if paths.origModels == true
-    
-    % original models
-    filesResponseModels= {'softmax_social_bias_precision_reward_social_config',...
-        'softmax_social_bias_precision_social_config',...
-        'softmax_social_bias_precision_reward_config',...
-        'softmax_social_bias_precision_bayes_config',...
-        'softmax_social_bias_1stlevelprecision_reward_social_config',...
-        'softmax_social_bias_1stlevelprecision_social_config',...
-        'softmax_social_bias_1stlevelprecision_reward_config',...
-        'softmax_social_bias_1stlevelprecision_bayes_config'};
-    nameResponseModels= {'softmax_social_bias_precision_reward_social',...
-        'softmax_social_bias_precision_social',...
-        'softmax_social_bias_precision_reward',...
-        'softmax_social_bias_precision_bayes',...
-        'softmax_social_bias_1stlevelprecision_reward_social',...
-        'softmax_social_bias_1stlevelprecision_social',...
-        'softmax_social_bias_1stlevelprecision_reward',...
-        'softmax_social_bias_1stlevelprecision_bayes'};
-else
-    
-    % new models
-    filesResponseModels= {'linear_1stlevelprecision_reward_social_config','linear_1stlevelprecision_social_config',...
-        'linear_1stlevelprecision_reward_config','linear_1stlevelprecision_bayes_config'}; % ...
-    nameResponseModels= {'linear_1stlevelprecision_reward_social','linear_1stlevelprecision_social',...
-        'linear_1stlevelprecision_reward','linear_1stlevelprecision_bayes'};
-end
+% 'wagad_cosyne'
+% new models
+filesResponseModels    = {'linear_1stlevelprecision_reward_social_config','linear_1stlevelprecision_social_config',...
+                          'linear_1stlevelprecision_reward_config'}; % ...
+nameResponseModels     = filesResponseModels;
+filesPerceptualModels  = {'hgf_binary3l_reward_social_config','hgf_nonvol_reward_social_config'};
+namePerceptualModels   = filesPerceptualModels;
 
-
-
-fnStatsContrastsArray = {
+fnStatsContrastsArray  = {
     'batch_stats_single_subject_report_contrasts_factorial_design',...
     'batch_stats_single_subject_report_contrasts_revised_design.m'};
-fnPreprocessArray = {'batch_preproc_fmri_realign_stc.m', ...
-    'batch_preproc_fmri_stc_realign.m'};
+fnPreprocessArray      = {'batch_preproc_fmri_realign_stc.m', ...
+                          'batch_preproc_fmri_stc_realign.m'};
 
-
+% phases
+design.stableCardPhase       = [ones(25,1);0.*ones(74,1);ones(61,1)];
+design.stableCardPhase(1,:)  = [];
+design.volatileCardPhase     = [0.*ones(25,1);ones(74,1);0.*ones(61,1)];
+design.volatileCardPhase(1,:)= [];
+design.stableAdvicePhase     = [ones(50,1);0.*ones(20,1);ones(30,1);0.*ones(60,1)];
+design.stableAdvicePhase(1,:)= [];
+design.volatileAdvicePhase   = [0.*ones(50,1);ones(20,1);0.*ones(30,1);ones(60,1)];
+design.volatileAdvicePhase(1,:)= [];
 %% Paths study
 
 preproc.nameStrategies = namePreprocStrategies;
-preproc.nameStrategy = namePreprocStrategies{idPreprocStrategy};
-glm.nameDesigns = nameGlmDesigns;
-glm.nameDesign = nameGlmDesigns{idGlmDesign};
+preproc.nameStrategy   = namePreprocStrategies{idPreprocStrategy};
+glm.nameDesigns        = nameGlmDesigns;
+glm.nameDesign         = nameGlmDesigns{idGlmDesign};
 
 if ismac
     [~,username] = unix('whoami');
     username(end) = []; % remove trailing end of line character
     
     switch username
-        case 'kasperla'; % Lars laptop
-            
-            paths.study = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
-            paths.data =  paths.study;
+        case 'kasperla' % Lars laptop
+            paths.study        = '/Users/kasperla/Documents/code/matlab/smoothing_trunk/WAGAD';
+            paths.data         =  paths.study;
             paths.code.project =  paths.study;
-            paths.code.spm = '/Users/kasperla/Documents/code/matlab/spm12';
+            paths.code.spm     = '/Users/kasperla/Documents/code/matlab/spm12';
             
         case 'drea' % Andreeas laptop
-            paths.study = '/Volumes/AndreeasBackUp/WAGAD';
-            paths.data =  '/Volumes/AndreeasBackUp/WAGAD/data/'; % data
+            paths.study  = '/Volumes/AndreeasBackUp/WAGAD';
+            paths.data   =  '/Volumes/AndreeasBackUp/WAGAD/data/'; % data
             code.project = '/Users/drea/Dropbox/MadelineMSc/Code/WAGAD';
-            code.spm = '/Users/drea/Documents/MATLAB/spm12';
+            code.spm     = '/Users/drea/Documents/MATLAB/spm12';
             
         otherwise % @Madeline: change to your own paths HERE
-            
-            paths.study = '/Users/mstecy/Dropbox/MadelineMSc/';
-            paths.data =  '/Users/mstecy/Dropbox/MadelineMSc/DatafMRI/fMRI_data/';
+            paths.study  = '/Users/mstecy/Dropbox/MadelineMSc/';
+            paths.data   =  '/Users/mstecy/Dropbox/MadelineMSc/DatafMRI/fMRI_data/';
             code.project = '/Users/mstecy/Dropbox/MadelineMSc/Code/WAGAD';
-            code.spm = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12';
+            code.spm     = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12';
     end
     
 else % brutus cluster
@@ -114,35 +97,35 @@ paths.summary = fullfile(paths.study, 'summaryReports');
 
 %% Paths code
 
-code.physio = fullfile(code.project, 'PhysIO');
-code.model = fullfile(code.project, 'WAGAD_model');
+code.physio        = fullfile(code.project, 'PhysIO');
+code.model         = fullfile(code.project, 'WAGAD_model');
 code.preprocessing = fullfile(code.project, 'PreprocessingAnalysis');
 
-code.batches = fullfile(code.preprocessing, 'batches');
+code.batches       = fullfile(code.preprocessing, 'batches');
 
 code.batch.fnPreprocessArray = fnPreprocessArray;
-code.batch.fnPreprocess = fnPreprocessArray{idPreprocStrategy};
+code.batch.fnPreprocess      = fnPreprocessArray{idPreprocStrategy};
 
 
-code.batch.fnPhysIO = 'batch_physio_regressors.m';
-code.batch.fnStatsGlm = 'batch_stats_single_subject_glm.m';
+code.batch.fnPhysIO              = 'batch_physio_regressors.m';
+code.batch.fnStatsGlm            = 'batch_stats_single_subject_glm.m';
 code.batch.fnStatsContrastsArray = fnStatsContrastsArray;
-code.batch.fnStatsContrasts = fnStatsContrastsArray{idGlmDesign};
-code.batch.fnStatsContrastsPhysio = 'batch_stats_single_subject_report_contrasts_physio.m';
+code.batch.fnStatsContrasts      = fnStatsContrastsArray{idGlmDesign};
+code.batch.fnStatsContrastsPhysio= 'batch_stats_single_subject_report_contrasts_physio.m';
 
 paths.cluster.scripts = fullfile(paths.study, 'cluster_scripts');
-[~, ~] = mkdir(paths.cluster.scripts);
+[~, ~]                = mkdir(paths.cluster.scripts);
 
 
 %% Paths data
 
-paths.subj = fullfile(paths.data, paths.idSubj);
-paths.raw = fullfile(paths.subj, 'scandata');
-paths.phys = fullfile(paths.subj, 'physlog');
-paths.behav = fullfile(paths.subj, 'behav');
-paths.funct = fullfile(paths.subj, 'funct');
-paths.sess1 = fullfile(paths.funct, '1');
-paths.sess2 = fullfile(paths.funct, '2');
+paths.subj   = fullfile(paths.data, paths.idSubj);
+paths.raw    = fullfile(paths.subj, 'scandata');
+paths.phys   = fullfile(paths.subj, 'physlog');
+paths.behav  = fullfile(paths.subj, 'behav');
+paths.funct  = fullfile(paths.subj, 'funct');
+paths.sess1  = fullfile(paths.funct, '1');
+paths.sess2  = fullfile(paths.funct, '2');
 paths.struct = fullfile(paths.subj, 'struct');
 
 paths.dirSess = {
@@ -154,23 +137,36 @@ paths.dirSess = {
 
 %% Paths logs
 
-paths.dirLogs = regexprep(paths.dirSess, 'data/funct', 'phys');
+paths.dirLogs      = regexprep(paths.dirSess, 'data/funct', 'phys');
 paths.dirLogsOther = fullfile(paths.phys, 'logs');
 
-paths.fnMultipleConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
+paths.fnMultipleConditions            = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
 paths.fnModelFreePredictionConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
-paths.fnModelFreeWagerConditions = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
-paths.fnBehavMatrix = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_behav_matrix.mat']);
+paths.fnModelFreeWagerConditions      = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_multiple_conditions.mat']);
+paths.fnBehavMatrix                   = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_behav_matrix.mat']);
 
-for iRsp = 1:numel(nameResponseModels);
-    paths.fnFittedModel{iRsp} = fullfile(paths.behav, sprintf('%s_behav_model_rsp_%s.mat', ...
-        paths.idSubjBehav, nameResponseModels{iRsp}));
+% pairs of perceptual and response model
+iCombPercResp = zeros(6,2);
+iCombPercResp(1:3,1) = 1;
+iCombPercResp(4:6,1) = 2;
+
+iCombPercResp(1:3,2) = 1:3;
+iCombPercResp(4:6,2) = 4:6;
+
+nModels = size(iCombPercResp,1);
+
+
+for iModel = 1:nModels
+    paths.fnFittedModel{iModel} = fullfile(paths.behav, sprintf('%s_behav_model_prp_%s_rsp_%s.mat', ...
+        paths.idSubjBehav, namePerceptualModels{iCombPercResp(iModel,1)},nameResponseModels{iCombPercResp(iModel,2)}));
 end
 
-paths.fileResponseModels = filesResponseModels;
-paths.nameResponseModels = nameResponseModels;
+paths.fileResponseModels      = filesResponseModels;
+paths.filePerceptualModels    = filesPerceptualModels;
+paths.nameResponseModels      = nameResponseModels;
+paths.namePerceptualModels    = namePerceptualModels;
 paths.fileModelFamilyTemplate =  '/Users/drea/Documents/Social_Learning/BEHAV/gpo/regr_results/';
-paths.fnPhyslogRenamed   = strcat(paths.dirSess(1:2), fs, 'phys.log');
+paths.fnPhyslogRenamed        = strcat(paths.dirSess(1:2), fs, 'phys.log');
 
 
 %% Paths renamed raw data
@@ -199,11 +195,7 @@ end
 
 paths.nSess = length(paths.fnFunctRaw);
 
-
-
-
 %% Derived file paths for SPM batches
-
 preproc.input.fnFunctArray = strcat( paths.dirSess(1:2), ...
     fs, paths.fnFunctRenamed(1:2));
 preproc.input.fnStruct = fullfile(paths.struct,  ...
@@ -243,7 +235,7 @@ switch preproc.nameStrategy
     case 'preproc_realign_stc'
         preproc.output.pfxFunct = 'swau';
         preproc.output.pfxRealignParams = 'rp_';
-    case 'preproc_stc_realign';
+    case 'preproc_stc_realign'
         preproc.output.pfxFunct = 'swua';
         preproc.output.pfxRealignParams = 'rp_a';
 end
@@ -296,7 +288,9 @@ glm.root = fullfile(paths.subj, 'glm');
 [~,~] = mkdir(glm.root);
 glm.design = fullfile(glm.root, preproc.nameStrategy, glm.nameDesign);
 
-% mkdir(glm.design);
+if ~exist(glm.design,'dir')
+    mkdir(glm.design);
+end
 
 paths.stats.fnSpm = fullfile(glm.design, 'SPM.mat');
 
@@ -328,15 +322,11 @@ secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
 
 secondLevel.contrasts = strcat(secondLevel.design, fs, contrasts.names);
 
-% for iContrast = 1:numel(secondLevel.contrasts);
-%     [~,~] = mkdir(secondLevel.contrasts{iContrast});
-% end
-
-
 %% Assemble sub-modules of paths-structure
 
 paths.stats.contrasts = contrasts;
 paths.code = code;
+paths.design = design;
 paths.preproc = preproc;
 paths.stats.glm = glm;
 paths.stats.secondLevel = secondLevel;

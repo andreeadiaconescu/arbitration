@@ -11,47 +11,13 @@ if nargin < 2
 end
 
 paths = get_paths_wagad();
-pathfamily = paths.fileModelFamilyTemplate;
 
 [models_wagad]          = loadWAGADModelEvidence(iSubjectArray,paths);
 [alpha,exp_r,xp,pxp,bor]=spm_BMS(models_wagad);
 disp(['Best model: ', num2str(find(exp_r==max(exp_r)))]);
 
-original_models = paths.origModels;
 
-if original_models == true
-    % pairs of perceptual and response model
-    modelLabels = {'Integrated2','Social2','Reward2','Bayes2',...
-        'Integrated1','Social1','Reward1','Bayes1'};
-    
-    load([pathfamily 'family_allmodels.mat']);
-    family1=family_allmodels;
-    clear family_allmodels;
-    family1.exp_r=[];
-    family1.xp=[];
-    family1.s_samp=[];
-    family1.alpha0=[];
-    family1.s_samp=[];
-    family1.names={'Integrated2','Integrated1'};
-    family1.partition = [1 1 1 1 2 2 2 2];
-    [family_responsemodels,model1] = spm_compare_families(models_wagad,family1);
-    figure;
-    H=family_responsemodels.xp;
-    N=numel(H);
-    colors=jet(numel(H));
-    for i=1:N
-        h=bar(i,H(i));
-        if i==1, hold on, end
-        set(h,'FaceColor',colors(i,:))
-    end
-    set(gca,'XTick',1:4)
-    set(gca,'XTickLabel',{'Integrated1','Integrated2'});
-    ylabel('Exceedance Probability');
-    
-else
-    % pairs of perceptual and response model
-    modelLabels = {'Integrated','Social','Reward','Bayes'};
-end
+modelLabels = {'M1','M2','M3','M4','M5','M6'};
 
 
 if doPlotFigures
@@ -63,7 +29,7 @@ if doPlotFigures
         if i==1, hold on, end
         set(h,'FaceColor',colors(i,:))
     end
-    set(gca,'XTick',1:8)
+    set(gca,'XTick',1:6)
     set(gca,'XTickLabel',modelLabels);
     
     % Create ylabel

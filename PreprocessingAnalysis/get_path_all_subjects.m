@@ -52,7 +52,7 @@ if nargin < 3
 end
 
 idPreproc = 1;
-paths = get_paths_wagad(iSubjectArray, idPreproc,idDesign);
+paths = get_paths_wagad(iSubjectArray(1), idPreproc,idDesign);
 nSubjects = numel(iSubjectArray);
 itemArray = cell(nSubjects, 1);
 for s = 1:nSubjects

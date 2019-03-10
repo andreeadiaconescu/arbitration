@@ -29,15 +29,15 @@ nSubjects = numel(iSubjectArray);
 
 % Get task structure
 AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
-AdviceUnstable      = ones(size(AdviceCodingUnstable,2),1) == AdviceCodingUnstable';
+AdviceUnstable      = logical(paths.design.volatileAdvicePhase);
 
 RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
-RewardUnstable      = ones(size(RewardCodingUnstable,2),1) == RewardCodingUnstable';
+RewardUnstable      = logical(paths.design.volatileCardPhase);
 
 AdviceCodingStable = [ones(25,1)' ones(15,1)' zeros(30,1)' ones(25,1)' zeros(25,1)' ones(15,1)' zeros(25,1)'];
-AdviceStable      = ones(size(AdviceCodingStable,2),1) == AdviceCodingStable';
+AdviceStable      = logical(paths.design.stableAdvicePhase);
 RewardCodingStable = [ones(25,1)' zeros(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' ones(15,1)' ones(25,1)'];
-RewardStable      = ones(size(RewardCodingStable,2),1) == RewardCodingStable';
+RewardStable      = logical(paths.design.stableCardPhase);
 
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
@@ -45,7 +45,7 @@ for s = 1:nSubjects
     %%
     load(paths.winningModel,'est','-mat'); % Select the winning model only
     actual_wager = zscore(est.y([2:end],2));
-    predicted_wager = est.predicted_wager;
+    predicted_wager = est.predicted_wager(1:end-1);
     
     actual_wager_aStable = mean(actual_wager(AdviceStable(2:end)));
     actual_wager_aUnstable = mean(actual_wager(AdviceUnstable(2:end)));

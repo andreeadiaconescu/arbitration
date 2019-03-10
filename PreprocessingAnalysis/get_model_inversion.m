@@ -1,10 +1,9 @@
 function get_model_inversion(iSubjectArray, idDesign)
-% computes HGF for given subjects and creates parametric modulators for
+% extracts behaviour variables, computes HGF for given subjects for
 % concatenated design matrix, plus base regressors for event onsets
 %
 if nargin < 1
     iSubjectArray = setdiff([3:47], [9 14 25 31 32 33 34 37]);
-    
     % 6,7 = noisy; 9
 end
 
@@ -25,7 +24,8 @@ for iSubj = iSubjectArray
     
     input_u = load(fullfile(paths.code.model, 'final_inputs_advice_reward.txt'));% input structure: is this the input structure?
     
-    y = [];
+    y              = [];
+    includedTrials = [];
     
     %% Load Onsets
     % construct output matrix from behavioral log files:
@@ -54,35 +54,47 @@ for iSubj = iSubjectArray
         offsetRunSeconds = 0 + ...
             sum(paths.scanInfo.TR(1:iRun-1).*paths.scanInfo.nVols(1:iRun-1));
         
-        outputmatrixSession{iRun} = apply_trigger(fileTrigger, ...
+        [outputmatrixSession{iRun},iValid{iRun}] = apply_trigger(fileTrigger, ...
             SOC.Session(2).exp_data, offsetRunSeconds);
-        choice  = outputmatrixSession{iRun}(:,4);
-        wager   = outputmatrixSession{iRun}(:,7);
-        y       = [y; choice wager];
-        outputmatrix = [outputmatrix; outputmatrixSession{iRun}];
+        choice      = outputmatrixSession{iRun}(:,4);
+        wager       = outputmatrixSession{iRun}(:,7);
+        y           =  [y; choice wager];
+        outputmatrix   = [outputmatrix; outputmatrixSession{iRun}];
+        includedTrials = [includedTrials; iValid{iRun}];
     end
-    save(paths.fnBehavMatrix,'outputmatrix','-mat');
+    
+    y(1,:)                = []; % Remove the first trial since it is not cued by the card
+    includedTrials(1,:)   = []; % Remove the first trial since it is not cued by the card
+    
+    [behaviour_variables] = wagad_extract_behaviour(y,input_u,includedTrials,paths);
+    save(paths.fnBehavMatrix,'outputmatrix','behaviour_variables','-mat');
     
     %% Run Inversion
-    for iRsp= 1:numel(paths.fileResponseModels)
-        fprintf('\n=======\n\n\t\tInverting subject %d, model %d\n\n', iD, iRsp)
+    
+    % pairs of perceptual and response model
+    iCombPercResp = zeros(8,2);
+    iCombPercResp(1:4,1) = 1;
+    iCombPercResp(5:8,1) = 2;
+    
+    iCombPercResp(1:4,2) = 1:4;
+    iCombPercResp(5:8,2) = 1:4;
+    
+    nModels = size(iCombPercResp,1);
+    
+    
+    for iModel = 1:nModels
+        fprintf('\n=======\n\n\t\tInverting subject %d, model %d\n\n', iD, iModel)
         
-        est=fitModel(y,input_u,'hgf_binary3l_reward_social_config',...
-            paths.fileResponseModels{iRsp});
+        est=fitModel(y,input_u,paths.filePerceptualModels{iCombPercResp(iModel,1)},...
+            paths.fileResponseModels{iCombPercResp(iModel,2)});
         
-        [predicted_wager]   = calculate_predicted_wager(est,paths);
-        est.predicted_wager = predicted_wager;
-        est.cscore          = SOC.cscore;
-        
-        save(paths.fnFittedModel{iRsp}, 'est');
+        [predicted_wager]     = calculate_predicted_wager(est,paths);
+        est.predicted_wager   = predicted_wager;
+        est.cscore            = SOC.cscore;
+        save(paths.fnFittedModel{iModel}, 'est');
         
     end
-    
-    %     catch err
-    %         errorSubjects{end+1,1}.id = iD;
-    %         errorSubjects{end}.error = err;
-    %         errorIds{end+1} = iD;
-    %     end
 end
+
 
 save(fullfile(paths.behav, errorFile), 'errorSubjects', 'errorIds');

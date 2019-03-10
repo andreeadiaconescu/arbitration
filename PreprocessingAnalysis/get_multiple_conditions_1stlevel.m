@@ -18,7 +18,7 @@ if nargin < 3
 end
 
 if nargin < 4
-    doPlotFigures = 1;
+    doPlotFigures = 0;
 end
 
 errorSubjects = {};
@@ -35,7 +35,8 @@ for iSubj = iSubjectArray
     load(paths.winningModel,'est','-mat'); % Select the winning model only
     [predicted_wager] = calculate_predicted_wager(est,paths);
     hgf_plotTraj_reward_social(est,predicted_wager);
-    actual_responses = est.y;
+    first_trial      = [1 1];
+    actual_responses = [first_trial; est.y];
     %% Create Parametric Modulators / Define Conditions
     if strcmp(typeDesign,'ModelBased')==1
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,7 +47,7 @@ for iSubj = iSubjectArray
         pmod(1,1).name = {'Arbitration','Social Weighting',...
             'Card Weighting','Precision_Advice','Precision_Card'};
         advice_card_space = input_u(:,3);
-        ze1               = est.p_obs.ze;
+        ze1               = 1;
         % 1st level precision
         px       = 1./est.traj.sahat_a(:,1);
         pc       = 1./est.traj.sahat_r(:,1);
@@ -59,7 +60,7 @@ for iSubj = iSubjectArray
         
         Social_weighting = [0.5; wx.*mu1hat_a];
         Card_weighting   = [0.5; wc.*mu1hat_r];
-        Arbitration      = [0.5; wx];
+        Arbitration      = [0.5; wc];
         
         pmod(1,1).param = {[Arbitration],[Social_weighting],[Card_weighting],[4;px],[4; pc]}; % Precision (Model-based wager)
         pmod(1,1).poly={[1],[1],[1],[1],[1]};
@@ -83,7 +84,7 @@ for iSubj = iSubjectArray
         pmod(1,3).param = {[0; Epsilon2.Advice],[0; Epsilon2.Reward],[0; Epsilon3.Advice],[0; Epsilon3.Reward]};
         pmod(1,3).poly={[1], [1],[1], [1]};
         %% Plot
-        PlotFigureA = 1;
+        PlotFigureA = 0;
         PlotFigureB = 0;
         main_plot_regressors(pmod,est,paths,doPlotFigures,PlotFigureA,PlotFigureB);
         load(paths.fnBehavMatrix,'outputmatrix','-mat');
@@ -105,11 +106,11 @@ for iSubj = iSubjectArray
         save(paths.fnMultipleConditions, 'onsets', 'names', 'durations', 'names', 'pmod', 'orth', '-mat');
         
     elseif strcmp(typeDesign,'ModelFree')==1
-        AdviceCodingUnstable=[zeros(25,1)' zeros(15,1)' ones(30,1)' zeros(25,1)' ones(25,1)' zeros(15,1)' ones(25,1)'];
-        RewardCodingUnstable=[zeros(25,1)' ones(15,1)' ones(30,1)' ones(25,1)' zeros(25,1)' zeros(15,1)' zeros(25,1)'];
+        AdviceCodingUnstable= logical(paths.design.volatileAdvicePhase);
+        RewardCodingUnstable= logical(paths.design.volatileCardPhase);
         
-        AdviceCodingStable = [ones(25,1)' ones(15,1)' zeros(30,1)' ones(25,1)' zeros(25,1)' ones(15,1)' zeros(25,1)'];
-        RewardCodingStable = [ones(25,1)' zeros(15,1)' zeros(30,1)' zeros(25,1)' ones(25,1)' ones(15,1)' ones(25,1)'];
+        AdviceCodingStable = logical(paths.design.stableAdvicePhase);
+        RewardCodingStable = logical(paths.design.stableCardPhase);
         
         names={'RewardStable','RewardUnstable','AdviceStable','AdviceUnstable'};
         onsets{1} = outputmatrix(RewardCodingStable==1,2);

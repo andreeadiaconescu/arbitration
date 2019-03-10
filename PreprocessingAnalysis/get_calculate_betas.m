@@ -43,7 +43,7 @@ for s = 1:nSubjects
     par{s,4} = beta_inferv_r;
     par{s,5} = beta_pv_a;
     par{s,6} = beta_pv_r;
-    par{s,7} = zeta;
+    par{s,7} = log(zeta);
 end
 if doStats
     temp = cell2mat(par);
