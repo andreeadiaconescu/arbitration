@@ -28,6 +28,7 @@ be_wager  = exp(ptrans(10));% noise wager
 logp_ch = NaN(length(infStates),1);
 logp_wager = NaN(length(infStates),1);
 logp = NaN(length(infStates),1);
+n = size(infStates,1);
 
 % Weed irregular trials out from responses and inputs
 y = r.y(:,1);
@@ -61,12 +62,10 @@ transformed_mu1hat_r = mu1hat_r.^advice_card_space.*(1-mu1hat_r).^(1-advice_card
 
 % Decisions
 y_ch = r.y(:,1);
-y_ch(1,:) = []; % Remove the first trial since it is not cued by the card
 y_ch(r.irr) = [];
 
 % Calculate log-probabilities for non-irregular trials
 y_wager = r.y(:,2);
-y_wager(1,:) = []; % Remove the first trial since it is not cued by the card
 y_wager(r.irr) = [];
 
 %% Belief Vector
@@ -80,7 +79,24 @@ wc = pc./(ze.*px + pc);
 
 % Belief and Choice Noise
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
-decision_noise = exp((-mu3hat_r)+(-mu3hat_a)+log(be_ch));
+decision_noise = be_ch;
+
+% Integrated Belief
+% ~~~~~~~~
+x = b;
+
+% Avoid any numerical problems when taking logarithms close to 1
+logx = log(x);
+log1pxm1 = log1p(x-1);
+logx(1-x<1e-4) = log1pxm1(1-x<1e-4);
+log1mx = log(1-x);
+log1pmx = log1p(-x);
+log1mx(x<1e-4) = log1pmx(x<1e-4); 
+
+% Calculate log-probabilities for non-irregular trials
+reg = ~ismember(1:n,r.irr);
+logp_ch(reg) = y_ch.*decision_noise.*(logx -log1mx) +decision_noise.*log1mx -log((1-x).^decision_noise +x.^decision_noise);
+% res(reg) = (y_ch-x)./sqrt(x.*(1-x));
 
 % Irreducible uncertainty
 % ~~~~~~~~
@@ -108,16 +124,13 @@ pv_r(r.irr) = [];
 % Calculate predicted log-reaction time
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 logrt    = be0 + be1.*uncertainty + be2.*arbitration + be3.*inferv_a + be4.*inferv_r + be5.*pv_a + be6.*pv_r;
-% max_wager = 10;
-% wager    = tapas_sgm(logrt,1).*max_wager - ones(size(y_wager)); % wager from 1 to 10
 wager = logrt;
 
 % Calculate log-probabilities for non-irregular trials
 % Note: 8*atan(1) == 2*pi (this is used to guard against
 % errors resulting from having used pi as a variable).
-logp_ch(not(ismember(1:length(logp_ch),r.irr)))         = y_ch.*decision_noise.*log(b./(1-b)) +log((1-b).^decision_noise ./((1-b).^decision_noise +b.^decision_noise));
-logp_wager(~ismember(1:length(logp),r.irr))             = -1/2.*log(8*atan(1).*be_wager) -(y_wager-wager).^2./(2.*be_wager);
-logp(not(ismember(1:length(logp),r.irr)))               = logp_ch + logp_wager; 
+logp_wager(reg)         = -1/2.*log(8*atan(1).*be_wager) -(y_wager-wager).^2./(2.*be_wager);
+logp(reg)               = logp_ch + logp_wager; 
 
 
 return;
