@@ -25,21 +25,6 @@ wc = pc./(ze.*px + pc);
 % Belief
 b              = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
 
-original_models = paths.origModels;
-
-if original_models == true
-    
-    % Precision of the Bernoulli Vector
-    pib = 1./(b.*(1-b));
-    
-    % Calculate confidence
-    alpha = tapas_sgm((pib-4),1);
-    max_wager=10;
-    
-    % Calculate predicted wager
-    predicted_wager            = zscore((2.*alpha -1).*max_wager+log(est.p_obs.be_wager));
-    
-else
     % Surprise
     % ~~~~~~~~
     surp = -log2(b);
@@ -62,5 +47,4 @@ else
         est.p_obs.be3.*inferv_a + est.p_obs.be4.*inferv_r + est.p_obs.be5.*pv_a + ...
         est.p_obs.be6.*pv_r;
     predicted_wager    = zscore(logrt); % wager from 1 to 10
-end
 end
