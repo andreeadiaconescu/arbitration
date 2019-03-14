@@ -30,9 +30,9 @@ for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
     %%
-    parameters = {'ka_r','ka_a','th_r','th_a','ze','beta'};
+    learningParameters = {'\kappa_r','\kappa_a','\vartheta_r','\vartheta_a'};
     load(paths.winningModel,'est','-mat'); % Select the winning model only
-    ka_r=est.p_prc.ka_r;   
+    ka_r=est.p_prc.ka_r;
     ka_a=est.p_prc.ka_a;
     th_r=est.p_prc.th_r;
     th_a=est.p_prc.th_a;
@@ -45,30 +45,83 @@ for s = 1:nSubjects
     par{s,5} = log(ze);   % zeta
     par{s,6} = beta; % decision noise
 end
+temp = cell2mat(par);
+
+%% Plot MAPs of Learning Parameters
+x = temp(:,1);
+y = temp(:,2);
+z = temp(:,3);
+t = temp(:,4);
+
+
+Priors    = [tapas_sgm(est.c_prc.logitkamu_r,1);tapas_sgm(est.c_prc.logitkamu_a,1);...
+            tapas_sgm(est.c_prc.logitthmu_r,1);tapas_sgm(est.c_prc.logitthmu_a,1)];
+Variables = {x y z t};
+Groups    = {ones(length(x), 1), 2*ones(length(y), 1), 3*ones(length(z), 1),4*ones(length(t), 1)};
+
+GroupingVariables = learningParameters;
+
+figure;
+H   = Variables;
+N=numel(Variables);
+
+colors=spring(numel(H));
+    
+for i=1:N
+    e = notBoxPlot(cell2mat(H(i)),cell2mat(Groups(i)));
+    set(e.data,'MarkerSize', 10);
+    if i == 2 || i == 4
+        set(e.data,'Marker','o');
+        set(e.data,'Marker','o');
+    end
+    if i==1, hold on, end
+
+    set(e.data,'Color',colors(i,:))
+    set(e.sdPtch,'FaceColor',colors(i,:));
+    set(e.semPtch,'FaceColor',[0.9 0.9 0.9]);
+end
+set(gca,'XTick',1:N)
+set(gca,'XTickLabel',GroupingVariables);
+hold on;
+scatter([1:4]',Priors,100,'k','*');
+set(gca,'FontName','Constantia','FontSize',20);
+ylabel('MAPs Learning Parameters');
+%% Plot Zeta
+% Zeta
+figure; hist((temp(:,[5]))); hold on; stem(0);
+% Create xlabel
+xlabel('log(\zeta)');
+% Create ylabel
+ylabel('Count');
+
+%% Stats
 if doStats
-    temp = cell2mat(par);
+    [h,p,ci,stats]=ttest((temp(:,5)),1);
+    disp(['Significance paired t-test zeta: ' p]);
+    statsZeta.pValue=p;
+    statsZeta.pValueBonferroni=p*3;
+    statsZeta.Tstats= stats.tstat;
+    statsZeta.df= stats.df;
+    disp(statsZeta);
     
-    % Zeta
-    figure; hist((temp(:,[5]))); hold on; stem(0);
-    % Create xlabel
-    xlabel('log(\zeta)');
-    
-    % Create ylabel
-    ylabel('Count');
-    
-    [h,p,ci,stats]=ttest((temp(:,5)),0);
-    statsZeta=p;
-    disp(['Significance paired t-test zeta ' num2str(statsZeta)]);
     
     % Differences in Kappa
     [h,p,ci,stats]=ttest(temp(:,1),temp(:,2));
-    statsKappa=p;
-    disp(['Significance paired t-test kappa ' num2str(statsKappa)]);
+    disp(['Significance paired t-test kappa: ' p]);
+    statsKappa.pValue=p;
+    statsKappa.pValueBonferroni=p*3;
+    statsKappa.Tstats= stats.tstat;
+    statsKappa.df= stats.df;
+    disp(statsKappa);
     
     % Differences in Theta
     [h,p,ci,stats]=ttest(temp(:,3),temp(:,4));
-    statsTheta=p;
-    disp(['Significance paired t-test theta ' num2str(statsTheta)]);
+    disp(['Significance paired t-test theta: ' p]);
+    statsTheta.pValue=p;
+    statsTheta.pValueBonferroni=p*3;
+    statsTheta.Tstats= stats.tstat;
+    statsTheta.df= stats.df;
+    disp(statsTheta);
     
     diffParameters=[temp(:,2)-temp(:,1) temp(:,4)-temp(:,3)];
     

@@ -47,7 +47,7 @@ for iSubj = iSubjectArray
         pmod(1,1).name = {'Arbitration','Social Weighting',...
             'Card Weighting','Precision_Advice','Precision_Card'};
         advice_card_space = input_u(:,3);
-        ze1               = 1;
+        ze1               = 1; % individual differences in zeta add further variability here; zeta used as a covariate
         % 1st level precision
         px       = 1./est.traj.sahat_a(:,1);
         pc       = 1./est.traj.sahat_r(:,1);

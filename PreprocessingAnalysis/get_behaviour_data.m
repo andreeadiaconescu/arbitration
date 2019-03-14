@@ -1,4 +1,4 @@
-function get_model_inversion(iSubjectArray, idDesign)
+function get_behaviour_data(iSubjectArray)
 % extracts behaviour variables, computes HGF for given subjects for
 % concatenated design matrix, plus base regressors for event onsets
 %
@@ -7,31 +7,15 @@ if nargin < 1
     % 6,7 = noisy; 9
 end
 
-if nargin < 2
-    idDesign = 2;
-end
-
-errorSubjects = {};
-errorIds = {};
-errorFile = 'errorInversion.mat';
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    iD = iSubj;
-    fprintf('\n=======\n\n\tInverting subject %d\n\n', iD)
-    % try % continuation with new subjects, if error
-    paths = get_paths_wagad(iSubj,1,idDesign);
+    paths = get_paths_wagad(iSubj);
     addpath(paths.code.model);
-    
     input_u = load(fullfile(paths.code.model, 'final_inputs_advice_reward.txt'));% input structure
-    
     y              = [];
     includedTrials = [];
-    
-    %% Load Onsets
-    % construct output matrix from behavioral log files:
-    % outputmatrix=[onsets1 onsets2 onsets3 choice onsets_resp RS' inmatrix(:,17)];
-    
-    outputmatrix = [];
+    probeSelection = [];
+    outputmatrix   = [];
     for iRun = 1:2
         
         % try whether run 1 and 2 (male adviser) exist
@@ -54,47 +38,45 @@ for iSubj = iSubjectArray
         offsetRunSeconds = 0 + ...
             sum(paths.scanInfo.TR(1:iRun-1).*paths.scanInfo.nVols(1:iRun-1));
         
-        [outputmatrixSession{iRun},iValid{iRun},~] = apply_trigger(fileTrigger, ...
+        [outputmatrixSession{iRun},iValid{iRun},Probe{iRun}] = apply_trigger(fileTrigger, ...
             SOC.Session(2).exp_data, offsetRunSeconds);
         choice      = outputmatrixSession{iRun}(:,4);
         wager       = outputmatrixSession{iRun}(:,7);
         y           =  [y; choice wager];
         outputmatrix   = [outputmatrix; outputmatrixSession{iRun}];
         includedTrials = [includedTrials; iValid{iRun}];
+        probeSelection = [probeSelection; Probe{iRun}];
     end
     
     y(1,:)                = []; % Remove the first trial since it is not cued by the card
     includedTrials(1,:)   = []; % Remove the first trial since it is not cued by the card
+
+    probeCategories = [probeSelection(1,1) probeSelection(14,1), ...
+                       probeSelection(49,1) probeSelection(73,1),...
+                       probeSelection(110,1)];
+    probes          = [];
     
+    for iProbe = 1:numel(probeCategories)
+        switch probeCategories(iProbe)
+            case 0
+                probeValue = 0.5;
+            case 1
+                probeValue = 0.8;
+            case 2
+                probeValue = 0.2;
+            case 3
+                probeValue = 0.5;
+                
+        end
+        
+        probeValue(iProbe) = probeValue;
+        
+        probes = [probes; probeValue(iProbe)];
+    end
     [behaviour_variables] = wagad_extract_behaviour(y,input_u,includedTrials,paths);
+    behaviour_variables.probe = probes';
     save(paths.fnBehavMatrix,'outputmatrix','behaviour_variables','-mat');
     
-    %% Run Inversion
     
-    % pairs of perceptual and response model
-    iCombPercResp = zeros(6,2);
-    iCombPercResp(1:3,1) = 1;
-    iCombPercResp(4:6,1) = 2;
-    
-    iCombPercResp(1:3,2) = 1:3;
-    iCombPercResp(4:6,2) = 1:3;
-    
-    nModels = size(iCombPercResp,1);
-    
-    
-    for iModel = 1:nModels
-        fprintf('\n=======\n\n\t\tInverting subject %d, model %d\n\n', iD, iModel)
-        
-        est=fitModel(y,input_u,paths.filePerceptualModels{iCombPercResp(iModel,1)},...
-            paths.fileResponseModels{iCombPercResp(iModel,2)});
-        
-        [predicted_wager]     = calculate_predicted_wager(est,paths);
-        est.predicted_wager   = predicted_wager;
-        est.cscore            = SOC.cscore;
-        save(paths.fnFittedModel{iModel}, 'est');
-        
-    end
 end
 
-
-save(fullfile(paths.behav, errorFile), 'errorSubjects', 'errorIds');

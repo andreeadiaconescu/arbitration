@@ -5,8 +5,8 @@ y = current_var(:,2);
 z = current_var(:,3);
 t = current_var(:,4);
 
-Variables = [x; y; z; t];
-Groups    = [ones(length(x), 1); 2*ones(length(y), 1); 3*ones(length(z), 1);4*ones(length(t), 1)];
+Variables = {x y z t};
+Groups    = {ones(length(x), 1) 2*ones(length(y), 1) 3*ones(length(z), 1) 4*ones(length(t), 1)};
 
 GroupingVariables = {'Stable Card','Volatile Card',...
                      'Stable Advice','Volatile Advice'};
@@ -24,7 +24,7 @@ switch currentMAP
         colors=copper(numel(H));
 end
 for i=1:N
-    e = notBoxPlot(H(i),Groups(i));
+    e = notBoxPlot(cell2mat(H(i)),cell2mat(Groups(i)));
     set(e.data,'MarkerSize', 10);
     if i == 2 || i == 4
         set(e.data,'Marker','o');
@@ -37,6 +37,6 @@ for i=1:N
 end
 set(gca,'XTick',1:N)
 set(gca,'XTickLabel',GroupingVariables);
-set(gca,'FontName','Constantia','FontSize',20);
+set(gca,'FontName','Constantia','FontSize',36);
 ylabel(label);
 end

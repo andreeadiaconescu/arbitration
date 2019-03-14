@@ -16,6 +16,13 @@ paths = get_paths_wagad();
 [alpha,exp_r,xp,pxp,bor]=spm_BMS(models_wagad);
 disp(['Best model: ', num2str(find(exp_r==max(exp_r)))]);
 
+% Bayes Omnibus Risk (probability that model frequencies are equal)
+BMS_results.alpha      = alpha;
+BMS_results.exp_r      = exp_r;
+BMS_results.pxp        = pxp;
+BMS_results.bor        = bor;
+
+disp(BMS_results);
 
 modelLabels = {'M1','M2','M3','M4','M5','M6'};
 

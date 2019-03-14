@@ -14,9 +14,6 @@ if nargin < 1
     iSubjectArray = setdiff(iSubjectArray, iExcludedSubjects);
 end
 
-if nargin < 2
-    doStats = 1;
-end
 
 addpath(paths.code.model);
 nSubjects = numel(iSubjectArray);

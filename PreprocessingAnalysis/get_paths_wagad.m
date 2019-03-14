@@ -21,7 +21,7 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'};
+nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'}; 
 
 % 'wagad_cosyne'
 % new models

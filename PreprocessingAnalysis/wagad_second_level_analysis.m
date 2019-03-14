@@ -3,7 +3,7 @@ function wagad_second_level_analysis(iSubjectArray,typeDesign)
 % first level modelbased statistics)
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [1 1 1 1 1 1];
+Analysis_Strategy = [0 0 0 0 0 0 1];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -23,12 +23,13 @@ switch typeDesign
         idDesign = 1;
 end
 
-doModelComparison       = Analysis_Strategy(1);
-doSecondLevelBehav      = Analysis_Strategy(2);
-doCompareWagers         = Analysis_Strategy(3);
-doCalculateBetas        = Analysis_Strategy(4);
-doCalculateMAPS         = Analysis_Strategy(5);
-doSecondLevelStats      = Analysis_Strategy(6);
+doModelComparison                 = Analysis_Strategy(1);
+doSecondLevelBehav                = Analysis_Strategy(2);
+doCompareWagers                   = Analysis_Strategy(3);
+doCalculateBetas                  = Analysis_Strategy(4);
+doCalculateMAPS                   = Analysis_Strategy(5);
+doSecondLevelStats                = Analysis_Strategy(6);
+doCreateFiguresSupplementary      = Analysis_Strategy(7);
 
 % Set axes properties
 set(0,'defaultAxesFontName','Constantia');
@@ -54,9 +55,6 @@ end
 
 if doCalculateMAPS
     wagad_extract_parameters_create_table(iSubjectArray);
-    wagad_extract_plot_MAPs(iSubjectArray,'accuracy');
-    wagad_extract_plot_MAPs(iSubjectArray,'advice');
-    wagad_extract_plot_MAPs(iSubjectArray,'wager');
 end
 
 if doSecondLevelStats
@@ -85,6 +83,15 @@ if doSecondLevelStats
             idDesign = 1;
             main_2ndlevel_job(idDesign,iSubjectArray);
     end
+end
+
+if doCreateFiguresSupplementary
+    wagad_extract_plot_MAPs(iSubjectArray,'accuracy');
+    wagad_extract_plot_MAPs(iSubjectArray,'advice');
+    wagad_extract_plot_MAPs(iSubjectArray,'wager');
+    wagad_plot_computational_quantities(iSubjectArray);
+    wagad_plot_wager_computational_quantities(iSubjectArray)
+    wagad_analyze_probe(iSubjectArray)
 end
 
 end

@@ -1,4 +1,4 @@
-function [wager_computational_quantities] = wagad_extract_computational_quantities(est)
+function [wager_beta_computational_quantities] = wagad_extract_beta_computational_quantities(est)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % First: Arbitration (Precision Ratio),
@@ -17,28 +17,31 @@ advice_card_space    = est.est.u(:,3);
 transformed_mu1hat_r = mu1hat_r.^advice_card_space.*(1-mu1hat_r).^(1-advice_card_space);
 b                    = wx.*mu1hat_a + wc.*transformed_mu1hat_r;
 
-Social_weighting     = wx.*mu1hat_a;
-Card_weighting       = wc.*mu1hat_r;
 Arbitration          = wx;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Second: Wager (Belief Precision), Belief
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-pib           = 1./(b.*(1-b));
+Uncertainty_Decision           = (b.*(1-b));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Third: Social and Reward PEs
-% Social and Reward Volatility PEs
+% Third: Informational and Environmental Uncertainty Wager
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Epsilon2_Advice       = est.est.traj.sa_a(:,2).*est.est.traj.da_a(:,1);
-Epsilon2_Reward       = abs(est.est.traj.sa_r(:,2).*est.est.traj.da_r(:,1));
-Epsilon3_Advice       = est.est.traj.sa_a(:,3).*est.est.traj.da_a(:,2);
-Epsilon3_Reward       = est.est.traj.sa_r(:,3).*est.est.traj.da_r(:,2);
+% Extract trajectories of interest from infStates
+sa2hat_r = est.est.traj.sahat_r(:,2);
+sa2hat_a = est.est.traj.sahat_a(:,2);
+mu2hat_r = est.est.traj.muhat_r(:,2);
+mu2hat_a = est.est.traj.muhat_a(:,2);
+mu3hat_r = est.est.traj.muhat_r(:,3);
+mu3hat_a = est.est.traj.muhat_a(:,3);
 
-Predicted_wager       = zscore(est.est.predicted_wager(1:end));
-Actual_wager          = zscore(est.est.y(1:end,2));
 
-wager_computational_quantities = [Arbitration wc Social_weighting Card_weighting, ...
-                                  Epsilon2_Advice Epsilon2_Reward Epsilon3_Advice,...
-                                  Epsilon3_Reward Predicted_wager pib];
+inferv_a = tapas_sgm(mu2hat_a, 1).*(1 -tapas_sgm(mu2hat_a, 1)).*sa2hat_a; 
+inferv_r = tapas_sgm(mu2hat_r, 1).*(1 -tapas_sgm(mu2hat_r, 1)).*sa2hat_r; 
+pv_a = tapas_sgm(mu2hat_a, 1).*(1-tapas_sgm(mu2hat_a, 1)).*exp(mu3hat_a); 
+pv_r = tapas_sgm(mu2hat_r, 1).*(1-tapas_sgm(mu2hat_r, 1)).*exp(mu3hat_r); 
+
+
+wager_beta_computational_quantities = [Uncertainty_Decision Arbitration,...
+                                      inferv_a inferv_r pv_a pv_r];
 
 end

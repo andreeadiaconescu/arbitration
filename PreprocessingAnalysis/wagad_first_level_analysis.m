@@ -5,7 +5,7 @@ function wagad_first_level_analysis(iSubjectArray,typeDesign)
 %           options     as set by dmpad_set_analysis_options();
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 1 1 1 1];
+Analysis_Strategy = [0 1 1 1 1 1]; 
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -25,29 +25,38 @@ switch typeDesign
         idDesign = 1;
 end
 
-doPreprocessing         = Analysis_Strategy(1);
-doInversion             = Analysis_Strategy(2);
-doCreateRegressors      = Analysis_Strategy(3);
-doFirstLevelStats       = Analysis_Strategy(4);
-doFirstLevelContrasts   = Analysis_Strategy(5);
+doPreprocessing             = Analysis_Strategy(1);
+doExtractBehaviouralData    = Analysis_Strategy(2);
+doInversion                 = Analysis_Strategy(3);
+doCreateRegressors          = Analysis_Strategy(4);
+doFirstLevelStats           = Analysis_Strategy(5);
+doFirstLevelContrasts       = Analysis_Strategy(6);
 
 % Deletes previous preproc/stats files of analysis specified in options
 if doPreprocessing
     main_run_preprocessing;
 end
+
+if doExtractBehaviouralData
+    get_behaviour_data(iSubjectArray);
+end
+
 if doInversion
    get_model_inversion(iSubjectArray,idDesign);    
 end
+
 if doCreateRegressors
     get_multiple_conditions_1stlevel(iSubjectArray,typeDesign,idDesign);
 end
 
+iSubjectArrayfMRI = setdiff([3:47], [6 14 25 31 32 33 34 37]);
+
 if doFirstLevelStats
-    main_run_stats_glm_single_subject(iSubjectArray,idDesign)
+    main_run_stats_glm_single_subject(iSubjectArrayfMRI,idDesign)
 end
 
 if doFirstLevelContrasts
-    main_run_stats_report_contrasts_single_subject(iSubjectArray,idDesign)
+    main_run_stats_report_contrasts_single_subject(iSubjectArrayfMRI,idDesign)
 end
 
 
