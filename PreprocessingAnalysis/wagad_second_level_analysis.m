@@ -1,9 +1,8 @@
 function wagad_second_level_analysis(iSubjectArray,typeDesign)
-%Performs all analysis steps for one subject of the DMPAD study (up until
-% first level modelbased statistics)
+% Performs all group analysis steps for the WAGAD study
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 0 0 0 0 0 1];
+Analysis_Strategy = [0 0 0 0 0 1 0 0];
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -30,6 +29,7 @@ doCalculateBetas                  = Analysis_Strategy(4);
 doCalculateMAPS                   = Analysis_Strategy(5);
 doSecondLevelStats                = Analysis_Strategy(6);
 doCreateFiguresSupplementary      = Analysis_Strategy(7);
+doExtractRoiTimeSeries            = Analysis_Strategy(8);
 
 % Set axes properties
 set(0,'defaultAxesFontName','Constantia');
@@ -70,7 +70,7 @@ if doSecondLevelStats
                 responseModelParameters = {'be_surp','zeta'};
                 for iRegressor = 1:numel(regressorsGLM)
                     for iParameter = 1:numel(responseModelParameters)
-                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
+                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{1},responseModelParameters{2})
                     end
                 end
             else
@@ -92,6 +92,10 @@ if doCreateFiguresSupplementary
     wagad_plot_computational_quantities(iSubjectArray);
     wagad_plot_wager_computational_quantities(iSubjectArray)
     wagad_analyze_probe(iSubjectArray)
+end
+
+if doExtractRoiTimeSeries
+   wagad_extract_roi_timeseries(iSubjectArray); 
 end
 
 end

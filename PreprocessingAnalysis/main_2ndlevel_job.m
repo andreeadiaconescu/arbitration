@@ -151,5 +151,5 @@ job{4}.spm.stats.results.write.none = 1;
 actual_job = {job{1},job{2},job{3},job{4}};
 
 % Execute actual_job
-spm_jobman('run',actual_job);
+spm_jobman('interactive',actual_job);
 end

@@ -295,8 +295,8 @@ end
 paths.stats.fnSpm = fullfile(glm.design, 'SPM.mat');
 
 contrasts.fnReport = strcat(glm.design, '.ps');
-contrasts.names = {'arbitration'; 'belief_precision'};
-contrasts.indices = [2 4];
+contrasts.names = {'arbitration'; 'belief_precision'; 'arbitration_all_nuclei_mask'};
+contrasts.indices = [2 4 2];
 
 %%  Scan Info
 
@@ -319,8 +319,14 @@ secondLevel.fnNuisanceRegressors = fullfile(secondLevel.covariates, 'nuisance_re
 secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
     glm.nameDesign);
 
+% TODO: adapt or generalize to chosen covariates!
+secondLevel.dirCurrentCovariate = fullfile('learning_parameters', 'zeta');
 
-secondLevel.contrasts = strcat(secondLevel.design, fs, contrasts.names);
+secondLevel.contrasts = strcat(secondLevel.design, fs, ...
+    secondLevel.dirCurrentCovariate, fs, contrasts.names);
+
+% TODO: at the moment, these masks are created manually!
+secondLevel.roiAnalysis.fnMaskArray = {'ArbitrationBrainstem_PeakLevel.nii'};
 
 %% Assemble sub-modules of paths-structure
 
