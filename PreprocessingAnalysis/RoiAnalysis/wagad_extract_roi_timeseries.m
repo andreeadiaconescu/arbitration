@@ -39,9 +39,11 @@ for iSubj = iSubjectArray
     nVols = paths.scanInfo.nVols;
     iVolStart = 1 + sum(nVols(1:(iRun-1)));
     iVolEnd = sum(nVols(1:iRun));
+    load(paths.stats.fnSpm);
     pst = SPM.Sess(1).U(iCondition).pst(iVolStart:iVolEnd);
     ons = SPM.Sess(1).U(iCondition).ons;
     TR = SPM.xY.RT;
+    Y.dimInfo.set_dims('t', 'resolutions', TR, 'firstSamplingPoint', 0, 'samplingWidths', TR);
     binTimes = [0:.5:20];
     % Y.bin_epoch(binTimes, pst) % result: nBinTimes x ??? (mean? sd?
     % because different number of scans end up in each bin
