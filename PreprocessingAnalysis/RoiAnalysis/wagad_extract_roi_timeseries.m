@@ -15,7 +15,7 @@ iCondition = 1; % 1 = advice presentation, needed fo trial binning
 iRun = [1]; % concatenated runs [1 2]
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
-    fnFunct =  paths.preproc.output.fnFunctArray(iRun);
+    fnFunct = regexprep(paths.preproc.output.fnFunctArray{iRun}, 'sw', 'w'); % use unsmoothed
     fnMask = fullfile(paths.stats.secondLevel.contrasts{iContrast}, ...
         paths.stats.secondLevel.roiAnalysis.fnMaskArray{iMask});
     
