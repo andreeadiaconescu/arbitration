@@ -5,8 +5,8 @@ function wagad_first_level_analysis(iSubjectArray,typeDesign)
 %           options     as set by dmpad_set_analysis_options();
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-%Analysis_Strategy = [0 1 1 1 1 1]; 
-Analysis_Strategy = [0 0 0 0 0 0]; 
+Analysis_Strategy = [0 1 0 1 1 1]; 
+% Analysis_Strategy = [0 0 0 0 0 0]; 
 disp(Analysis_Strategy);
 fprintf('\n\n===\n\n');
 pause(2);
@@ -16,7 +16,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    typeDesign = 'ModelBased';
+    typeDesign = 'ModelFree';
 end
 
 switch typeDesign

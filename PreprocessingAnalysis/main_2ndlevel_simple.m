@@ -38,7 +38,7 @@ datapath      = paths.stats.secondLevel.root;
 spm_jobman('initcfg');
 which spm
 
-paths = get_paths_wagad(iSubjectArray); % dummy subject to get general paths
+paths = get_paths_wagad(); % dummy subject to get general paths
 path2ndLevel = fullfile(paths.stats.secondLevel.design,'none', regressor);
 
 if exist(path2ndLevel, 'dir')

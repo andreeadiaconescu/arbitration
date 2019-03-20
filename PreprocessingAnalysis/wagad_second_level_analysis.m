@@ -58,7 +58,7 @@ if doCalculateMAPS
 end
 
 if doSecondLevelStats
-    includeRegressor = true;
+    includeRegressor = false;
     
     switch typeDesign
         case 'ModelBased'
@@ -70,7 +70,7 @@ if doSecondLevelStats
                 responseModelParameters = {'be_surp','zeta'};
                 for iRegressor = 1:numel(regressorsGLM)
                     for iParameter = 1:numel(responseModelParameters)
-                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{1},responseModelParameters{2})
+                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
                     end
                 end
             else
@@ -95,7 +95,7 @@ if doCreateFiguresSupplementary
 end
 
 if doExtractRoiTimeSeries
-   wagad_extract_roi_timeseries(iSubjectArray); 
+   wagad_extract_roi_timeseries(iSubjectArray);
 end
 
 end
