@@ -1,26 +1,23 @@
-function wagad_second_level_analysis(iSubjectArray,typeDesign)
+function wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArray,typeDesign)
 % Performs all group analysis steps for the WAGAD study
 
-fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
-Analysis_Strategy = [0 0 0 0 0 1 0 0];
-disp(Analysis_Strategy);
-fprintf('\n\n===\n\n');
-pause(2);
-
 if nargin < 1
-    iSubjectArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); % 6 only excluded from neuroimaging analysis because of lack of physlog
+    secondLevelAnalysisStrategy =  [0 0 0 0 0 1 0 0];
 end
 
 if nargin < 2
+    iSubjectArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); % 6 only excluded from neuroimaging analysis because of lack of physlog
+end
+
+if nargin < 3
     typeDesign = 'ModelBased';
 end
 
-switch typeDesign
-    case 'ModelBased'
-        idDesign = 2;
-    case 'ModelFree'
-        idDesign = 1;
-end
+fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
+Analysis_Strategy = secondLevelAnalysisStrategy;
+disp(Analysis_Strategy);
+fprintf('\n\n===\n\n');
+pause(2);
 
 doModelComparison                 = Analysis_Strategy(1);
 doSecondLevelBehav                = Analysis_Strategy(2);
@@ -30,6 +27,14 @@ doCalculateMAPS                   = Analysis_Strategy(5);
 doSecondLevelStats                = Analysis_Strategy(6);
 doCreateFiguresSupplementary      = Analysis_Strategy(7);
 doExtractRoiTimeSeries            = Analysis_Strategy(8);
+
+
+switch typeDesign
+    case 'ModelBased'
+        idDesign = 2;
+    case 'ModelFree'
+        idDesign = 1;
+end
 
 % Set axes properties
 set(0,'defaultAxesFontName','Constantia');
@@ -62,7 +67,6 @@ if doSecondLevelStats
     
     switch typeDesign
         case 'ModelBased'
-            idDesign = 2;
             regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
                 'belief_precision', 'surprise','wager_magnitude','advice_epsilon2','reward_epsilon2','advice_epsilon3',...
                 'reward_epsilon3'};
@@ -80,8 +84,10 @@ if doSecondLevelStats
             end
             
         case 'ModelFree'
-            idDesign = 1;
-            main_2ndlevel_job(idDesign,iSubjectArray);
+            regressorsGLM = {'interaction_advice','volatility>stability'};
+            for iRegressor = 1:numel(regressorsGLM)
+                main_2ndlevel_simple(idDesign,iSubjectArray,regressorsGLM{iRegressor});
+            end
     end
 end
 
@@ -95,7 +101,7 @@ if doCreateFiguresSupplementary
 end
 
 if doExtractRoiTimeSeries
-   wagad_extract_roi_timeseries(iSubjectArray);
+    wagad_extract_roi_timeseries(iSubjectArray);
 end
 
 end

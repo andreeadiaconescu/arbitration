@@ -1,4 +1,4 @@
-function get_behaviour_data(iSubjectArray)
+function get_behaviour_data(iSubjectArray, idDesign)
 % extracts behaviour variables, computes HGF for given subjects for
 % concatenated design matrix, plus base regressors for event onsets
 %
@@ -9,7 +9,7 @@ end
 
 for iSubj = iSubjectArray
     %% Load Model and inputs
-    paths = get_paths_wagad(iSubj);
+    paths = get_paths_wagad(iSubj,1,idDesign)
     addpath(paths.code.model);
     input_u = load(fullfile(paths.code.model, 'final_inputs_advice_reward.txt'));% input structure
     y              = [];
