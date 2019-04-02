@@ -19,16 +19,30 @@ iCondition = 1; % 1 = advice presentation, needed fo trial binning
 doPlotRoiUnbinned = false;
 doPlotTrialMean = false; % via separate MrImage mean('trials')
 
-iRun = [1]; % concatenated runs [1 2]
+idxRunArray = [1 2]; % concatenated runs [1 2]
+nRuns = numel(idxRunArray);
 for iSubj = iSubjectArray
     paths = get_paths_wagad(iSubj);
-    fnFunct = regexprep(paths.preproc.output.fnFunctArray{iRun}, 'sw', 'w'); % use unsmoothed
-
+    
     fnMaskArray = strcat(paths.stats.secondLevel.contrasts{iContrast}, ...
-    filesep, paths.stats.secondLevel.roiAnalysis.fnMaskArray);
-
+        filesep, paths.stats.secondLevel.roiAnalysis.fnMaskArray);
+    
+    YArray = cell(nRuns,1);
+    for iRun = 1:nRuns
+        fnFunct = regexprep(paths.preproc.output.fnFunctArray{idxRunArray(iRun)}, 'sw', 'w'); % use unsmoothed
+        YArray{iRun} = MrImage(fnFunct);
+        % t vector concatenates over runs:
+        if iRun > 1
+            %             YArray{iRun}.dimInfo.set_dims('t', 'firstSamplingPoint', ...
+            %                 YArray{iRun-1}.dimInfo.t.samplingPoints{1}(end)+1);
+            idxDimT = YArray{iRun}.dimInfo.get_dim_index('t');
+            YArray{iRun}.dimInfo.samplingPoints{idxDimT} = ...
+                YArray{iRun}.dimInfo.samplingPoints{idxDimT} + YArray{iRun-1}.dimInfo.samplingPoints{idxDimT}(end);
+        end
+    end
+    
     % concatenate all runs in one image
-    Y = MrImage(fnFunct);
+    Y = YArray{1}.combine(YArray, 't');
     
     %% Load SPM of subject to get timing info etc (for peri-stimulus binning
     % according to advice onsets
