@@ -42,7 +42,7 @@ for iSubj = iSubjectArray
     end
     
     % concatenate all runs in one image
-    Y = YArray{1}.combine(YArray, 't');
+    Y = YArray{1}.concat(YArray, 't');
     
     %% Load SPM of subject to get timing info etc (for peri-stimulus binning
     % according to advice onsets
@@ -62,9 +62,9 @@ for iSubj = iSubjectArray
     % because different number of scans end up in each bin
     %% Epoch into trials
     binTimes = 10;
-    Z = Y.split_epoch(ons, binTimes); % result: nBinTimes x nTrials instead of nScans
+    %Z = Y.split_epoch(ons, binTimes); % result: nBinTimes x nTrials instead of nScans
     
-    %% Roi extraction for full time series and trials-mean
+    %% Roi extraction for full time series, then epoching into trials on voxel mean
     
     M = cell(1,nMasks);
     for iMask = 1:nMasks
@@ -72,25 +72,41 @@ for iSubj = iSubjectArray
         M{iMask} = MrImage(fnMaskArray{idxMaskArray(iMask)});
         M{iMask}.data(~ismember(M{iMask}.data, idxValidClusters)) = 0;
     end
+   
+    doKeepExistingRois = false;
+   
+    Y.extract_rois(M, doKeepExistingRois);
+    Y.compute_roi_stats();
+    
+    %% Create an artificial MrImage for epoching, with one Roi-mean time series per slice
+    % i.e. one Roi per slice, with 1 voxel 
+    
+    dimInfoRoi = Y.dimInfo.copyobj;
+    dimInfoRoi.set_dims({'x','y','z'}, 'nSamples', [1, 1, nMasks]);
+    
+    dataRoi = cell2mat(cellfun(@(x) x.perVolume.mean, Y.rois, ...
+        'UniformOutput', false));
+    
+    Z = MrImage(dataRoi, 'dimInfo', dimInfoRoi);
     
     % extract data from ROI and compute stats on that
     if doPlotRoiUnbinned
-        Y.extract_rois(M);
-        Y.compute_roi_stats();
         Y.rois{1}.plot();  % time courses from roi and sd-bands
     end
     
-    doKeepExistingRois = false;
-    Z.extract_rois(M,doKeepExistingRois); % deleting existing rois via 0
-    Z.compute_roi_stats();
+    % now we only have to epoch a few voxels instead of the whole 3D volume
+    Z.split_epoch(ons, binTimes);
     
-    if doPlotTrialMean
-        X = Z.mean('trials');
-        X.extract_rois(M,doKeepExistingRois);
-        X.compute_roi_stats();
-        X.rois{end}.plot();
-    end
-    
+%     Z.extract_rois(M,doKeepExistingRois); % deleting existing rois via 0
+%     Z.compute_roi_stats();
+%     
+%     if doPlotTrialMean
+%         X = Z.mean('trials');
+%         X.extract_rois(M,doKeepExistingRois);
+%         X.compute_roi_stats();
+%         X.rois{end}.plot();
+%     end
+%     
     %% handmade shaded PST-plot, average over trials and voxels
     if doPlotRoi
         
