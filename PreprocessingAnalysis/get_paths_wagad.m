@@ -21,12 +21,12 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'}; 
+nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'};
 
 % 'wagad_cosyne'
 % new models
 filesResponseModels    = {'linear_1stlevelprecision_reward_social_config','linear_1stlevelprecision_social_config',...
-                          'linear_1stlevelprecision_reward_config'}; % ...
+    'linear_1stlevelprecision_reward_config'}; % ...
 nameResponseModels     = filesResponseModels;
 filesPerceptualModels  = {'hgf_binary3l_reward_social_config','hgf_nonvol_reward_social_config'};
 namePerceptualModels   = filesPerceptualModels;
@@ -35,7 +35,7 @@ fnStatsContrastsArray  = {
     'batch_stats_single_subject_report_contrasts_factorial_design',...
     'batch_stats_single_subject_report_contrasts_revised_design.m'};
 fnPreprocessArray      = {'batch_preproc_fmri_realign_stc.m', ...
-                          'batch_preproc_fmri_stc_realign.m'};
+    'batch_preproc_fmri_stc_realign.m'};
 
 % phases
 design.stableCardPhase       = [ones(25,1);0.*ones(74,1);ones(61,1)];
@@ -53,9 +53,10 @@ preproc.nameStrategy   = namePreprocStrategies{idPreprocStrategy};
 glm.nameDesigns        = nameGlmDesigns;
 glm.nameDesign         = nameGlmDesigns{idGlmDesign};
 
+[~,username] = unix('whoami');
+username(end) = []; % remove trailing end of line character
+
 if ismac
-    [~,username] = unix('whoami');
-    username(end) = []; % remove trailing end of line character
     
     switch username
         case 'kasperla' % Lars laptop
@@ -77,11 +78,21 @@ if ismac
             code.spm     = '/Users/mstecy/Desktop/IOIO_Wager_Computational_Model/PreprocessingSingleSubjectAnalysis/spm12';
     end
     
-else % brutus cluster
-    paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
-    paths.data = fullfile(paths.study, 'data');
-    code.project = fullfile(paths.study, 'code', 'project');
-    code.spm = fullfile(paths.study, 'code', 'spm12');
+else
+    switch username
+        case 'dandreea'
+            % brutus cluster
+            paths.study = '/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD';
+            paths.data = fullfile(paths.study, 'data');
+            code.project = fullfile(paths.study, 'code', 'project');
+            code.spm = fullfile(paths.study, 'code', 'spm12');
+        case 'kasperla'
+            % brutus cluster
+            paths.study = '/cluster/project/tnu/kasperla/WAGAD/';
+            paths.data = fullfile(paths.study, 'data');
+            code.project = fullfile(paths.study, 'code');
+            code.spm = fullfile(paths.study, 'code', 'Toolboxes', 'spm12');
+    end
 end
 
 paths.patternIdSubj = 'TNU_WAGAD_%04d';
