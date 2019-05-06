@@ -1,3 +1,6 @@
 [submodule "Toolboxes/UniQC"]
 	path = Toolboxes/UniQC
 	url = git@gitlab.ethz.ch:uniqc/uniqc-code.git
+[submodule "Toolboxes/spm12"]
+	path = Toolboxes/spm12
+	url = git@tnurepository.ethz.ch:SPM/spm12.git

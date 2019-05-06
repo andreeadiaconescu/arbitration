@@ -3,9 +3,10 @@ display('Using physIO, version 861');
 % remove all other toolboxes
 restoredefaultpath;
 
+[~,username] = unix('whoami');
+username(end) = []; % remove trailing end of line character
+
 if ismac
-    [~,username] = unix('whoami');
-    username(end) = []; % remove trailing end of line character
     
     switch username
         
@@ -20,9 +21,17 @@ if ismac
     end
     
 else
-    addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/project'));
-    addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/spm12'));
-    addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/WAGAD_model'));
     
-    addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/batches'));
-end
+    switch username
+        case 'dandreea'
+            addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/project'));
+            addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/spm12'));
+            addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/WAGAD_model'));
+            
+            addpath(genpath('/cluster/scratch_xl/shareholder/klaas/dandreea/WAGAD/code/batches'));
+            
+        case 'kasperla'
+            addpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code'));
+            rmpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12'))
+            addpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12');
+    end
