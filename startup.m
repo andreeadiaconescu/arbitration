@@ -35,3 +35,4 @@ else
             rmpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12'))
             addpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12');
     end
+end
