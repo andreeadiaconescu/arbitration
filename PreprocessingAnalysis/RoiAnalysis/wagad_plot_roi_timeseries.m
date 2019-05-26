@@ -1,4 +1,4 @@
-function fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle)
+function fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle, fh)
 %Plots mean (over trials) and s.e.m as shading for peristimulus time
 %courses
 %
@@ -26,8 +26,10 @@ function fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle)
 %  <http://www.gnu.org/licenses/>.
 %
 
-fh = figure('Name', stringTitle);
-tnueeg_line_with_shaded_errorbar(t, mean(y)', std(y)'./sqrt(nVoxels*nTrials), 'g')
+if nargin < 6
+    fh = figure('Name', stringTitle);
+end
+tnueeg_line_with_shaded_errorbar(t, mean(y)', std(y)'./sqrt(nVoxels*nTrials), 'g');
 title(stringTitle);
 xlabel('Peristimulus Time (seconds)');
 ylabel('Signal Change (%)');

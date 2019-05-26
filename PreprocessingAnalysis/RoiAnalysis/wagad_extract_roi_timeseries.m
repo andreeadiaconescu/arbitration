@@ -24,9 +24,10 @@ nSubjects = numel(idxSubjectArray);
 parfor iSubj = 1:nSubjects
     idxSubj = idxSubjectArray(iSubj)
     paths = get_paths_wagad(idxSubj);
+    roiOpts = paths.stats.secondLevel.roiAnalysis; % short cut to substruct
     
     fnMaskArray = strcat(paths.stats.secondLevel.contrasts{iContrast}, ...
-        filesep, paths.stats.secondLevel.roiAnalysis.fnMaskArray);
+        filesep, roiOpts.fnMaskArray);
     
     %%
     epochedYArray = cell(nRuns,1);
@@ -126,12 +127,12 @@ parfor iSubj = 1:nSubjects
     plotY = epochedY;
     for iMask = 1:nMasks
         idxMask = idxMaskArray(iMask);
-        [~,~] = mkdir(paths.stats.secondLevel.roiAnalysis.results.rois{idxMask});
+        [~,~] = mkdir(roiOpts.results.rois{idxMask});
         
         [~,fnMaskShort] = fileparts(fnMaskArray{idxMaskArray(iMask)});
         stringTitle = sprintf(...
-            'Roi %s: Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
-            regexprep(fnMaskShort, '_', ' '));
+            'ROI %s (%s): Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
+            regexprep(fnMaskShort, '_', ' '), paths.idSubj);
         
         nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
         nTrials = plotY.dimInfo.trials.nSamples;
@@ -148,13 +149,13 @@ parfor iSubj = 1:nSubjects
         % save for later plotting
         fprintf('parsave in worker %d (id %s)\n', iSubj, paths.idSubj);
         parsave_roi(...
-            paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask}, ...
+            roiOpts.results.fnTimeSeriesArray{idxMask}, ...
             t,y,nVoxels,nTrials,stringTitle)
         
         if doPlotRoi
         fprintf('plotting in worker %d (id %s)\n', iSubj, paths.idSubj);
             fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle);
-            saveas(fh, paths.stats.secondLevel.roiAnalysis.results.fnFigureArray{idxMask});
+            saveas(fh, roiOpts.results.fnFigureSubjectArray{idxMask});
         end
     end
 end %for iSubj
