@@ -87,7 +87,7 @@ else
             code.project = fullfile(paths.study, 'code', 'project');
             code.spm = fullfile(paths.study, 'code', 'spm12');
         case 'kasperla'
-            % brutus cluster
+            % EULER cluster
             paths.study = '/cluster/project/tnu/kasperla/WAGAD/';
             paths.data = fullfile(paths.study, 'data');
             code.project = fullfile(paths.study, 'code');
