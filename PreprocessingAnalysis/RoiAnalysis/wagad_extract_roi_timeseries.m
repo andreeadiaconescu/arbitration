@@ -112,7 +112,7 @@ if doPlotRoi
         [~,fnMaskShort] = fileparts(fnMaskArray{idxMaskArray(iMask)});
         stringTitle = sprintf(...
             'Roi %s: Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
-            fnMaskShort);
+            regexprep(fnMaskShort, '_', ' '));
         figure('Name', stringTitle);
         
         nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
