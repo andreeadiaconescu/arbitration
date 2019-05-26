@@ -1,5 +1,4 @@
-function [] = wagad_extract_roi_timeseries(...
-    idxSubjectArray)
+function [] = wagad_extract_roi_timeseries(idxSubjectArray)
 % Extract roi time series from regions of interest (group effect regions)
 %   Uses UniQC Toolbox for dealing with fMRI time series and ROI extraction
 
@@ -31,11 +30,13 @@ parfor iSubj = 1:nSubjects
     
     %%
     epochedYArray = cell(nRuns,1);
+    nValidTrialsPerRun = zeros(nRuns,1);
     for iRun = 1:nRuns
         fprintf('\n\tExtracting roi time series from subj %s (%d/%d), run %d ...', ...
             paths.idSubj, iSubj, nSubjects, iRun);
         fnFunct = regexprep(paths.preproc.output.fnFunctArray{idxRunArray(iRun)}, 'sw', 'w'); % use unsmoothed
         Y = MrImage(fnFunct);
+        fprintf('loaded Y in worker %d (id %s)\n', iSubj, paths.idSubj);
         
         %% Load SPM of subject to get timing info etc (for peri-stimulus binning
         % according to advice onsets
@@ -55,12 +56,16 @@ parfor iSubj = 1:nSubjects
             (iVolStart-1)*TR, 'samplingWidths', TR, 'units', 's');
         
         % select only onsets within timing range of this run
-        idxTrialsWithinRun = find(ons >= Y.dimInfo.t.ranges(1) & ...
-            ons <= Y.dimInfo.t.ranges(2));
-        ons = ons(idxTrialsWithinRun);
+        nBinTimes = 7; % number sampled time bins per trial, ITI <= 16s (< 7 TR)
         
+        idxTrialsWithinRun = find(ons >= Y.dimInfo.t.ranges(1) & ...
+            ons <= Y.dimInfo.t.ranges(2) - TR*nBinTimes);
+        ons = ons(idxTrialsWithinRun);
+        nValidTrialsPerRun(iRun) = numel(idxTrialsWithinRun);
         
         %% Roi definition and extraction for full time series of run
+        
+        fprintf('computing masks in worker %d (id %s)\n', iSubj, paths.idSubj);
         
         M = cell(1,nMasks);
         for iMask = 1:nMasks
@@ -80,6 +85,11 @@ parfor iSubj = 1:nSubjects
         % slice-timing corrected before; otherwise, slice-specific timing would
         % have to be included into epoching
         
+        
+        fprintf('epoching of Y in worker %d (id %s)\n', iSubj, paths.idSubj);
+        
+        
+        
         dimInfoRoi = Y.dimInfo.copyobj;
         dimInfoRoi.set_dims({'x','y','z'}, 'nSamples', [1, 1, nMasks]);
         
@@ -88,6 +98,7 @@ parfor iSubj = 1:nSubjects
         dataRoi = permute(cell2mat(cellfun(@(x) x.perVolume.mean, Y.rois, ...
             'UniformOutput', false)), [3 4 1 2]);
         Z = MrImage(dataRoi, 'dimInfo', dimInfoRoi);
+        Z.name = sprintf('%s_mean_ts_one_roi_per_slice', paths.idSubj);
         
         % extract data from ROI and compute stats on that
         if doPlotRoiUnbinned
@@ -96,12 +107,16 @@ parfor iSubj = 1:nSubjects
         
         % now we only have to epoch a few voxels instead of the whole 3D volume
         % Epoch into trials
-        binTimes = 7; % number sampled time bins per trial, ITI <= 16s (< 7 TR)
-        epochedYArray{iRun} = Z.split_epoch(ons, binTimes);
+        epochedYArray{iRun} = Z.split_epoch(ons, nBinTimes);
         
         % right indices for trials to allow for proper concatenation
+        % use relative indices (not absolute) to avoid inserting all-zero
+        % time series for skipped trials
         epochedYArray{iRun}.dimInfo.set_dims('trials', 'samplingPoints', ...
-            idxTrialsWithinRun);
+            sum(nValidTrialsPerRun(1:(iRun-1))) + (1:nValidTrialsPerRun(iRun)));
+        
+%         epochedYArray{iRun}.dimInfo.set_dims('trials', 'samplingPoints', ...
+%             idxTrialsWithinRun);
     end % run
     
     epochedY = epochedYArray{1}.concat(epochedYArray, 'trials');
@@ -131,10 +146,13 @@ parfor iSubj = 1:nSubjects
         y = 100./mean(y(:))*(y - y(:,1));
         
         % save for later plotting
-        parsave_roi(t,y,nVoxels,nTrials,stringTitle, ...
-            paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask})
+        fprintf('parsave in worker %d (id %s)\n', iSubj, paths.idSubj);
+        parsave_roi(...
+            paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask}, ...
+            t,y,nVoxels,nTrials,stringTitle)
         
         if doPlotRoi
+        fprintf('plotting in worker %d (id %s)\n', iSubj, paths.idSubj);
             fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle);
             saveas(fh, paths.stats.secondLevel.roiAnalysis.results.fnFigureArray{idxMask});
         end

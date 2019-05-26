@@ -25,5 +25,4 @@ function parsave_roi(fnSave, t, y, nVoxels, nTrials, stringTitle)
 %  <http://www.gnu.org/licenses/>.
 %
 
-save(fnSave, ...
-    't','y', 'nVoxels', 'nTrials', 'stringTitle');
+save(fnSave, 't','y', 'nVoxels', 'nTrials', 'stringTitle');
