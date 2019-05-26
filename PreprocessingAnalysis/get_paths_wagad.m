@@ -335,6 +335,13 @@ secondLevel.contrasts = strcat(secondLevel.design, fs, ...
 
 % TODO: at the moment, these masks are created manually!
 secondLevel.roiAnalysis.fnMaskArray = {'ArbitrationBrainstem_PeakLevel.nii'};
+secondLevel.roiAnalysis.results.root = fullfile(secondLevel.root, 'RoiExtraction');
+secondLevel.roiAnalysis.results.rois = strcat(secondLevel.roiAnalysis.results.root, ...
+    fs, regexprep(secondLevel.roiAnalysis.fnMaskArray, '\.nii', ''));
+secondLevel.roiAnalysis.results.fnTimeSeriesArray = strcat(...
+    secondLevel.roiAnalysis.results.rois, fs, [paths.idSubj '_roi_timeseries.mat']);
+secondLevel.roiAnalysis.results.fnFigureArray = regexprep(...
+    secondLevel.roiAnalysis.results.fnTimeSeriesArray, '\.mat', '\.fig');
 
 %% Assemble sub-modules of paths-structure
 

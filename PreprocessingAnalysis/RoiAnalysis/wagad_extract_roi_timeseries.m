@@ -104,15 +104,19 @@ end % run
 
 epochedY = epochedYArray{1}.concat(epochedYArray, 'trials');
 
+
 %% handmade shaded PST-plot, average over trials and voxels
 if doPlotRoi
     plotY = epochedY;
-    for iMask = 1%:nMasks
+    for iMask = 1:nMasks
+        idxMask = idxMaskArray(iMask);
+        [~,~] = mkdir(paths.stats.secondLevel.roiAnalysis.results.rois{idxMask});
+        
         [~,fnMaskShort] = fileparts(fnMaskArray{idxMaskArray(iMask)});
         stringTitle = sprintf(...
             'Roi %s: Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
             regexprep(fnMaskShort, '_', ' '));
-        figure('Name', stringTitle);
+        fh = figure('Name', stringTitle);
         
         nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
         nTrials = plotY.dimInfo.trials.nSamples;
@@ -130,6 +134,10 @@ if doPlotRoi
         title(stringTitle);
         xlabel('Peristimulus Time (seconds)');
         ylabel('Signal Change (%)');
+        
+        saveas(fh, paths.stats.secondLevel.roiAnalysis.results.fnFigureArray{idxMask});
+        save(paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask}, ...
+            't','y', 'nVoxels', 'nTrials', 'stringTitle');
     end
 end
 
