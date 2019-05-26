@@ -94,8 +94,7 @@ for iRun = 1:nRuns
     
     % now we only have to epoch a few voxels instead of the whole 3D volume
     % Epoch into trials
-    %binTimes = [0:.5:20];
-    binTimes = 7; % no sampled time bins per trial
+    binTimes = 7; % number sampled time bins per trial, ITI <= 16s (< 7 TR)
     epochedYArray{iRun} = Z.split_epoch(ons, binTimes);
     
     % right indices for trials to allow for proper concatenation
@@ -116,7 +115,7 @@ if doPlotRoi
         figure('Name', stringTitle);
         
         nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
-        nTrials = numel(ons);
+        nTrials = plotY.dimInfo.trials.nSamples;
         
         % data (mean ROI voxel time series) is [nMasks, nBins,nTrials] and has to be transformed
         % into [nTrials, nBins]) to do stats for plot
