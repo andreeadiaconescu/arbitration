@@ -23,6 +23,8 @@ fprintf('\n===\n\t Running group-level analysis and printing tables:\n\n');
 wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArrayfMRI,typeDesign);
 
 fprintf('\n===\n\t Done model-based analysis!\n\n');
+
+
 %% Model-Free Analysis (Note: some steps may be skipped as they are not needed for the factorial analysis)
 typeDesign                   = 'ModelFree';
 firstLevelAnalysisStrategy   = [0 1 0 1 1 1];
@@ -36,4 +38,15 @@ fprintf('\n===\n\t Running group-level analysis and printing tables:\n\n');
 wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArrayfMRI,typeDesign);
 
 fprintf('\n===\n\t Done model-free analysis!\n\n');
+
+
+%% ROI Extraction and plotting
+fprintf('\n===\n\t Running subject-wise ROI extraction for significant group clusters:\n\n');
+wagad_extract_roi_timeseries(idxSubjectArray);
+
+fprintf('\n===\n\t Running ROI peri-stimulus time series plotting per subject (mean over trials) and group (mean over subjects):\n\n');
+wagad_plot_group_roi_timeseries(idxSubjectArray);
+
+fprintf('\n===\n\t Done ROI extraction and plotting of group effects!\n\n');
+
 end

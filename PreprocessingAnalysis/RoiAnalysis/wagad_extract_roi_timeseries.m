@@ -1,32 +1,54 @@
 function [] = wagad_extract_roi_timeseries(idxSubjectArray)
 % Extract roi time series from regions of interest (group effect regions)
 %   Uses UniQC Toolbox for dealing with fMRI time series and ROI extraction
+% USE
+%   wagad_extract_roi_timeseries(idxSubjectArray)
 
 if nargin < 1
-    idxSubjectArray = 3;
+    idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
-%%
-doPlotRoi = true;
-idxMaskArray = [1 1]; % mask indices to be used from fnMaskArray
-iContrast = 3;
+%% #MOD user defined-parameters
+doPlotRoi       = true;
+idxMaskArray    = [1 1]; % mask indices to be used from fnMaskArray
+idxContrastArray= [3; 3]; % determines 2nd level dir where the activation mask can be found
+idxRunArray     = [1 2]; % concatenated runs [1 2]
+ 
+% number sampled time bins per trial after epoching, 
+% default:7, because ITI <= 16s (< 7 TR)
+% note: number of included trials is adapted to number of bins, if last
+% trials are too short wrt nBinTimes*TR
+nBinTimes       = 7;
+
+% cell of cluster index vectors corresponding to each mask
+% each integer is an index for n-ary cluster export of a contrast, 
+% indicating which activated cluster is indeed within the targeted 
+% anatomical region
+idxValidActivationClusters  = {[1 3], [1 3]}; 
+iCondition                  = 1; % 1 = advice presentation, needed fo trial binning
+doPlotRoiUnbinned           = false; % plot before epoching
+doUseParallelPool           = false; % set true on EULER to parallelize over subjects
+
+
+%% derived parameters
 nMasks = numel(idxMaskArray);
-
-% integer for n-ary cluster export of contrast, indicating which cluster is
-% indeed within the targeted anatomical region
-idxValidClusters = {[1 3], [1 3]};
-iCondition = 1; % 1 = advice presentation, needed fo trial binning
-doPlotRoiUnbinned = false;
-
-idxRunArray = [1 2]; % concatenated runs [1 2]
 nRuns = numel(idxRunArray);
 nSubjects = numel(idxSubjectArray);
+
+if doUseParallelPool && isempty(gcp('noCreate'))
+    % this is an interactive pool with more memory, i.e. additional command
+    % line argument -R "rusage[mem=16000]" in cluster profile
+    parpool('EulerLSF4h_16GB', nSubjects);
+end
+
+%% Subject loop for extraction and plotting of ROI time series for all 
+% runs and masks
 parfor iSubj = 1:nSubjects
     idxSubj = idxSubjectArray(iSubj)
     paths = get_paths_wagad(idxSubj);
     roiOpts = paths.stats.secondLevel.roiAnalysis; % short cut to substruct
     
-    fnMaskArray = strcat(paths.stats.secondLevel.contrasts{iContrast}, ...
+    fnMaskArray = strcat(paths.stats.secondLevel.contrasts(idxContrastArray), ...
         filesep, roiOpts.fnMaskArray);
     
     %%
@@ -46,7 +68,6 @@ parfor iSubj = 1:nSubjects
         nVols = paths.scanInfo.nVols;
         
         iVolStart = 1 + sum(nVols(1:(iRun-1)));
-        iVolEnd = sum(nVols(1:iRun));
         temp = load(paths.stats.fnSpm, 'SPM');
         SPM = temp.SPM;
         
@@ -57,8 +78,6 @@ parfor iSubj = 1:nSubjects
             (iVolStart-1)*TR, 'samplingWidths', TR, 'units', 's');
         
         % select only onsets within timing range of this run
-        nBinTimes = 7; % number sampled time bins per trial, ITI <= 16s (< 7 TR)
-        
         idxTrialsWithinRun = find(ons >= Y.dimInfo.t.ranges(1) & ...
             ons <= Y.dimInfo.t.ranges(2) - TR*nBinTimes);
         ons = ons(idxTrialsWithinRun);
@@ -72,7 +91,7 @@ parfor iSubj = 1:nSubjects
         for iMask = 1:nMasks
             % remove other clusters (e.g., cholinergic), by there n-ary index
             M{iMask} = MrImage(fnMaskArray{idxMaskArray(iMask)});
-            M{iMask}.data(~ismember(M{iMask}.data, idxValidClusters{iMask})) = 0;
+            M{iMask}.data(~ismember(M{iMask}.data, idxValidActivationClusters{iMask})) = 0;
         end
         
         doKeepExistingRois = false;
@@ -116,15 +135,11 @@ parfor iSubj = 1:nSubjects
         epochedYArray{iRun}.dimInfo.set_dims('trials', 'samplingPoints', ...
             sum(nValidTrialsPerRun(1:(iRun-1))) + (1:nValidTrialsPerRun(iRun)));
         
-%         epochedYArray{iRun}.dimInfo.set_dims('trials', 'samplingPoints', ...
-%             idxTrialsWithinRun);
     end % run
     
     epochedY = epochedYArray{1}.concat(epochedYArray, 'trials');
     
-    
-    %% handmade shaded PST-plot, average over trials and voxels
-    plotY = epochedY;
+    %% handmade shaded PST-plot, averaged over trials
     for iMask = 1:nMasks
         idxMask = idxMaskArray(iMask);
         [~,~] = mkdir(roiOpts.results.rois{idxMask});
@@ -135,12 +150,12 @@ parfor iSubj = 1:nSubjects
             regexprep(fnMaskShort, '_', ' '), paths.idSubj);
         
         nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
-        nTrials = plotY.dimInfo.trials.nSamples;
+        nTrials = epochedY.dimInfo.trials.nSamples;
         
         % data (mean ROI voxel time series) is [nMasks, nBins,nTrials] and has to be transformed
         % into [nTrials, nBins]) to do stats for plot
-        y = permute(plotY.select('z',iMask).remove_dims.data, [2, 1]);
-        t = plotY.dimInfo.t.samplingPoints{1};
+        y = permute(epochedY.select('z',iMask).remove_dims.data, [2, 1]);
+        t = epochedY.dimInfo.t.samplingPoints{1};
         
         % baseline correction for drift etc:, and scale to mean == 100
         % remove height differences at trial-time = 0;
