@@ -1,6 +1,6 @@
 function [] = wagad_extract_roi_timeseries(...
     idxSubjectArray)
-%Extract roi time series from regions of interest (group effect regions)
+% Extract roi time series from regions of interest (group effect regions)
 %   Uses UniQC Toolbox for dealing with fMRI time series and ROI extraction
 
 if nargin < 1
@@ -15,7 +15,7 @@ nMasks = numel(idxMaskArray);
 
 % integer for n-ary cluster export of contrast, indicating which cluster is
 % indeed within the targeted anatomical region
-idxValidClusters = [1 3];
+idxValidClusters = {[1 3], [1 3]};
 iCondition = 1; % 1 = advice presentation, needed fo trial binning
 doPlotRoiUnbinned = false;
 
@@ -66,7 +66,7 @@ parfor iSubj = 1:nSubjects
         for iMask = 1:nMasks
             % remove other clusters (e.g., cholinergic), by there n-ary index
             M{iMask} = MrImage(fnMaskArray{idxMaskArray(iMask)});
-            M{iMask}.data(~ismember(M{iMask}.data, idxValidClusters)) = 0;
+            M{iMask}.data(~ismember(M{iMask}.data, idxValidClusters{iMask})) = 0;
         end
         
         doKeepExistingRois = false;
@@ -108,38 +108,35 @@ parfor iSubj = 1:nSubjects
     
     
     %% handmade shaded PST-plot, average over trials and voxels
-    if doPlotRoi
-        plotY = epochedY;
-        for iMask = 1:nMasks
-            idxMask = idxMaskArray(iMask);
-            [~,~] = mkdir(paths.stats.secondLevel.roiAnalysis.results.rois{idxMask});
-            
-            [~,fnMaskShort] = fileparts(fnMaskArray{idxMaskArray(iMask)});
-            stringTitle = sprintf(...
-                'Roi %s: Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
-                regexprep(fnMaskShort, '_', ' '));
-            fh = figure('Name', stringTitle);
-            
-            nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
-            nTrials = plotY.dimInfo.trials.nSamples;
-            
-            % data (mean ROI voxel time series) is [nMasks, nBins,nTrials] and has to be transformed
-            % into [nTrials, nBins]) to do stats for plot
-            y = permute(plotY.select('z',iMask).remove_dims.data, [2, 1]);
-            t = plotY.dimInfo.t.samplingPoints{1};
-            
-            % baseline correction for drift etc:, and scale to mean == 100
-            % remove height differences at trial-time = 0;
-            y = 100./mean(y(:))*(y - y(:,1));
-            
-            tnueeg_line_with_shaded_errorbar(t, mean(y)', std(y)'./sqrt(nVoxels*nTrials), 'g')
-            title(stringTitle);
-            xlabel('Peristimulus Time (seconds)');
-            ylabel('Signal Change (%)');
-            
+    plotY = epochedY;
+    for iMask = 1:nMasks
+        idxMask = idxMaskArray(iMask);
+        [~,~] = mkdir(paths.stats.secondLevel.roiAnalysis.results.rois{idxMask});
+        
+        [~,fnMaskShort] = fileparts(fnMaskArray{idxMaskArray(iMask)});
+        stringTitle = sprintf(...
+            'Roi %s: Peristimulus plot, mean (over trials) +/- s.e.m time series', ...
+            regexprep(fnMaskShort, '_', ' '));
+        
+        nVoxels = 1;% already a mean, otherwise: Y.rois{iMask}.perVolume.nVoxels;
+        nTrials = plotY.dimInfo.trials.nSamples;
+        
+        % data (mean ROI voxel time series) is [nMasks, nBins,nTrials] and has to be transformed
+        % into [nTrials, nBins]) to do stats for plot
+        y = permute(plotY.select('z',iMask).remove_dims.data, [2, 1]);
+        t = plotY.dimInfo.t.samplingPoints{1};
+        
+        % baseline correction for drift etc:, and scale to mean == 100
+        % remove height differences at trial-time = 0;
+        y = 100./mean(y(:))*(y - y(:,1));
+        
+        % save for later plotting
+        parsave_roi(t,y,nVoxels,nTrials,stringTitle, ...
+            paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask})
+        
+        if doPlotRoi
+            fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle);
             saveas(fh, paths.stats.secondLevel.roiAnalysis.results.fnFigureArray{idxMask});
-            parsave_roi(t,y,nVoxels,nTrials,stringTitle, ...
-                paths.stats.secondLevel.roiAnalysis.results.fnTimeSeriesArray{idxMask})
         end
     end
 end %for iSubj
