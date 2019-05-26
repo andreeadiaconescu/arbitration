@@ -32,7 +32,7 @@ else
             
         case 'kasperla'
             addpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code'));
-            rmpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12'))
+            rmpath(genpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12')) % add SPM w/o subfolders
             addpath('/cluster/project/tnu/kasperla/WAGAD/code/Toolboxes/spm12');
     end
 end
