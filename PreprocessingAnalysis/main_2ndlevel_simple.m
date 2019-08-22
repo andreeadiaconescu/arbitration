@@ -2,7 +2,7 @@
 % Job configuration created by cfg_util (rev $Rev: 4252 $)
 %-----------------------------------------------------------------------
 function main_2ndlevel_simple(idDesign,iSubjectArray,regressor)
-paths = get_paths_wagad(); % dummy subject to get general paths
+paths = get_paths_wagad(3,1,idDesign); % dummy subject to get general paths
 if nargin < 1
     idDesign = 2;
 end
@@ -38,7 +38,6 @@ datapath      = paths.stats.secondLevel.root;
 spm_jobman('initcfg');
 which spm
 
-paths = get_paths_wagad(); % dummy subject to get general paths
 path2ndLevel = fullfile(paths.stats.secondLevel.design,'none', regressor);
 
 if exist(path2ndLevel, 'dir')

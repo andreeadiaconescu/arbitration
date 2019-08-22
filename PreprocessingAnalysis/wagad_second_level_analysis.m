@@ -6,11 +6,11 @@ if nargin < 1
 end
 
 if nargin < 2
-    iSubjectArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); % 6 only excluded from neuroimaging analysis because of lack of physlog
+    iSubjectArray =  setdiff([3:47], [14 25 31 32 33 34 37]); % 6 only excluded from neuroimaging analysis because of lack of physlog
 end
 
 if nargin < 3
-    typeDesign = 'ModelBased';
+    typeDesign = 'ModelFree';
 end
 
 fprintf('\n===\n\t The following pipeline Steps per subject were selected. Please double-check:\n\n');
@@ -62,9 +62,11 @@ if doCalculateMAPS
     wagad_extract_parameters_create_table(iSubjectArray);
 end
 
+
+
 if doSecondLevelStats
+    iSubjectfMRIArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); 
     includeRegressor = false;
-    
     switch typeDesign
         case 'ModelBased'
             regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
@@ -74,19 +76,19 @@ if doSecondLevelStats
                 responseModelParameters = {'be_surp','zeta'};
                 for iRegressor = 1:numel(regressorsGLM)
                     for iParameter = 1:numel(responseModelParameters)
-                        main_2ndlevel_job(idDesign,iSubjectArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
+                        main_2ndlevel_job(idDesign,iSubjectfMRIArray,regressorsGLM{iRegressor},responseModelParameters{iParameter})
                     end
                 end
             else
                 for iRegressor = 1:numel(regressorsGLM)
-                    main_2ndlevel_simple(idDesign,iSubjectArray,regressorsGLM{iRegressor})
+                    main_2ndlevel_simple(idDesign,iSubjectfMRIArray,regressorsGLM{iRegressor})
                 end
             end
             
         case 'ModelFree'
-            regressorsGLM = {'interaction_advice','volatility>stability'};
+            regressorsGLM = {'interaction_advice','interaction_reward','volatility>stability'};
             for iRegressor = 1:numel(regressorsGLM)
-                main_2ndlevel_simple(idDesign,iSubjectArray,regressorsGLM{iRegressor});
+                main_2ndlevel_simple(idDesign,iSubjectfMRIArray,regressorsGLM{iRegressor});
             end
     end
 end
@@ -96,8 +98,8 @@ if doCreateFiguresSupplementary
     wagad_extract_plot_MAPs(iSubjectArray,'advice');
     wagad_extract_plot_MAPs(iSubjectArray,'wager');
     wagad_plot_computational_quantities(iSubjectArray);
-    wagad_plot_wager_computational_quantities(iSubjectArray)
-    wagad_analyze_probe(iSubjectArray)
+    wagad_plot_wager_computational_quantities(iSubjectArray);
+    wagad_analyze_probe(iSubjectArray);
 end
 
 if doExtractRoiTimeSeries

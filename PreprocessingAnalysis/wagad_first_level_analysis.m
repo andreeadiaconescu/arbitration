@@ -10,7 +10,7 @@ if nargin < 1
 end
 
 if nargin < 2
-    iSubjectArray = setdiff([3:47], [14 25 31 32 33 34 37]);
+    iSubjectArray =  setdiff([3:47], [14 25 31 32 33 34 37]);
 end
 
 if nargin < 3
@@ -27,16 +27,16 @@ disp(firstLevelAnalysisStrategy);
 fprintf('\n\n===\n\n');
 pause(2);
 
-doPreprocessing             = Analysis_Strategy(1);
-doExtractBehaviouralData    = Analysis_Strategy(2);
-doInversion                 = Analysis_Strategy(3);
-doCreateRegressors          = Analysis_Strategy(4);
-doFirstLevelStats           = Analysis_Strategy(5);
-doFirstLevelContrasts       = Analysis_Strategy(6);
+doPreprocessing             = firstLevelAnalysisStrategy(1);
+doExtractBehaviouralData    = firstLevelAnalysisStrategy(2);
+doInversion                 = firstLevelAnalysisStrategy(3);
+doCreateRegressors          = firstLevelAnalysisStrategy(4);
+doFirstLevelStats           = firstLevelAnalysisStrategy(5);
+doFirstLevelContrasts       = firstLevelAnalysisStrategy(6);
 
 switch typeDesign
     case 'ModelBased'
-        idDesign = 2;
+        idDesign = 2; %% idDesign can be updated
     case 'ModelFree'
         idDesign = 1;
 end
