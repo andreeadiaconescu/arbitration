@@ -72,12 +72,7 @@ for iSubj = iSubjectArray
     %% Run Inversion
     
     % pairs of perceptual and response model
-    iCombPercResp = zeros(6,2);
-    iCombPercResp(1:3,1) = 1;
-    iCombPercResp(4:6,1) = 2;
-    
-    iCombPercResp(1:3,2) = 1:3;
-    iCombPercResp(4:6,2) = 1:3;
+    [iCombPercResp] = wagad_get_model_space;
     
     nModels = size(iCombPercResp,1);
     
