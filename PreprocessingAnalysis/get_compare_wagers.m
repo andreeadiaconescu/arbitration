@@ -69,12 +69,45 @@ for s = 1:nSubjects
     
 end
 
-if doStats
-    temp = cell2mat(par);
+%% plot them
+nPhases = 4;
+colourArray    = {'c', 'm', 'b', 'r'};
+yLabelArray    = {'Phase: Advice Stable','Phase: Advice Volatile','Phase: Reward Stable','Phase: Reward Volatile'};
+xLimitArray    = {[-0.4 0.8], [-0.8 0.45], [-0.4 0.6],[-0.6 0.8]};
+yLimitArray    = {[-0.4 0.8], [-0.8 0.45], [-0.4 0.6],[-0.6 0.8]};
+
+variables      = cell2mat(par);
+
+for iWager = 1:nPhases
+    subplot(2,2,iWager);
+    X = variables(:,iWager);
+    Y = variables(:,iWager + nPhases);
     
-    [R,P,RLO,RUP]=corrcoef(temp(:,1),temp(:,5));
-    figure;
-    s = createWagerComparison(temp(:,1),temp(:,5),100,'c');
+    regressionMatrix       = [X ones(size(X))];
+    B                      = regressionMatrix\Y;
+    [R,P]                  = corrcoef(X,Y);
+    
+    
+    pValueArray(iWager)        = P(1,2);
+    slopeArray(iWager)         = R(1,2);
+    
+    scatter(X, Y, [],'MarkerEdgeColor',[0 .5 .5],...
+        'MarkerFaceColor',colourArray{iWager},...
+        'LineWidth',2);
+    hold all;
+    plot(X, B(1)*X+B(2), '-k');
+    title(sprintf(yLabelArray{iWager}));
+    xlabel(sprintf('z(Actual Wager)'));
+    ylabel(sprintf('z(Predicted Wager)'));
+    xlim(xLimitArray{iWager});
+    ylim(yLimitArray{iWager});
+    set(gca,'FontName','Constantia','FontSize',30);
+end
+
+%% stats
+if doStats
+    [R,P,RLO,RUP]=corrcoef(variables(:,1),variables(:,5));
+    s = createWagerComparison(variables(:,1),variables(:,5),100,'c');
     s.LineWidth = 0.6;
     s.MarkerFaceColor = [0 0.5 0.5];
     % Create title
@@ -82,29 +115,25 @@ if doStats
     disp(['Correlation AStable ' num2str(R(1,2))]);
     disp(['Significance correlation AStable ' num2str(P(1,2))]);
     %
-    [R,P,RLO,RUP]=corrcoef(temp(:,2),temp(:,6));
-    figure;
-    s = createWagerComparison(temp(:,2),temp(:,6),100,'m');
+    [R,P,RLO,RUP]=corrcoef(variables(:,2),variables(:,6));
+    s = createWagerComparison(variables(:,2),variables(:,6),100,'m');
     title('Phase: Advice Unstable');
     disp(['Correlation AUnstable ' num2str(R(1,2))]);
     disp(['Significance correlation AUnstable ' num2str(P(1,2))]);
     %
-    [R,P,RLO,RUP]=corrcoef(temp(:,3),temp(:,7));
-    figure;
-    s = createWagerComparison(temp(:,3),temp(:,7),100,'b');
+    [R,P,RLO,RUP]=corrcoef(variables(:,3),variables(:,7));
+    s = createWagerComparison(variables(:,3),variables(:,7),100,'b');
     s.LineWidth = 0.6;
     s.MarkerFaceColor = [0 0.5 0.5];
     title('Phase: Card Stable');
     disp(['Correlation RStable ' num2str(R(1,2))]);
     disp(['Significance correlation RStable ' num2str(P(1,2))]);
     %
-    [R,P,RLO,RUP]=corrcoef(temp(:,4),temp(:,8));
-    figure;
-    s = createWagerComparison(temp(:,4),temp(:,8),100,'r');
+    [R,P,RLO,RUP]=corrcoef(variables(:,4),variables(:,8));
+    s = createWagerComparison(variables(:,4),variables(:,8),100,'r');
     title('Phase: Card Unstable');
     disp(['Correlation RUnstable ' num2str(R(1,2))]);
     disp(['Significance correlation RUnstable ' num2str(P(1,2))]);
-    
+    save([paths.stats.secondLevel.covariates, '/wagers_actual_versus_predicted.mat'],'variables', '-mat');
 end
-save([paths.stats.secondLevel.covariates, '/wagers_actual_versus_predicted.mat'],'temp', '-mat');
 end
