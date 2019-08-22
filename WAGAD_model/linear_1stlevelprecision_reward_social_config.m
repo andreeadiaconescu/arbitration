@@ -54,7 +54,7 @@ c.be6mu = 0;
 c.be6sa = 4;
 
 % Zeta is in log-space
-c.logzemu = log(2.7183);
+c.logzemu = log(1);
 c.logzesa = 5^2;
 
 % Beta in log-space
