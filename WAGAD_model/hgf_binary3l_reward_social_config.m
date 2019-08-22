@@ -154,9 +154,9 @@ c.omsa_a = 0;
 
 % Theta, this is also fixed to 0.5
 c.logitthmu_r = 0.25;
-c.logitthsa_r = 4^2; % 
+c.logitthsa_r = 1; % 
 c.logitthmu_a = 0.25;
-c.logitthsa_a = 4^2;
+c.logitthsa_a = 1;
 
 % Phis
 % Format: row vector of length n_levels.
