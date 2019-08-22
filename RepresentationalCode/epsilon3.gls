@@ -1,0 +1,70 @@
+CONST
+	useBinaryMasks = 1;
+	useTemplate = 1;
+	useFmaps = 0;
+VAR
+	i: integer;
+
+BEGIN
+//Insert commands here...RESETDEFAULTS;
+
+SHADERQUALITY1TO10(1);
+
+BACKCOLOR(220, 220, 220);CONTRASTFORMVISIBLE(false);
+
+if (useTemplate > 0) THEN BEGIN
+	LOADIMAGE('mni152_2009bet');
+END
+ELSE BEGIN
+	LOADIMAGE('/Users/drea/Dropbox/Andreiuta/Collaborations_Lars/Papers/IOIO_3_EEG/group_stripped_brain');
+	CONTRASTMINMAX(300, 1439);	CHANGENODE(1, 128, 128, 128, 128, 1);END;AZIMUTH(15);
+//CUTOUT(0, 0.33, 0.51, 0.47, 1.0, 1.0);
+CUTOUT(0, 0.33, 0, 0.47, 1.0, 1.0);
+OVERLAYTRANSPARENCYONBACKGROUND(0);OVERLAYCOLORFROMZERO(true);OVERLAYLOADSMOOTH(true);OVERLAYMASKEDBYBACKGROUND(false);OVERLAYTRANSPARENCYONOVERLAY(0);SHADERNAME('overlay');
+SHADERADJUST('boundThresh', 1)
+SHADERADJUST('overAlpha', 2)
+SHADERADJUST('overClip', 1); // if 1, clips clusters outside clip area
+SHADERADJUST('specular', 0);
+SHADERADJUST('overDistance', 0.27);
+COLORBARVISIBLE(false);
+
+if useFMaps > 0 THEN BEGIN
+
+
+
+//color 1, magenta (cyan for now, color 6)	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Results_26012017/reward_epsilon3');
+
+//color 1, cyan (cyan for now, color 6)	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Results_26012017/advice_epsilon3');
+
+
+END
+ELSE BEGIN
+
+
+//color 1, magenta (cyan for now, color 6)	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Results_26012017/reward_epsilon3');
+
+//color 1, cyan (cyan for now, color 6)	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Results_26012017/advice_epsilon3');
+
+END;
+
+//color, number// (1) yellow, (2) green, (3) cyan, (4) magentaIF (useBinaryMasks>0) THEN
+BEGIN
+
+	if (useFMaps>0) THEN
+	BEGIN		OVERLAYMINMAX(1, 11, 11);		OVERLAYMINMAX(2, 17, 17);		OVERLAYMINMAX(3, 20, 20);		OVERLAYMINMAX(4, 30, 20);		OVERLAYMINMAX(5, 11, 11);		OVERLAYMINMAX(6, 1, 1);
+	END
+	ELSE
+		FOR i := 1 TO 9 DO BEGIN
+			OVERLAYMINMAX(i, 1,1);
+		END
+	END
+
+ELSE
+BEGIN
+	OVERLAYMINMAX(1, 11, 22);
+	OVERLAYMINMAX(2, 11, 34);	OVERLAYMINMAX(3, 11, 34);	OVERLAYMINMAX(4, 11, 71);	OVERLAYMINMAX(5, 11, 25);	OVERLAYMINMAX(6, 11, 34);END;SAVEBMP('/Users/kasperla/Dropbox/Andreiuta/Collaborations_Lars/Papers/IOIO_3_EEG/3DBrainOverlays/NewBrainOverlayTest5');
+
+// make overlays invisible
+//FOR i := 1 TO 5 DO BEGIN
+//	OVERLAYVISIBLE(i, false);
+//endEND.
