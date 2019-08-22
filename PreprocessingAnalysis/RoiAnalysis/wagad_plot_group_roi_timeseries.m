@@ -31,7 +31,7 @@ if nargin < 1
     idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
-idxMaskArray = [1]; % masks to be plotted
+idxMaskArray = [4]; % masks to be plotted
 equalYLimits = [-0.3 0.7]; % percent signal changes
 
 

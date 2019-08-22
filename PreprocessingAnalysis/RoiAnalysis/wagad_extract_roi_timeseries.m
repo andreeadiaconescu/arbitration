@@ -10,21 +10,21 @@ end
 
 %% #MOD user defined-parameters
 doPlotRoi       = true;
-idxMaskArray    = [1 1]; % mask indices to be used from fnMaskArray
-idxContrastArray= [3; 3]; % determines 2nd level dir where the activation mask can be found
+idxMaskArray    = [4 4]; % mask indices to be used from fnMaskArray
+idxContrastArray= [3; 1; 1; 1]; % determines 2nd level dir where the activation mask can be found
 idxRunArray     = [1 2]; % concatenated runs [1 2]
- 
-% number sampled time bins per trial after epoching, 
+
+% number sampled time bins per trial after epoching,
 % default:7, because ITI <= 16s (< 7 TR)
 % note: number of included trials is adapted to number of bins, if last
 % trials are too short wrt nBinTimes*TR
 nBinTimes       = 7;
 
 % cell of cluster index vectors corresponding to each mask
-% each integer is an index for n-ary cluster export of a contrast, 
-% indicating which activated cluster is indeed within the targeted 
+% each integer is an index for n-ary cluster export of a contrast,
+% indicating which activated cluster is indeed within the targeted
 % anatomical region
-idxValidActivationClusters  = {[1 3], [1 3]}; 
+idxValidActivationClusters  = {[1 3], [1 3]};
 iCondition                  = 1; % 1 = advice presentation, needed fo trial binning
 doPlotRoiUnbinned           = false; % plot before epoching
 doUseParallelPool           = false; % set true on EULER to parallelize over subjects
@@ -41,10 +41,11 @@ if doUseParallelPool && isempty(gcp('noCreate'))
     parpool('EulerLSF4h_16GB', nSubjects);
 end
 
-%% Subject loop for extraction and plotting of ROI time series for all 
+%% Subject loop for extraction and plotting of ROI time series for all
 % runs and masks
-parfor iSubj = 1:nSubjects
-    idxSubj = idxSubjectArray(iSubj)
+% parfor
+for iSubj = 1:nSubjects
+    idxSubj = idxSubjectArray(iSubj);
     paths = get_paths_wagad(idxSubj);
     roiOpts = paths.stats.secondLevel.roiAnalysis; % short cut to substruct
     
@@ -163,12 +164,13 @@ parfor iSubj = 1:nSubjects
         
         % save for later plotting
         fprintf('parsave in worker %d (id %s)\n', iSubj, paths.idSubj);
+        %parsave
         parsave_roi(...
             roiOpts.results.fnTimeSeriesArray{idxMask}, ...
             t,y,nVoxels,nTrials,stringTitle)
         
         if doPlotRoi
-        fprintf('plotting in worker %d (id %s)\n', iSubj, paths.idSubj);
+            fprintf('plotting in worker %d (id %s)\n', iSubj, paths.idSubj);
             fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle);
             saveas(fh, roiOpts.results.fnFigureSubjectArray{idxMask});
         end
@@ -177,3 +179,4 @@ end %for iSubj
 
 end
 
+ 
