@@ -12,7 +12,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    idGlmDesign = 2;
+    idGlmDesign = 3;
 end
 
 % Array for different options at a particular preproc/analysis stage
@@ -21,7 +21,7 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_cosyne','wagad_reversed'};
+nameGlmDesigns        = {'factorial_cosyne','wagad_reversed','wagad_reversed_revised','factorial_advice'};
 
 % 'wagad_cosyne'
 % new models
@@ -33,7 +33,9 @@ namePerceptualModels   = filesPerceptualModels;
 
 fnStatsContrastsArray  = {
     'batch_stats_single_subject_report_contrasts_factorial_design',...
-    'batch_stats_single_subject_report_contrasts_revised_design.m'};
+    'batch_stats_single_subject_report_contrasts_revised_design.m',...
+    'batch_stats_single_subject_report_contrasts.m',...
+    'batch_stats_single_subject_report_contrasts_factReward_design.m'};
 fnPreprocessArray      = {'batch_preproc_fmri_realign_stc.m', ...
     'batch_preproc_fmri_stc_realign.m'};
 
@@ -157,12 +159,7 @@ paths.fnModelFreeWagerConditions      = fullfile(paths.behav, [paths.idSubjBehav
 paths.fnBehavMatrix                   = fullfile(paths.behav, [paths.idSubjBehav,glm.nameDesign '_behav_matrix.mat']);
 
 % pairs of perceptual and response model
-iCombPercResp = zeros(6,2);
-iCombPercResp(1:3,1) = 1;
-iCombPercResp(4:6,1) = 2;
-
-iCombPercResp(1:3,2) = 1:3;
-iCombPercResp(4:6,2) = 1:3;
+[iCombPercResp] = wagad_get_model_space;
 
 nModels = size(iCombPercResp,1);
 
@@ -334,7 +331,8 @@ secondLevel.contrasts = strcat(secondLevel.design, fs, ...
     'none', fs, contrasts.names);
 
 % TODO: at the moment, these masks are created manually!
-secondLevel.roiAnalysis.fnMaskArray = {'ArbitrationBrainstem_PeakLevel.nii'};
+secondLevel.roiAnalysis.fnMaskArray = {'ArbitrationBrainstem_PeakLevel.nii';'rightDLPFC_ArbitrationCard.nii';...
+    'rightAmygdala_ArbitrationSocial.nii'; 'rightTPJ_Arbitration.nii'};
 secondLevel.roiAnalysis.results.root = fullfile(secondLevel.root, 'RoiExtraction');
 secondLevel.roiAnalysis.results.rois = strcat(secondLevel.roiAnalysis.results.root, ...
     fs, regexprep(secondLevel.roiAnalysis.fnMaskArray, '\.nii', ''));
@@ -344,12 +342,12 @@ secondLevel.roiAnalysis.results.fnFigureSubjectArray = regexprep(...
     secondLevel.roiAnalysis.results.fnTimeSeriesArray, '\.mat', '\.fig');
 secondLevel.roiAnalysis.results.fnFigureGroupArray = strcat(...
     secondLevel.roiAnalysis.results.rois, fs, ...
-     regexprep(secondLevel.roiAnalysis.fnMaskArray, ...
-     '\.nii', '_trial_means_per_subject\.fig'));
+    regexprep(secondLevel.roiAnalysis.fnMaskArray, ...
+    '\.nii', '_trial_means_per_subject\.fig'));
 secondLevel.roiAnalysis.results.fnFigureGroupMeanArray = strcat(...
     secondLevel.roiAnalysis.results.rois, fs, ...
-     regexprep(secondLevel.roiAnalysis.fnMaskArray, ...
-     '\.nii', '_group_mean_over_subjects\.fig'));
+    regexprep(secondLevel.roiAnalysis.fnMaskArray, ...
+    '\.nii', '_group_mean_over_subjects\.fig'));
 
 %% Assemble sub-modules of paths-structure
 
