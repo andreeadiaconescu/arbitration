@@ -34,11 +34,17 @@ Epsilon2_Reward       = abs(est.est.traj.sa_r(:,2).*est.est.traj.da_r(:,1));
 Epsilon3_Advice       = est.est.traj.sa_a(:,3).*est.est.traj.da_a(:,2);
 Epsilon3_Reward       = est.est.traj.sa_r(:,3).*est.est.traj.da_r(:,2);
 
-Predicted_wager       = zscore(est.est.predicted_wager(1:end));
-Actual_wager          = zscore(est.est.y(1:end,2));
+SubjectMeanWager = mean((est.est.y(1:end,2)));
+SubjectSTDWager  = std((est.est.y(1:end,2)));
 
+Predicted_wager       = zscore(est.est.predicted_wager(1:end));
+Actual_wager          = est.est.y(1:end,2);
+
+Predicted_Wager_Native = abs((Predicted_wager.*SubjectSTDWager)+SubjectMeanWager);
+Error_wager            = max(Predicted_Wager_Native)-10;
+Predicted_Wager_NativeCorrected = round(abs(Predicted_Wager_Native - Error_wager));
 wager_computational_quantities = [Arbitration wc Social_weighting Card_weighting, ...
                                   Epsilon2_Advice Epsilon2_Reward Epsilon3_Advice,...
-                                  Epsilon3_Reward Predicted_wager pib];
+                                  Epsilon3_Reward Predicted_Wager_NativeCorrected Actual_wager];
 
 end
