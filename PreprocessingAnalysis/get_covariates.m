@@ -83,12 +83,12 @@ end
 set(gca,'XTick',1:N)
 set(gca,'XTickLabel',GroupingVariables);
 hold on;
-scatter([1:4]',Priors,100,'k','*');
+scatter([1:4]',Priors,100,'k','d','LineWidth',3);
 set(gca,'FontName','Constantia','FontSize',20);
 ylabel('MAPs Learning Parameters');
 %% Plot Zeta
 % Zeta
-figure; hist((temp(:,[5]))); hold on; stem(0);
+figure; hist((temp(:,[5]))); hold on; stem(0,'d','LineWidth',3);
 % Create xlabel
 xlabel('log(\zeta)');
 % Create ylabel

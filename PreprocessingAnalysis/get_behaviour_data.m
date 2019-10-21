@@ -59,13 +59,13 @@ for iSubj = iSubjectArray
     for iProbe = 1:numel(probeCategories)
         switch probeCategories(iProbe)
             case 0
-                probeValue = 0.5;
+                probeValue = 0.5; % random
             case 1
-                probeValue = 0.8;
+                probeValue = 1;   % congruent with outcome: helpful
             case 2
-                probeValue = 0.2;
+                probeValue = 0;   % incongruent with outcome: misleading
             case 3
-                probeValue = 0.5;
+                probeValue = 0.5; % random
                 
         end
         

@@ -73,8 +73,8 @@ end
 nPhases = 4;
 colourArray    = {'c', 'm', 'b', 'r'};
 yLabelArray    = {'Phase: Advice Stable','Phase: Advice Volatile','Phase: Reward Stable','Phase: Reward Volatile'};
-xLimitArray    = {[-0.4 0.8], [-0.8 0.45], [-0.4 0.6],[-0.6 0.8]};
-yLimitArray    = {[-0.4 0.8], [-0.8 0.45], [-0.4 0.6],[-0.6 0.8]};
+xLimitArray    = {[-0.8 0.8], [-0.8 0.8], [-0.8 0.6],[-0.8 0.8]};
+yLimitArray    = {[-0.8 0.8], [-0.8 0.8], [-0.8 0.6],[-0.8 0.8]};
 
 variables      = cell2mat(par);
 
@@ -101,6 +101,7 @@ for iWager = 1:nPhases
     ylabel(sprintf('z(Predicted Wager)'));
     xlim(xLimitArray{iWager});
     ylim(yLimitArray{iWager});
+    axis square;
     set(gca,'FontName','Constantia','FontSize',30);
 end
 

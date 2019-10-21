@@ -83,7 +83,7 @@ end
 set(gca,'XTick',1:N)
 set(gca,'XTickLabel',GroupingVariables);
 hold all;
-scatter([1:6]',[zeros(size(Variables,2),1)]',100,'k','*');
+scatter([1:6]',[zeros(size(Variables,2),1)]',100,'k','d','LineWidth',3);
 set(gca,'FontName','Constantia','FontSize',20);
 ylabel('MAPs of Response Model Parameters');
 
