@@ -1,15 +1,16 @@
-function fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle,colourLine, fh)
+function fh = wagad_plot_roi_CombinedTimeseries(t, y1, y2, nVoxels, nTrialsy1, nTrialsy2,...
+    stringTitle,colourLine, fh)
 %Plots mean (over trials) and s.e.m as shading for peristimulus time
 %courses
 %
-%   fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle);
+%   fh = wagad_plot_roi_CombinedTimeseries(t1, y1, y2, nVoxels, nTrialsy1, nTrialsy2,stringTitle,colourLine);
 %
 % IN
 %
 % OUT
 %
 % EXAMPLE
-%   wagad_plot_roi_timeseries
+%   wagad_plot_roi_CombinedTimeseries
 %
 %   See also wagad_extract_roi_timeseries tnueeg_line_with_shaded_errorbar
 
@@ -26,10 +27,12 @@ function fh = wagad_plot_roi_timeseries(t, y, nVoxels, nTrials, stringTitle,colo
 %  <http://www.gnu.org/licenses/>.
 %
 
-if nargin < 7
+if nargin < 9
     fh = figure('Name', stringTitle);
 end
-tnueeg_line_with_shaded_errorbar(t, mean(y)', std(y)'./sqrt(nVoxels*nTrials), colourLine);
+tnueeg_line_with_shaded_errorbar(t, mean(y1)', std(y1)'./sqrt(nVoxels*nTrialsy1), colourLine{1});
+hold all;
+tnueeg_line_with_shaded_errorbar(t, mean(y2)', std(y2)'./sqrt(nVoxels*nTrialsy2), colourLine{2});
 title(stringTitle);
 xlabel('Peristimulus Time (seconds)');
 ylabel('Signal Change (%)');
