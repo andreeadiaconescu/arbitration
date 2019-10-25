@@ -2,7 +2,7 @@ function wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArray,t
 % Performs all group analysis steps for the WAGAD study
 
 if nargin < 1
-    secondLevelAnalysisStrategy =  [0 0 0 0 0 1 0 0];
+    secondLevelAnalysisStrategy =  [0 0 0 0 0 0 0 1];
 end
 
 if nargin < 2
@@ -36,6 +36,9 @@ switch typeDesign
         idDesign = 1;
 end
 
+% Subjects for fMRI analysis
+iSubjectfMRIArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]);
+
 % Set axes properties
 set(0,'defaultAxesFontName','Constantia');
 set(0,'defaultAxesFontSize',20);
@@ -65,7 +68,6 @@ end
 
 
 if doSecondLevelStats
-    iSubjectfMRIArray =  setdiff([3:47], [6 14 25 31 32 33 34 37]); 
     includeRegressor = false;
     switch typeDesign
         case 'ModelBased'
@@ -103,7 +105,7 @@ if doCreateFiguresSupplementary
 end
 
 if doExtractRoiTimeSeries
-    wagad_extract_roi_timeseries(iSubjectArray);
+    wagad_extract_roi_timeseries_by_arbitration(iSubjectfMRIArray);
 end
 
 end
