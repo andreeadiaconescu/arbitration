@@ -90,6 +90,12 @@ save(fullfile(paths.stats.secondLevel.covariates, 'MAP_estimates_winning_model_n
     'variables_wager', '-mat');
 ofile=fullfile(paths.stats.secondLevel.covariates,'MAP_estimates_winning_model_nonModelVariables.xlsx');
 
+[R,P]=corrcoef(mean([behaviour_wager(:,[13:16])],2),behaviour_wager(:,3));
+disp(['Correlation between amount wagered and total score? Pvalue: ' num2str(P(1,2))]);
+stats.correlation_wager_score = R(1,2);
+stats.correlationp_wager_score = P(1,2);
+disp(stats);
+
 columnNames = [{'iSubjectArray'}, Main_Parameters, ResponseModel_Parameters, ...
     {'performanceAccuracy','wager_end','cumulativeScore','takeAdvice',...
     'AccuracyStableCard','AccuracyVolatileCard','AccuracyStableAdvice','AccuracyVolatileAdvice',...
