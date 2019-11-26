@@ -1,7 +1,7 @@
 function [iContrast] = get_WAGAD_contrast(dir1stLevel,regressor)
 
 switch dir1stLevel
-    case 'wagad_reversed'
+    case {'wagad_reversed','wagad_reanalysis'}
         switch regressor
             case 'basic_advice'
                 iContrast = 1;
@@ -78,7 +78,7 @@ switch dir1stLevel
                 iContrast = 1;
         end
         
-    case 'factorial_advice'
+    case {'factorial_advice','factorial_reanalysis'}
         switch regressor
             case 'interaction_advice'
                 iContrast = 4;
