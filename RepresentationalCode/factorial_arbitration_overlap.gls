@@ -43,25 +43,31 @@ COLORBARVISIBLE(false);
 
 if useFMaps > 0 THEN BEGIN
 	//color 4, magenta (red for now...color 1)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Interaction_Advice');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Interaction_Advice');
 
 	//color 2, green
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Interaction_Advice_Midbrain_Effect');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Interaction_Advice_Midbrain_Effect');
 
 	//color 3, cyan
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Stability>Volatility.nii');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Stability>Volatility.nii');
+
+       //color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Arbitration_ClusterLevel');
 
 END
 ELSE BEGIN
 
 		//color 4, magenta (red for now...color 1)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Interaction_Advice');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Interaction_Advice');
 
 	//color 2, green
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Interaction_Advice_Midbrain_Effect');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Interaction_Advice_Midbrain_Effect');
 
 	//color 3, cyan
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Stability>Volatility.nii');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Stability>Volatility.nii');
+
+   //color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Arbitration_ClusterLevel');
 
 
 END;

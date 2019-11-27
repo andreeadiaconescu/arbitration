@@ -18,7 +18,7 @@ if (useTemplate > 0) THEN BEGIN
 	LOADIMAGE('/Applications/MRIcroGL/mni152_2009bet');
 END
 ELSE BEGIN
-	LOADIMAGE('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/group_stripped_brain');
+	LOADIMAGE('/Users/kasperla/Dropbox/Andreiuta/Collaborations_Lars/Papers/IOIO_3_EEG/group_stripped_brain');
 	CONTRASTMINMAX(300, 1439);
 	CHANGENODE(1, 128, 128, 128, 128, 1);
 END;
@@ -45,22 +45,27 @@ if useFMaps > 0 THEN BEGIN
 
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
-	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationAdvice_PeakLevel');
+	//color 1, red (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/CardWeighting_PeakLevel');
 
-	//color 1, yellow
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_Advice_ClusterLevel');
+	//color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/CardWeighting_ClusterLevel');
+
+	//color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Zeta_CardWeighting');
 
 END
 ELSE BEGIN
 
 
-	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationAdvice_PeakLevel');
+	//color 1, red (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/CardWeighting_PeakLevel');
 
-	//color 1, yellow
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_Advice_ClusterLevel');
+	//color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/CardWeighting_ClusterLevel');
 
+	//color 1, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Zeta_CardWeighting');
 
 END;
 
@@ -95,7 +100,7 @@ BEGIN
 	OVERLAYMINMAX(6, 11, 34);
 END;
 
-SAVEBMP('/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/NewBrainOverlayTest');
+SAVEBMP('/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/NewBrainOverlayTest5');
 
 // make overlays invisible
 //FOR i := 1 TO 5 DO BEGIN

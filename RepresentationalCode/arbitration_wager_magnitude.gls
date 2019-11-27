@@ -15,7 +15,7 @@ BACKCOLOR(220, 220, 220);
 CONTRASTFORMVISIBLE(false);
 
 if (useTemplate > 0) THEN BEGIN
-	LOADIMAGE('/Applications/MRIcroGL/mni152_2009bet');
+	LOADIMAGE('/Applications/MRIcroGL/mni152_2009bet.nii');
 END
 ELSE BEGIN
 	LOADIMAGE('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/group_stripped_brain');
@@ -42,30 +42,42 @@ SHADERADJUST('overDistance', 0.27);
 COLORBARVISIBLE(false);
 
 if useFMaps > 0 THEN BEGIN
+	//color 4, magenta (red for now...color 1)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Positive');
+	//color 3, cyan
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Negative');
 
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
-	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationAdvice_PeakLevel');
 
-	//color 1, yellow
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_Advice_ClusterLevel');
+//color 1, red (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationSelf>WagerAmount');
+
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationOther>WagerAmount');
+
 
 END
 ELSE BEGIN
 
+		//color 4, magenta (red for now...color 1)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Positive');
+	//color 3, cyan
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Negative');
 
-	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationAdvice_PeakLevel');
+	//load cluster with thresholds
+	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 
-	//color 1, yellow
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_Advice_ClusterLevel');
+//color 1, red (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationSelf>WagerAmount');
 
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationOther>WagerAmount');
 
 END;
 
 //color, number
-// (1) red, (2) yellow, (3) blue, (4) magenta
+// (1) yellow, (2) green, (3) cyan, (4) magenta
 
 IF (useBinaryMasks>0) THEN
 BEGIN
@@ -95,7 +107,7 @@ BEGIN
 	OVERLAYMINMAX(6, 11, 34);
 END;
 
-SAVEBMP('/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/NewBrainOverlayTest');
+SAVEBMP('/Users/kasperla/Dropbox/Andreiuta/Collaborations_Lars/Papers/IOIO_3_EEG/3DBrainOverlays/NewBrainOverlayTest5');
 
 // make overlays invisible
 //FOR i := 1 TO 5 DO BEGIN

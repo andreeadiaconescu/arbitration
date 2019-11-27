@@ -46,20 +46,20 @@ if useFMaps > 0 THEN BEGIN
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 	//color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/ArbitrationCard_PeakLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationCard_PeakLevel');
 
 	//color 1, yellow (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/ArbitrationCard_ClusterLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationCard_ClusterLevel');
 
 END
 ELSE BEGIN
 
 
 	//color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/ArbitrationCard_PeakLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationCard_PeakLevel');
 
 	//color 1, yellow (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/ArbitrationCard_ClusterLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationCard_ClusterLevel');
 
 
 END;
