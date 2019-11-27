@@ -105,7 +105,8 @@ if doCreateFiguresSupplementary
 end
 
 if doExtractRoiTimeSeries
-    wagad_extract_roi_timeseries_by_arbitration(iSubjectfMRIArray);
+    fprintf('\n===\n\t Running subject-wise ROI extraction for significant group clusters:\n\n');
+    wagad_extract_roi_timeseries(iSubjectArrayfMRI);
 end
 
 end
