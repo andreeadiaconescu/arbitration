@@ -5,6 +5,7 @@ y = current_var(:,2);
 z = current_var(:,3);
 t = current_var(:,4);
 
+
 Variables = {x y z t};
 Groups    = {ones(length(x), 1) 2*ones(length(y), 1) 3*ones(length(z), 1) 4*ones(length(t), 1)};
 
@@ -39,4 +40,9 @@ set(gca,'XTick',1:N)
 set(gca,'XTickLabel',GroupingVariables);
 set(gca,'FontName','Constantia','FontSize',36);
 ylabel(label);
+
+switch currentMAP
+    case {'accuracy','advice'}
+      ylim([0 1]);
+end
 end
