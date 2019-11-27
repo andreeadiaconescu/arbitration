@@ -86,14 +86,30 @@ for iSubject = 1:nSubjects
 end
 
 variables_all = [cell2mat(variables_wager) cell2mat(behaviour_wager)];
+behaviourVariables =  cell2mat(behaviour_wager);
 save(fullfile(paths.stats.secondLevel.covariates, 'MAP_estimates_winning_model_nonModelVariables.mat'), ...
     'variables_wager', '-mat');
 ofile=fullfile(paths.stats.secondLevel.covariates,'MAP_estimates_winning_model_nonModelVariables.xlsx');
 
-[R,P]=corrcoef(mean([behaviour_wager(:,[13:16])],2),behaviour_wager(:,3));
+[R,P]=corrcoef(mean(cell2mat(behaviour_wager(:,13)),2),cell2mat(behaviour_wager(:,3)));
 disp(['Correlation between amount wagered and total score? Pvalue: ' num2str(P(1,2))]);
-stats.correlation_wager_score = R(1,2);
-stats.correlationp_wager_score = P(1,2);
+stats.correlation_wagerSC_score = R(1,2);
+stats.correlationp_wagerSC_score = P(1,2);
+
+[R,P]=corrcoef(mean(cell2mat(behaviour_wager(:,14)),2),cell2mat(behaviour_wager(:,3)));
+disp(['Correlation between amount wagered and total score? Pvalue: ' num2str(P(1,2))]);
+stats.correlation_wagerVC_score = R(1,2);
+stats.correlationp_wagerVC_score = P(1,2);
+
+[R,P]=corrcoef(mean(cell2mat(behaviour_wager(:,15)),2),cell2mat(behaviour_wager(:,3)));
+disp(['Correlation between amount wagered and total score? Pvalue: ' num2str(P(1,2))]);
+stats.correlation_wagerSA_score = R(1,2);
+stats.correlationp_wagerSA_score = P(1,2);
+
+[R,P]=corrcoef(mean(cell2mat(behaviour_wager(:,16)),2),cell2mat(behaviour_wager(:,3)));
+disp(['Correlation between amount wagered and total score? Pvalue: ' num2str(P(1,2))]);
+stats.correlation_wagerVA_score = R(1,2);
+stats.correlationp_wagerVA_score = P(1,2);
 disp(stats);
 
 columnNames = [{'iSubjectArray'}, Main_Parameters, ResponseModel_Parameters, ...
