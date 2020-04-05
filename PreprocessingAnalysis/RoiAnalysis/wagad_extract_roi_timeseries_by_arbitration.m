@@ -5,29 +5,34 @@ function [] = wagad_extract_roi_timeseries_by_arbitration(idxSubjectArray)
 %   wagad_extract_roi_timeseries(idxSubjectArray)
 
 if nargin < 1
-    idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
+    idxSubjectArray = 3%setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
 %% #MOD user defined-parameters
-doPlotRoi       = true;
-idxMaskArray    = [4 4]; % mask indices to be used from fnMaskArray
-idxContrastArray= [3; 1; 1; 1]; % determines 2nd level dir where the activation mask can be found
-idxRunArray     = [1 2]; % concatenated runs [1 2]
-colourArray     = {'b','g'};
+doSave              = false; % save ROI values and current plots to file
+doPlotRoi           = true;
+doPlotRoiUnbinned   = true; % plot before epoching
+doUseParallelPool   = false; % set true on EULER to parallelize over subjects
+idxMaskArray        = [1:4]; % mask indices to be used from fnMaskArray
+idxRunArray         = [1 2]; % concatenated runs [1 2]
+colourArray         = {'b','g'};
 % number sampled time bins per trial after epoching,
 % default:7, because ITI <= 16s (< 7 TR)
 % note: number of included trials is adapted to number of bins, if last
 % trials are too short wrt nBinTimes*TR
 nBinTimes       = 7;
 
+%% only change if you know what you are doing:
+
+idxContrastArray= [3; 1; 1; 1]; % determines 2nd level dir where the activation mask can be found
+
 % cell of cluster index vectors corresponding to each mask
 % each integer is an index for n-ary cluster export of a contrast,
 % indicating which activated cluster is indeed within the targeted
 % anatomical region
-idxValidActivationClusters  = {[1 3], [1 3]};
+idxValidActivationClusters  = {[1], [1], [1], [1]};
+
 iCondition                  = 1; % 1 = advice presentation, needed fo trial binning
-doPlotRoiUnbinned           = false; % plot before epoching
-doUseParallelPool           = false; % set true on EULER to parallelize over subjects
 
 
 %% derived parameters
@@ -72,7 +77,7 @@ for iSubj = 1:nSubjects
         fprintf('loaded Y in worker %d (id %s)\n', iSubj, paths.idSubj);
         
         %% Load SPM of subject to get timing info etc (for peri-stimulus binning
-        % according to advice onsets
+        % according to advice onsets)
         % Get time bins (relative to trial onsets) for each volume
         % NOTE: The runs are concatenated in the GLM
         nVols = paths.scanInfo.nVols;
@@ -96,10 +101,6 @@ for iSubj = 1:nSubjects
         % social
         idxSocialTrialsWithinRun = find(socialOns >= Y.dimInfo.t.ranges(1) & ...
             socialOns <= Y.dimInfo.t.ranges(2) - TR*nBinTimes);
-        % individual
-        idxIndivTrialsWithinRun = find(indivOns >= Y.dimInfo.t.ranges(1) & ...
-            indivOns <= Y.dimInfo.t.ranges(2) - TR*nBinTimes);
-        % idxTrialsWithinRun = intersect(idxSocialTrialsWithinRun,idxIndivTrialsWithinRun);
         socialOnsMicroTime = socialOns(idxSocialTrialsWithinRun);
         nValidSocialTrialsPerRun(iRun) = numel(idxSocialTrialsWithinRun);
         
@@ -115,7 +116,7 @@ for iSubj = 1:nSubjects
         
         M = cell(1,nMasks);
         for iMask = 1:nMasks
-            % remove other clusters (e.g., cholinergic), by there n-ary index
+            % remove other clusters (e.g., cholinergic), by their n-ary index
             M{iMask} = MrImage(fnMaskArray{idxMaskArray(iMask)});
             M{iMask}.data(~ismember(M{iMask}.data, idxValidActivationClusters{iMask})) = 0;
         end
@@ -153,7 +154,9 @@ for iSubj = 1:nSubjects
         
         % now we only have to epoch a few voxels instead of the whole 3D volume
         % Epoch into trials
+        fprintf('\nEpoching social arbitration trials:\n');
         epochedSocialYArray{iRun} = Z.split_epoch(socialOnsMicroTime, nBinTimes);
+        fprintf('\nEpoching individual arbitration trials:\n');
         epochedIndivYArray{iRun} = Z.split_epoch(indivOnsMicroTime, nBinTimes);
         
         % right indices for trials to allow for proper concatenation
@@ -169,6 +172,7 @@ for iSubj = 1:nSubjects
     
     epochedSocialY = epochedSocialYArray{1}.concat(epochedSocialYArray, 'trials');
     epochedIndivY = epochedIndivYArray{1}.concat(epochedIndivYArray, 'trials');
+    
     %% handmade shaded PST-plot, averaged over trials
     for iMask = 1:nMasks
         idxMask = idxMaskArray(iMask);
@@ -197,21 +201,25 @@ for iSubj = 1:nSubjects
         yIndiv = 100./mean(yIndiv(:))*(yIndiv - yIndiv(:,1));
         
         % save for later plotting
-        fprintf('parsave in worker %d (id %s)\n', iSubj, paths.idSubj);
-        %parsave
-        parsave_roi(...
-            roiOpts.results.fnTimeSeriesArraySocial{idxMask}, ...
-            tSocial,ySocial,nVoxels,nTrialsSocial,stringTitle);
-        
-        parsave_roi(...
-            roiOpts.results.fnTimeSeriesArrayCard{idxMask}, ...
-            tIndiv,yIndiv,nVoxels,nTrialsIndividual,stringTitle);
+        if doSave
+            fprintf('parsave in worker %d (id %s)\n', iSubj, paths.idSubj);
+            %parsave
+            parsave_roi(...
+                roiOpts.results.fnTimeSeriesArraySocial{idxMask}, ...
+                tSocial,ySocial,nVoxels,nTrialsSocial,stringTitle);
+            
+            parsave_roi(...
+                roiOpts.results.fnTimeSeriesArrayCard{idxMask}, ...
+                tIndiv,yIndiv,nVoxels,nTrialsIndividual,stringTitle);
+        end
         
         if doPlotRoi
             fprintf('plotting in worker %d (id %s)\n', iSubj, paths.idSubj);
             fh = wagad_plot_roi_CombinedTimeseries(tSocial, yIndiv, ySocial, nVoxels, nTrialsIndividual, nTrialsSocial,...
-                                                stringTitle,colourArray);
-            saveas(fh, roiOpts.results.fnFigureSubjectArray{idxMask});
+                stringTitle,colourArray);
+            if doSave
+                saveas(fh, roiOpts.results.fnFigureSubjectArray{idxMask});
+            end
         end
     end
 end %for iSubj
