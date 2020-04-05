@@ -21,14 +21,14 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_reanalysis','wagad_reanalysis','wagad_reversed_revised','factorial_advice'};
+nameGlmDesigns        = {'factorial_reanalysis','wagad_revision','wagad_reversed_revised','factorial_advice'}; % wagad_reanalysis
 
 % Original design: wagad_reversed
 
 % 'wagad_cosyne'
 % new models
 filesResponseModels    = {'linear_1stlevelprecision_reward_social_config','linear_1stlevelprecision_social_config',...
-    'linear_1stlevelprecision_reward_config'}; % ...
+                          'linear_1stlevelprecision_reward_config'}; % ...
 nameResponseModels     = filesResponseModels;
 filesPerceptualModels  = {'hgf_binary3l_reward_social_config','hgf_nonvol_reward_social_config'};
 namePerceptualModels   = filesPerceptualModels;
@@ -50,6 +50,7 @@ design.stableAdvicePhase     = [ones(50,1);0.*ones(20,1);ones(30,1);0.*ones(60,1
 design.stableAdvicePhase(1,:)= [];
 design.volatileAdvicePhase   = [0.*ones(50,1);ones(20,1);0.*ones(30,1);ones(60,1)];
 design.volatileAdvicePhase(1,:)= [];
+
 %% Paths study
 
 preproc.nameStrategies = namePreprocStrategies;
@@ -286,6 +287,8 @@ preproc.output.fnFunctArray = ...
     fs, preproc.output.fnFunctArray);
 
 preproc.output.fnStruct = preproc.output.fnFunctArray{3};
+preproc.output.fnWarpedMeanFunct = fullfile(preproc.output.funct, 'wmeanaufunct.nii');
+
 
 preproc.output.report = fullfile(preproc.output.root, ...
     'report_preproc_quality');
@@ -324,6 +327,7 @@ end
 
 secondLevel.root = fullfile(paths.data, 'SecondLevel');
 secondLevel.covariates = fullfile(secondLevel.root,'covariates');
+design.debriefing      = fullfile(secondLevel.root,'covariates','MAPs_DebriefingAnswers.xlsx');
 secondLevel.fnCovariates = fullfile(secondLevel.covariates, 'parameters.mat');
 secondLevel.fnNuisanceRegressors = fullfile(secondLevel.covariates, 'nuisance_regressors.txt');
 secondLevel.design = strcat(secondLevel.root, fs, preproc.nameStrategy, fs,...
@@ -362,6 +366,9 @@ secondLevel.roiAnalysis.results.fnFigureGroupMeanArray = strcat(...
     secondLevel.roiAnalysis.results.rois, fs, ...
     regexprep(secondLevel.roiAnalysis.fnMaskArray, ...
     '\.nii', '_group_mean_over_subjects\.fig'));
+
+secondLevel.fnMeanStruct = fullfile(secondLevel.root, 'meanWarpedBrain_AllSubjects.nii');
+secondLevel.fnMeanFunct = fullfile(secondLevel.root, 'meanWarpedMeanFunct_AllSubjects.nii');
 
 %% Assemble sub-modules of paths-structure
 
