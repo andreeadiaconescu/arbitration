@@ -24,7 +24,7 @@ BMS_results.bor        = bor;
 
 disp(BMS_results);
 
-modelLabels = {'M1','M2','M3','M4','M5','M6'};
+modelLabels = {'M1','M2','M3','M4','M5','M6','M7','M8','M9'};
 
 
 if doPlotFigures
@@ -36,7 +36,7 @@ if doPlotFigures
         if i==1, hold on, end
         set(h,'FaceColor',colors(i,:))
     end
-    set(gca,'XTick',1:6)
+    set(gca,'XTick',1:9)
     set(gca,'XTickLabel',modelLabels);
     
     % Create ylabel
