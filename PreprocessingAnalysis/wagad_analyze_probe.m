@@ -1,4 +1,4 @@
-function wagad_analyze_probe(iSubjectArray)
+function [variables] = wagad_analyze_probe(iSubjectArray)
 % regress_probe
 % ===============
 % expects a matrix of subject's specifig ratings of the adviser's
@@ -29,7 +29,7 @@ nSubjects = numel(iSubjectArray);
 subjectIds = iSubjectArray';
 variables_wager = cell(nSubjects, 1); % 16 is the number of nonmodel-based variables
 behaviour_wager = cell(nSubjects, 1); % 16 is the number of nonmodel-based variables
-
+verbose = false;
 
 for iSubject = 1:nSubjects
     iSubj = iSubjectArray(iSubject);
@@ -39,7 +39,11 @@ for iSubject = 1:nSubjects
     mu1hatAdviceSelected        = [tmp.est.traj.muhat_a(2,1) tmp.est.traj.muhat_a(14,1),...
         tmp.est.traj.muhat_a(49,1) tmp.est.traj.muhat_a(73,1),...
         tmp.est.traj.muhat_a(110,1)];
+    mu1hatCardSelected        = [tmp.est.traj.muhat_r(2,1) tmp.est.traj.muhat_r(14,1),...
+        tmp.est.traj.muhat_r(49,1) tmp.est.traj.muhat_r(73,1),...
+        tmp.est.traj.muhat_r(110,1)];
     variables_wager{iSubject,1} = mu1hatAdviceSelected;
+    cards_wager{iSubject,1}     = mu1hatCardSelected;
 end
 
 for iSubject = 1:nSubjects
@@ -49,6 +53,7 @@ for iSubject = 1:nSubjects
     behaviour_wager{iSubject,1} = tmp.behaviour_variables.probe;
 end
 
+z = cell2mat(cards_wager);
 y = cell2mat(variables_wager);
 x = cell2mat(behaviour_wager);
 
@@ -66,71 +71,55 @@ disp(resultsProbe);
 % Get probe structure
 random              = [1 0, ...
                        0 0 0];
-helpful             = [0 1, ...
-                       1 0 0];
-misleading          = [0 0, ...
-                       0 1 1];
+stableCardStableAdvice      = [0 1, ...
+                              0 0 0];
+stableCardVolatileAdvice  = [0 0, ...
+                               0 1 0];  
+stableAdviceVolatileCard    = [0 0, ...
+                               1 0 0];
+volatileAdviceVolatileCard  = [0 0, ...
+                               0 0 1];
+                  
 
 figure;
 for s=1:size(y,1)   
     selectedChoice           = x(s,:);
     selectedModelReadout     = y(s,:);
     actualProbeRandom     = mean(selectedChoice(:,logical(random)));
-    actualProbeHelpful    = mean(selectedChoice(:,logical(helpful)));
-    actualProbeMisleading = mean(selectedChoice(:,logical(misleading)));
+    actualProbeHelpfulStable    = mean(selectedChoice(:,logical(stableCardStableAdvice)));
+    actualProbeHelpfulUnstable    = mean(selectedChoice(:,logical(stableCardVolatileAdvice)));
+    actualProbeMisleadingUnstable = mean(selectedChoice(:,logical(stableAdviceVolatileCard)));
+    actualProbeMisleadingStable = mean(selectedChoice(:,logical(volatileAdviceVolatileCard)));
     
     predictedProbeRandom     = mean(selectedModelReadout(:,logical(random)));
-    predictedProbeHelpful    = mean(selectedModelReadout(:,logical(helpful)));
-    predictedProbeMisleading = mean(selectedModelReadout(:,logical(misleading)));
+    predictedProbeHelpfulStable    = mean(selectedModelReadout(:,logical(stableCardStableAdvice)));
+    predictedProbeHelpfulUnstable    = mean(selectedModelReadout(:,logical(stableCardVolatileAdvice)));
+    predictedProbeMisleadingUnstable = mean(selectedModelReadout(:,logical(stableAdviceVolatileCard)));
+    predictedProbeMisleadingStable = mean(selectedModelReadout(:,logical(volatileAdviceVolatileCard)));
     
     par{s,1} = actualProbeRandom;
-    par{s,2} = actualProbeHelpful;
-    par{s,3} = actualProbeMisleading;
+    par{s,2} = actualProbeHelpfulStable;
+    par{s,3} = actualProbeHelpfulUnstable;
+    par{s,4} = actualProbeMisleadingUnstable;
+    par{s,5} = actualProbeMisleadingStable;
     
-    par{s,4} = predictedProbeRandom;
-    par{s,5} = predictedProbeHelpful;
-    par{s,6} = predictedProbeMisleading;
+    par{s,6} = predictedProbeRandom;
+    par{s,7} = predictedProbeHelpfulStable;
+    par{s,8} = predictedProbeHelpfulUnstable;
+    par{s,9} = predictedProbeMisleadingUnstable;
+    par{s,10} = predictedProbeMisleadingStable;
 end
 
 
 %% plot them
-nPhases = 3;
-colourArray    = {'g','r','c'};
-yLabelArray    = {'Initial','Stable','Volatile'};
-xLimitArray    = {[0 1], [0 1],[0 1]};
-yLimitArray    = {[-Inf Inf], [-Inf Inf],[-Inf Inf]};
+nPhases = 5;
+colourArray    = {'g','r','m','b','c'};
+yLabelArray    = {'Initial Rating','Stable Advice/Stable Card','Stable Advice/Unstable Card', ...
+                  'Unstable Advice/Unstable Card', 'Unstable Advice/Stable Card'};
+xLimitArray    = {[0 1], [0 1],[0 1], [0 1], [0 1]};
+yLimitArray    = {[-Inf Inf], [-Inf Inf],[-Inf Inf], [-Inf Inf],[-Inf Inf]};
 
-variables      = cell2mat(par);
-
-% The first phase is essentially the first trial; here the model predicts
-% 0.5 because that this the prior for the initial value of advice accuracy.
-
-for iProbe = 1:nPhases
-    subplot(2,2,iProbe);
-    X = variables(:,iProbe);
-    Y = variables(:,iProbe + nPhases);
-    
-    regressionMatrix       = [X ones(size(X))];
-    B                      = regressionMatrix\Y;
-    [R,P]                  = corrcoef(X,Y);
-    
-    pValueArray(iProbe)        = P(1,2);
-    slopeArray(iProbe)         = R(1,2);
-    
-    scatter(X, Y, [],'MarkerEdgeColor',[0 .5 .5],...
-        'MarkerFaceColor',colourArray{iProbe},...
-        'LineWidth',2);
-    hold all;
-    plot(X, B(1)*X+B(2), '-k');
-    axis square;
-    title(sprintf(yLabelArray{iProbe}));
-    xlim(xLimitArray{iProbe});
-    ylim(yLimitArray{iProbe});
-    xlabel(sprintf('Mean: Actual Rating'));
-    ylabel(sprintf('Mean: Predicted Rating)'));
-    set(gca,'FontName','Constantia','FontSize',30);
-end
-
+variables      = cell2mat(par(:,[2:5]));
 
 
 end
