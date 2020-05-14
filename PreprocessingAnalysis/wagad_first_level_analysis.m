@@ -39,6 +39,8 @@ switch typeDesign
         idDesign = 2; %% idDesign can be updated
     case 'ModelFree'
         idDesign = 1;
+    case 'ModelBasedwithDifference'
+        idDesign = 3;
 end
 
 % Deletes previous preproc/stats files of analysis specified in options

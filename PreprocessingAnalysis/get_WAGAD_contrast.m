@@ -1,7 +1,7 @@
 function [iContrast] = get_WAGAD_contrast(dir1stLevel,regressor)
 
 switch dir1stLevel
-    case {'wagad_reversed','wagad_reanalysis'}
+    case {'wagad_reversed','wagad_reanalysis','wagad_revision_eLife','wagad_revision','wagad_zscore','wagad_zscore_all'}
         switch regressor
             case 'basic_advice'
                 iContrast = 1;

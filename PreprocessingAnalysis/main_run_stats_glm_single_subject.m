@@ -60,7 +60,7 @@ if ~exist('cfg_files', 'file')
 end
 % 1 GB instead of 64 MB for chunks of estimation...much faster
 spm_get_defaults('stats.maxmem', 2^30);
-
+spm_get_defaults('mask.thresh', 0.2);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Loop over subjects
