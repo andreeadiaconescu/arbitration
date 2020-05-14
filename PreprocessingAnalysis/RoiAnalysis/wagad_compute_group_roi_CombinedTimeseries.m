@@ -76,7 +76,6 @@ for iMask = 1:nMasks
         nTrialsSocial = Social.nTrials;
         ySocial       = Social.y;
         
-        subplot(nRows,nColumns,iSubj);
         stringTitle = sprintf('Subj %d', idxSubj);
         wagad_plot_roi_CombinedTimeseries(t, yIndiv, ySocial, nVoxels, nTrialsIndividual, nTrialsSocial,...
                                                 stringTitle,colourArray);
@@ -95,7 +94,6 @@ for iMask = 1:nMasks
         stdYIndiv(iSubj,:) = std(yIndiv)./sqrt(nVoxels*nTrialsIndividual);
         
     end
-    suptitle(stringSupTitle);
     
     saveas(fh, roiOpts.results.fnFigureGroupArray{idxMask});
     

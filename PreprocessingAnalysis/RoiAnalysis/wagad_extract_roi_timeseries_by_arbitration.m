@@ -5,15 +5,15 @@ function [] = wagad_extract_roi_timeseries_by_arbitration(idxSubjectArray)
 %   wagad_extract_roi_timeseries(idxSubjectArray)
 
 if nargin < 1
-    idxSubjectArray = 3%setdiff([3:47], [6 14 25 31 32 33 34 37]);
+    idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
 %% #MOD user defined-parameters
-doSave              = false; % save ROI values and current plots to file
+doSave              = true; % save ROI values and current plots to file
 doPlotRoi           = true;
 doPlotRoiUnbinned   = true; % plot before epoching
 doUseParallelPool   = false; % set true on EULER to parallelize over subjects
-idxMaskArray        = [1:4]; % mask indices to be used from fnMaskArray
+idxMaskArray        = [3 3]; % [1:4]; % mask indices to be used from fnMaskArray
 idxRunArray         = [1 2]; % concatenated runs [1 2]
 colourArray         = {'b','g'};
 % number sampled time bins per trial after epoching,
