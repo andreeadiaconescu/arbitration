@@ -18,7 +18,7 @@ if (useTemplate > 0) THEN BEGIN
 	LOADIMAGE('/Applications/MRIcroGL/mni152_2009bet');
 END
 ELSE BEGIN
-	LOADIMAGE('/Users/kasperla/Dropbox/Andreiuta/Collaborations_Lars/Papers/IOIO_3_EEG/group_stripped_brain');
+	LOADIMAGE('/Volumes/AndreeasBackUp/WAGAD/data/SecondLevel/meanWarpedBrain_AllSubjects');
 	CONTRASTMINMAX(300, 1439);
 	CHANGENODE(1, 128, 128, 128, 128, 1);
 END;
@@ -46,20 +46,20 @@ if useFMaps > 0 THEN BEGIN
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_PeakLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Revised_Arbitration_PeakLevel');
 
 	//color 1, yellow 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_ClusterLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Revised_Arbitration_ClusterLevel');
 
 END
 ELSE BEGIN
 
 
 	//color 1, red 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_PeakLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Revised_Arbitration_PeakLevel');
 
 	//color 1, yellow 
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Arbitration_ClusterLevel');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/Revised_Arbitration_ClusterLevel');
 
 END;
 
