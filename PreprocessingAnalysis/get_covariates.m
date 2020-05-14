@@ -55,7 +55,7 @@ t = temp(:,4);
 
 
 Priors    = [tapas_sgm(est.c_prc.logitkamu_r,1);tapas_sgm(est.c_prc.logitkamu_a,1);...
-            tapas_sgm(est.c_prc.logitthmu_r,1);tapas_sgm(est.c_prc.logitthmu_a,1)];
+    tapas_sgm(est.c_prc.logitthmu_r,1);tapas_sgm(est.c_prc.logitthmu_a,1)];
 Variables = {x y z t};
 Groups    = {ones(length(x), 1), 2*ones(length(y), 1), 3*ones(length(z), 1),4*ones(length(t), 1)};
 
@@ -66,7 +66,7 @@ H   = Variables;
 N=numel(Variables);
 
 colors=spring(numel(H));
-    
+
 for i=1:N
     e = notBoxPlot(cell2mat(H(i)),cell2mat(Groups(i)));
     set(e.data,'MarkerSize', 10);
@@ -75,7 +75,7 @@ for i=1:N
         set(e.data,'Marker','o');
     end
     if i==1, hold on, end
-
+    
     set(e.data,'Color',colors(i,:))
     set(e.sdPtch,'FaceColor',colors(i,:));
     set(e.semPtch,'FaceColor',[0.9 0.9 0.9]);
@@ -88,7 +88,7 @@ set(gca,'FontName','Constantia','FontSize',20);
 ylabel('MAPs Learning Parameters');
 %% Plot Zeta
 % Zeta
-figure; hist((temp(:,[5]))); hold on; stem(0,'d','LineWidth',3);
+figure; hist((temp(:,[5]))); hold on; stem(log(1),'d','LineWidth',3);
 % Create xlabel
 xlabel('log(\zeta)');
 % Create ylabel
@@ -96,7 +96,8 @@ ylabel('Count');
 
 %% Stats
 if doStats
-    [h,p,ci,stats]=ttest((temp(:,5)),1);
+    zeta = temp(:,[5]);
+    [h,p,ci,stats]=ttest(zeta,log(1));
     disp(['Significance paired t-test zeta: ' p]);
     statsZeta.pValue=p;
     statsZeta.pValueBonferroni=p*3;
