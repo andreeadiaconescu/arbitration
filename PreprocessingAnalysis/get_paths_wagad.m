@@ -21,7 +21,7 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_reanalysis','wagad_revision','wagad_reversed_revised','factorial_advice'}; % wagad_reanalysis
+nameGlmDesigns        = {'factorial_reanalysis','wagad_zscore_all','wagad_zscore_difference','factorial_advice'}; % wagad_reversed, 'wagad_revision_eLife': glm at submission
 
 % Original design: wagad_reversed
 
@@ -30,7 +30,7 @@ nameGlmDesigns        = {'factorial_reanalysis','wagad_revision','wagad_reversed
 filesResponseModels    = {'linear_1stlevelprecision_reward_social_config','linear_1stlevelprecision_social_config',...
                           'linear_1stlevelprecision_reward_config'}; % ...
 nameResponseModels     = filesResponseModels;
-filesPerceptualModels  = {'hgf_binary3l_reward_social_config','hgf_nonvol_reward_social_config'};
+filesPerceptualModels  = {'hgf_binary3l_reward_social_config','hgf_bayes_reward_social_config','hgf_nonvol_reward_social_config'};
 namePerceptualModels   = filesPerceptualModels;
 
 fnStatsContrastsArray  = {
@@ -38,8 +38,9 @@ fnStatsContrastsArray  = {
     'batch_stats_single_subject_report_contrasts_revised_design.m',...
     'batch_stats_single_subject_report_contrasts.m',...
     'batch_stats_single_subject_report_contrasts_factReward_design.m'};
+
 fnPreprocessArray      = {'batch_preproc_fmri_realign_stc.m', ...
-    'batch_preproc_fmri_stc_realign.m'};
+                          'batch_preproc_fmri_stc_realign.m'};
 
 % phases
 design.stableCardPhase       = [ones(25,1);0.*ones(74,1);ones(61,1)];
