@@ -42,7 +42,7 @@ set(gca,'FontName','Constantia','FontSize',36);
 ylabel(label);
 
 switch currentMAP
-    case {'accuracy','advice'}
+    case {'accuracy','advice','probe'}
       ylim([0 1]);
 end
 end

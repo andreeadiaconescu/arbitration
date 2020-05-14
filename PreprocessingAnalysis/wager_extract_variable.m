@@ -19,6 +19,10 @@ switch currentMAP
         label       = 'Wager Magnitude';
         varName     = 'wager';
         current_var = wager;
+    case 'probe'
+        label       = 'MC Probe';
+        varName     = 'probe';
+        current_var = [];
         
 end
 

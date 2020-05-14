@@ -5,22 +5,36 @@ function wagad_main
 % analysis options are defined in get_paths_wagad;
 
 %% Subjects entering the analysis
-iSubjectArray     = setdiff([3:47], [14 25 31 32 33 34 37]);
-iSubjectArrayfMRI = setdiff([3:47], [6 14 25 31 32 33 34 37]);
-
-% Subject WAGAD_0006 had no phys logs recorded
-
+iSubjectArray        = setdiff([3:47], [14 25 31 32 33 34 37]);
+iSubjectArrayAllfMRI = setdiff([3:47], [6 14 25 31 32 33 34 37]);
+iSubjectArrayfMRI    = setdiff([3:47], [6 14 25 30 31 32 33 34 37 40]); 
+% Subjects WAGAD_0006 had no phys logs recorded
+% WAGAD_0030 and WAGAD_0040 have motion artifacts
 %% Model-Based Analysis
 typeDesign                   = 'ModelBased';
-firstLevelAnalysisStrategy   = [0 1 1 1 1 1];
-secondLevelAnalysisStrategy  = [1 1 1 1 1 1 1];
+firstLevelAnalysisStrategy   = [0 1 0 1 1 1];
+secondLevelAnalysisStrategy  = [0 0 0 0 0 0 0 1 0];
 
 % First-level analysis
 fprintf('\n===\n\t Running the first level analysis:\n\n');
-wagad_first_level_analysis(firstLevelAnalysisStrategy,iSubjectArray,iSubjectArrayfMRI,typeDesign);
+wagad_first_level_analysis(firstLevelAnalysisStrategy,iSubjectArray,iSubjectArrayAllfMRI,typeDesign);
 
 fprintf('\n===\n\t Running group-level analysis and printing tables:\n\n');
-wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArrayfMRI,typeDesign);
+wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArray,iSubjectArrayfMRI,typeDesign);
+
+fprintf('\n===\n\t Done model-based analysis!\n\n');
+
+%% Model-Based Analysis
+typeDesign                   = 'ModelBasedwithDifference';
+firstLevelAnalysisStrategy   = [0 0 0 1 1 1];
+secondLevelAnalysisStrategy  = [0 0 0 0 0 1 0 0 0];
+
+% First-level analysis
+fprintf('\n===\n\t Running the first level analysis:\n\n');
+wagad_first_level_analysis(firstLevelAnalysisStrategy,iSubjectArray,iSubjectArrayAllfMRI,typeDesign);
+
+fprintf('\n===\n\t Running group-level analysis and printing tables:\n\n');
+wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArray,iSubjectArrayfMRI,typeDesign);
 
 fprintf('\n===\n\t Done model-based analysis!\n\n');
 
