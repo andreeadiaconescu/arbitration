@@ -73,6 +73,9 @@ rng('shuffle');
 
 % Simulate
 prob = b.^(be_ch)./(b.^(be_ch)+(1-b).^(be_ch));
-y = logrt+sqrt(be_wager)*randn(n, 1);
+y_wager = logrt+sqrt(be_wager)*randn(n, 1);
+y_ch    = binornd(1, prob);
+
+y = [y_ch, y_wager];
 
 end
