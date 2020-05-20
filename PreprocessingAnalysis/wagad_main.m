@@ -56,7 +56,7 @@ fprintf('\n===\n\t Done model-free analysis!\n\n');
 
 %% ROI Extraction and plotting
 fprintf('\n===\n\t Running ROI peri-stimulus time series plotting per subject (mean over trials) and group (mean over subjects):\n\n');
-wagad_plot_group_roi_timeseries(iSubjectArrayfMRI);
+wagad_compute_group_roi_CombinedTimeseries(iSubjectArrayfMRI);
 
 fprintf('\n===\n\t Done ROI extraction and plotting of group effects!\n\n');
 

@@ -21,7 +21,8 @@ end
 %% Names: preprocessing strategies, GLMs, computational models, batch files
 
 namePreprocStrategies = {'preproc_realign_stc', 'preproc_stc_realign',};
-nameGlmDesigns        = {'factorial_reanalysis','wagad_zscore_all','wagad_zscore_difference','factorial_advice'}; % wagad_reversed, 'wagad_revision_eLife': glm at submission
+nameGlmDesigns        = {'factorial_reanalysis','wagad_zscore_all',...
+                         'factorial_advice'}; % wagad_reversed, 'wagad_revision_eLife','wagad_zscore_difference': glm at submission
 
 % Original design: wagad_reversed
 
@@ -338,8 +339,9 @@ secondLevel.contrasts = strcat(secondLevel.design, fs, ...
     'none', fs, contrasts.names);
 
 % TODO: at the moment, these masks are created manually!
-secondLevel.roiAnalysis.fnMaskArray = {'ArbitrationBrainstem_PeakLevel.nii';'rightDLPFC_ArbitrationCard.nii';...
-    'rightAmygdala_ArbitrationSocial.nii'; 'rightOFC_ArbitrationSocial.nii'};
+secondLevel.roiAnalysis.fnMaskArray = {'Arbitration_Brainstem.nii';'dlPFC.nii';...
+                                       'rightAmygdala.nii'; 'rightOFC.nii';...
+                                       'ventralmPFC.nii';'aTPJ.nii'};
 secondLevel.roiAnalysis.results.root = fullfile(secondLevel.root, 'RoiExtraction');
 secondLevel.roiAnalysis.results.rois = strcat(secondLevel.roiAnalysis.results.root, ...
     fs, regexprep(secondLevel.roiAnalysis.fnMaskArray, '\.nii', ''));

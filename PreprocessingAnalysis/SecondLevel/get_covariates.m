@@ -88,7 +88,7 @@ set(gca,'FontName','Constantia','FontSize',20);
 ylabel('MAPs Learning Parameters');
 %% Plot Zeta
 % Zeta
-figure; hist((temp(:,[5]))); hold on; stem(log(1),'d','LineWidth',3);
+figure; hist((temp(:,5)));
 % Create xlabel
 xlabel('log(\zeta)');
 % Create ylabel
