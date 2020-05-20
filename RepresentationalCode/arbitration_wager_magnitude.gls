@@ -43,36 +43,36 @@ COLORBARVISIBLE(false);
 
 if useFMaps > 0 THEN BEGIN
 	//color 4, magenta (red for now...color 1)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Positive');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/positiveMagnitude');
 	//color 3, cyan
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Negative');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/negativeMagnitude');
 
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 
 //color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationSelf>WagerAmount');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/arbitrationPositive_Magnitude');
 
 //color 2, yellow (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationOther>WagerAmount');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/arbitrationNegative_Magnitude');
 
 
 END
 ELSE BEGIN
 
 		//color 4, magenta (red for now...color 1)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Positive');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/positiveMagnitude');
 	//color 3, cyan
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/WagerMagnitude_Negative');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/negativeMagnitude');
 
 	//load cluster with thresholds
 	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 
 //color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationSelf>WagerAmount');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/arbitrationPositive_Magnitude');
 
 //color 2, yellow (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/ArbitrationOther>WagerAmount');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/arbitrationNegative_Magnitude');
 
 END;
 
