@@ -1,4 +1,4 @@
-function [] = wagad_extract_roi_timeseries_by_arbitration(idxSubjectArray)
+function [] = wagad_extract_roi_timeseries_by_arbitration(idxSubjectArray,idxMaskArray)
 % Extract roi time series from regions of interest (group effect regions)
 %   Uses UniQC Toolbox for dealing with fMRI time series and ROI extraction
 % USE
@@ -8,12 +8,16 @@ if nargin < 1
     idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
+if nargin < 2
+    idxMaskArray        = [5 5]; % [1:4]; % mask indices to be used from fnMaskArray
+end
+
+
 %% #MOD user defined-parameters
 doSave              = true; % save ROI values and current plots to file
 doPlotRoi           = true;
 doPlotRoiUnbinned   = true; % plot before epoching
 doUseParallelPool   = false; % set true on EULER to parallelize over subjects
-idxMaskArray        = [3 3]; % [1:4]; % mask indices to be used from fnMaskArray
 idxRunArray         = [1 2]; % concatenated runs [1 2]
 colourArray         = {'b','g'};
 % number sampled time bins per trial after epoching,
@@ -24,13 +28,13 @@ nBinTimes       = 7;
 
 %% only change if you know what you are doing:
 
-idxContrastArray= [3; 1; 1; 1]; % determines 2nd level dir where the activation mask can be found
+idxContrastArray= [3; 1; 1; 1; 1; 1]; % determines 2nd level dir where the activation mask can be found
 
 % cell of cluster index vectors corresponding to each mask
 % each integer is an index for n-ary cluster export of a contrast,
 % indicating which activated cluster is indeed within the targeted
 % anatomical region
-idxValidActivationClusters  = {[1], [1], [1], [1]};
+idxValidActivationClusters  = {[1], [1], [1], [1], [1], [1]};
 
 iCondition                  = 1; % 1 = advice presentation, needed fo trial binning
 

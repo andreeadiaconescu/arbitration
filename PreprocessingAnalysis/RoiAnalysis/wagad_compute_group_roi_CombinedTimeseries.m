@@ -1,4 +1,4 @@
-function fhArray =  wagad_compute_group_roi_CombinedTimeseries(idxSubjectArray)
+function fhArray =  wagad_compute_group_roi_CombinedTimeseries(idxSubjectArray,idxMaskArray)
 % Summarizes results of all subjects of ROI extraction in two plots; one
 % plot with subplots over all subjects, another one averaging over subjects
 % the subject-specific trial mean
@@ -31,7 +31,10 @@ if nargin < 1
     idxSubjectArray = setdiff([3:47], [6 14 25 31 32 33 34 37]);
 end
 
-idxMaskArray = [3]; % masks to be plotted
+if nargin < 2
+    idxMaskArray = [4]; % masks to be plotted
+end
+
 equalYLimits = [-Inf Inf]; % percent signal changes
 colourArray  = {'b','g'};
 
