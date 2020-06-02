@@ -42,33 +42,43 @@ SHADERADJUST('overDistance', 0.27);
 COLORBARVISIBLE(false);
 
 if useFMaps > 0 THEN BEGIN
+	//color 4, magenta (red for now...color 1)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/epsilon2Advice');
+	//color 3, cyan
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/epsilon2Reward');
+
+	//load cluster with thresholds
+	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
 
 //color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Epsilon2_Advice');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/advice_epsilon2_midbrain');
 
-//color 1, magenta (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Epsilon2_Reward');
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/reward_epsilon2_midbrain');
 
-//color 1, blue (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/advice_epsilon2_midbrain');
-
-//color 1, cyan (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/reward_epsilon2_midbrain');
-
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Volumes/AndreeasBackUp/WAGAD/data/masks/abs_SN_VTA');
 
 END
 ELSE BEGIN
+
+		//color 4, magenta (red for now...color 1)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/epsilon2Advice');
+	//color 3, cyan
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/epsilon2Reward');
+
+	//load cluster with thresholds
+	//OVERLAYLOADCLUSTER('motor', 2, 1000, false);
+
 //color 1, red (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Epsilon2_Advice');
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/advice_epsilon2_midbrain');
 
-//color 1, magenta (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/Epsilon2_Reward');
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/SourceDataforPaper/reward_epsilon2_midbrain');
 
-//color 1, blue (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/advice_epsilon2_midbrain');
+//color 2, yellow (cyan for now, color 6)
+	OVERLAYLOAD('/Volumes/AndreeasBackUp/WAGAD/data/masks/abs_SN_VTA');
 
-//color 1, cyan (cyan for now, color 6)
-	OVERLAYLOAD('/Users/drea/Dropbox/Andreiuta/fMRI_IOIO/WAGAD_paper1/Paper/MIPs/reward_epsilon2_midbrain');
 END;
 
 //color, number
