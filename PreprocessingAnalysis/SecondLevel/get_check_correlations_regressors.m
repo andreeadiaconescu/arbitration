@@ -12,14 +12,14 @@ end
 
 addpath(paths.code.model);
 nSubjects = numel(iSubjectArray);
-nRegressors = 10;
+nRegressors = 12;
 % advice, arbitration, wager, wager amount, trial, outcome, epsi2advice, epsi2card, epsi3advice, epsi3card
 for s = 1:nSubjects
     iSubj = iSubjectArray(s);
     paths = get_paths_wagad(iSubj);
     load(fullfile(paths.stats.fnSpm));
     GLM         = SPM.xX.xKXs.X;
-    GLMSelected = GLM(:,[1:2 7 10:16]);
+    GLMSelected = GLM(:,[1:2 3 4 7 10:16]);
     corrMatrix    = corrcoef(GLMSelected);
     z_transformed = dmpad_fisherz(reshape(corrMatrix,nRegressors^2,1));
     averageCorr{s,1}=reshape(z_transformed,nRegressors,...
@@ -46,13 +46,15 @@ textColors = repmat(finalCorr(:) > midValue, 1, 3);  % Choose white or black for
                                                %   text color of the strings so
                                                %   they can be easily seen over
                                                %   the background color
-set(hStrings, {'Color'}, num2cell(textColors, 2));  % Change the text colors
+set(hStrings, {'Color'}, num2cell(textColors, 2),'FontSize',18);  % Change the text colors
 
 set(gca, 'XTick', 1:nRegressors, ...                             % Change the axes tick marks
-         'XTickLabel', {'Advice', 'Arbitration', 'Wager', 'Wager Amount', 'Trial','Outcome',...
+         'XTickLabel', {'Advice', 'Arbitration', 'Social Weighting','Card Weighting', ...
+         'Wager', 'Wager Amount', 'Trial','Outcome',...
          'Epsi2Advice','Epsi2Card','Epsi3Advice','Epsi3Card'}, ...  %   and tick labels
          'YTick', 1:nRegressors, ...
-         'YTickLabel', {'Advice', 'Arbitration', 'Wager', 'Wager Amount', 'Trial','Outcome',...
+         'YTickLabel', {'Advice', 'Arbitration', 'Social Weighting','Card Weighting', ...
+         'Wager', 'Wager Amount', 'Trial','Outcome',...
          'Epsi2Advice','Epsi2Card','Epsi3Advice','Epsi3Card'}, ...
          'TickLength', [0 0]);
      
