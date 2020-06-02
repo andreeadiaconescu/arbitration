@@ -98,16 +98,16 @@ for s=1:size(y,1)
     predictedProbeMisleadingStable = mean(selectedModelReadout(:,logical(volatileAdviceVolatileCard)));
     
     par{s,1} = actualProbeRandom;
-    par{s,2} = actualProbeHelpfulStable;
-    par{s,3} = actualProbeHelpfulUnstable;
-    par{s,4} = actualProbeMisleadingUnstable;
-    par{s,5} = actualProbeMisleadingStable;
+    par{s,2} = mean([actualProbeHelpfulStable;actualProbeHelpfulUnstable]);
+    par{s,3} = mean([actualProbeMisleadingUnstable;actualProbeMisleadingStable]);
+    par{s,4} = mean([actualProbeHelpfulStable;actualProbeMisleadingUnstable]);
+    par{s,5} = mean([actualProbeHelpfulUnstable;actualProbeMisleadingStable]); 
     
     par{s,6} = predictedProbeRandom;
-    par{s,7} = predictedProbeHelpfulStable;
-    par{s,8} = predictedProbeHelpfulUnstable;
-    par{s,9} = predictedProbeMisleadingUnstable;
-    par{s,10} = predictedProbeMisleadingStable;
+    par{s,7} = mean([predictedProbeHelpfulStable;predictedProbeHelpfulUnstable]);
+    par{s,8} = mean([predictedProbeMisleadingUnstable;predictedProbeMisleadingStable]);
+    par{s,9} = mean([predictedProbeHelpfulStable;predictedProbeMisleadingUnstable]);
+    par{s,10} = mean([predictedProbeHelpfulUnstable;predictedProbeMisleadingStable]);
 end
 
 

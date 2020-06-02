@@ -31,8 +31,8 @@ design_matrix  = [cell2mat(par) ones(size(cell2mat(par),1),1)];
 % Independent Variables
 nValidClmn = size(iSubjectArray,2)+1;
 debriefing_advice_helpfulness                   = cell2mat(txt(2:nValidClmn,7)); % 4 is the average
-debriefing_follow_adviser                       = cell2mat(txt(2:nValidClmn,8)); % in percentage
-debriefing_intentional_adviser                  = cell2mat(txt(2:nValidClmn,14));
+debriefing_follow_adviser                       = cell2mat(txt(2:nValidClmn,8)); % 3 in percentage
+debriefing_intentional_adviser                  = cell2mat(txt(2:nValidClmn,14)); % 5
 
 % T-tests regarding how often participants' reported listening to the
 % adviser
@@ -65,11 +65,8 @@ wagad_plot_regression((cell2mat(par(:,2))),debriefing_advice_helpfulness);
 xlabel('Adviser Helpfulness');
 ylabel('\kappa{_a}');
 
-[R,P]=corrcoef(cell2mat(par(:,5)),debriefing_follow_adviser);
-disp(['Correlation between zeta and going with advice? Pvalue: ' num2str(P(1,2))]);
-stats.correlation_zetaAdviceRating = R(1,2);
-stats.p_zetaAdviceRating = P(1,2);
+[p,tbl,stats] = anova1(cell2mat(par(:,5)),categorical(debriefing_intentional_adviser));
+stats.F_zetaAdviceRating = tbl{2,5};
+stats.p_zetaAdviceRating = p;
 disp(stats);
-wagad_plot_regression((cell2mat(par(:,5))),debriefing_follow_adviser);
-xlabel('Going with Advice');
-ylabel('\zeta');
+
