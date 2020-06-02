@@ -45,7 +45,7 @@ path2ndLevel = fullfile(paths.stats.secondLevel.design,'learning_parameters', re
 
 if exist(path2ndLevel, 'dir')
     delete(path2ndLevel)
-end;
+end
 mkdir(path2ndLevel);
 
 
