@@ -3,8 +3,9 @@ Wager Social Learning fMRI Study
 
 Master Thesis of Madeline Stecy (Sep 2015 - Feb 2016)
 Supervisor: Andreea Diaconescu
-Sponsor: Philippe Tobler
-Contributors: Lars Kasper
+Supervisor and Sponsor: Philippe Tobler
+Contributors: Lars Kasper, Christoph Mathys, Chris Burke, Zoltan Nagy
+Code Review: Lars Kasper
 
 In total, 40 subjects were scanned and analyzed at the SNS lab in Zurich.
 
@@ -20,4 +21,4 @@ Installation
 
 Getting Started
 ---------------
-1. Run `startup.m` in the main code folder
+Run `startup.m` in the main code folder to set up the environment and `wagad_main.m` to run the analysis.
