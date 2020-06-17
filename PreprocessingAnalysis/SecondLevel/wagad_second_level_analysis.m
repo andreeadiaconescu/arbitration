@@ -3,7 +3,7 @@ function wagad_second_level_analysis(secondLevelAnalysisStrategy,iSubjectArray,i
 % Performs all group analysis steps for the WAGAD study
 
 if nargin < 1
-    secondLevelAnalysisStrategy =  [0 0 0 0 0 0 0 1 0];
+    secondLevelAnalysisStrategy =  [0 1 0 1 0 1 0 0 0];
 end
 
 if nargin < 2
@@ -39,6 +39,8 @@ switch typeDesign
         idDesign = 2;
     case 'ModelFree'
         idDesign = 1;
+    case 'ModelBasedwithDifference'
+        idDesign = 3;
 end
 
 
@@ -53,7 +55,7 @@ if doModelComparison
 end
 
 if doSecondLevelBehav
-    get_covariates(iSubjectArray);
+    get_covariates(iSubjectArrayfMRI);
 end
 
 if doCompareWagers
@@ -61,7 +63,7 @@ if doCompareWagers
 end
 
 if doCalculateBetas
-    get_calculate_betas(iSubjectArray);
+    get_calculate_betas(iSubjectArrayfMRI);
 end
 
 if doCalculateMAPS
@@ -71,13 +73,12 @@ end
 
 
 if doSecondLevelStats
-    includeRegressor = false;
+    includeRegressor = true;
     switch typeDesign
-        case 'ModelBased'
-%             regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
-%                 'belief_precision', 'surprise','wager_magnitude','advice_epsilon2','reward_epsilon2','advice_epsilon3',...
-%                 'reward_epsilon3'};
-            regressorsGLM = {'basic_advice'};
+        case {'ModelBased','ModelBasedwithDifference'}
+            regressorsGLM = {'arbitration','social_weighting','card_weighting','precision_advice','precision_card',...
+                'belief_precision', 'surprise','wager_magnitude','advice_epsilon2','reward_epsilon2','advice_epsilon3',...
+                'reward_epsilon3'};
             
             if includeRegressor == true
                 responseModelParameters = {'be_surp','zeta'};
@@ -111,6 +112,7 @@ end
 
 if doRevision
     wagad_extract_plot_MAPs(iSubjectArray,'probe');
+    get_check_correlations_regressors(iSubjectArray);
     [variables_all] = wagad_simulate_from_empiricalData(iSubjectArray);
     wagad_check_debriefing(iSubjectArray);
 end
